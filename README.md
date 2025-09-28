@@ -1,4 +1,4 @@
-# 📄 Documentação do Projeto: [Nome da Solução]
+# 📄 Documentação do Projeto: NegociaInvest
 
 ---
 
