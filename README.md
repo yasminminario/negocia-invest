@@ -2,10 +2,9 @@
 
 ---
 
-## 1. Contexto
-- Descrição breve do cenário atual
-- Panorama do mercado
-- Tendências tecnológicas ou de comportamento
+## 1. Introdução/Contexto
+- Descrição breve do cenário atual, da QI
+- Panorama do mercado --> falar do PEER to PEER
 - Justificativa para o desenvolvimento da solução
 
 ---
