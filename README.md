@@ -149,6 +149,7 @@ O `analise` consolida somente métricas de tomador:
   "propostas_aceitas": 0,
   "media_tempo_negociacao_dias": 0.0
 }
+```
 
 #### 5) Coleta dos Dados (exemplos de SELECTs)
 
