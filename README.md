@@ -324,15 +324,15 @@ Não persistimos os intermediários; apenas `analise` e `valor_score` final.
 2.  Atualizar `scores_credito.analise` (`UPDATE`).
 3.  **Publicar evento** `score.analise.updated:{user_id}` (Redis Pub/Sub).
 
-**Score Worker (listener) consome evento:**
+  **Score Worker (listener) consome evento:**
+  
+  * Busca `analise`.
+  * Chama Serasa API (com **cache de 24h**).
+  * Roda modelo interno (Logistic Regression).
+  * Calcula `final_score` (0–1000).
+  * Atualiza `scores_credito.valor_score` e `atualizado_em`.
 
-* Busca `analise`.
-* Chama Serasa API (com **cache de 24h**).
-* Roda modelo interno (Logistic Regression).
-* Calcula `final_score` (0–1000).
-* Atualiza `scores_credito.valor_score` e `atualizado_em`.
-
-### 8.2 Listener (on demand)
+##### 8.2 Listener (on demand)
 
 Toda vez que a aplicação fizer `UPDATE` em `scores_credito.analise`, publica o mesmo evento `score.analise.updated:{user_id}`. O fluxo do *worker* é idêntico ao *batch*.
 
