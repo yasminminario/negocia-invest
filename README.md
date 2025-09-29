@@ -278,9 +278,9 @@ Esses `SELECTs` são executados pelo **Score Service** para montar o `analise`.
 * **Abordagem Supervisionada:** Utilizamos dados do histórico operacional do usuário na plataforma (`analise`), combinados com o status das negociações (**quitado vs. inadimplente**).
 * O modelo adotado é a **Logistic Regression**, por ser simples, explicável e amplamente usada no mercado de crédito. Esse será o algoritmo de referência para geração do score. Caso o volume e a complexidade dos dados aumentem significativamente, existe a possibilidade de migrar para modelos mais avançados, como XGBoost ou LightGBM, mas apenas como evolução futura.
 * Essa probabilidade de default (**PD**) é então convertida em um score padronizado:
-
-    $$\text{score} = \text{round}(1000 \times (1 - \text{prob\_default}))$$
-
+  ```
+  score = round(1000 * (1 - prob_default))
+  ```
 * **Vantagens:** **Precisão**, **Escalabilidade** e **Alinhamento com mercado**.
 * **Integração simples:** a saída é um único valor contínuo (0–1000), armazenado em `valor_score`, enquanto os insumos ficam no campo `analise`.
 * **Tecnologias:**
@@ -306,7 +306,9 @@ Esses `SELECTs` são executados pelo **Score Service** para montar o `analise`.
 
 **Média simples** (configurável por ENV; padrão 50/50):
 
-$$\text{final\_score} = \text{round}(0.5 \times \text{serasa\_score} + 0.5 \times \text{interno\_score})$$
+```
+final_score = round(0.5 * serasa_score + 0.5 * interno_score)
+```
 
 **Fallbacks:**
 
