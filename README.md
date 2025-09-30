@@ -212,6 +212,12 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 * O score **não considera ações como investidor** (emprestador); só como **tomador**.
 * A análise interna adota diretamente um **modelo supervisionado**, que utiliza rótulos de inadimplência e quitação para treinar a previsão de risco. O modelo estima a **probabilidade de *default*** de cada tomador com base em seu histórico operacional e dados da plataforma, convertendo esse resultado em um score contínuo de **0 a 1000**. Dessa forma, a solução já nasce alinhada às práticas do mercado de crédito e evolui em precisão conforme mais dados históricos são acumulados.
 
+Fluxo Geral:
+
+<p align="center">
+  <img src="docs/assets/fluxo_score.png" alt="Fluxo de Score" width="75%">
+</p>
+
 
 #### 3) Fontes de Dados
 
@@ -502,6 +508,137 @@ Toda vez que a aplicação fizer `UPDATE` em `scores_credito.analise`, publica o
 1.  **Fase 1:** Logistic Regression.
 2.  **Fase 2:** Enriquecer features (sazonalidade, granularidade por parcela).
 3.  **Fase 3:** Ensemble supervisionado (Logistic Regression + modelos de árvore, como XGBoost/LightGBM).
+
+### 11.2 Motor de Recomendação
+
+#### 1) Objetivo
+Construir um mecanismo de recomendação que:
+- **Para investidores**: sugira empréstimos que mantenham uma carteira diversificada (evitar concentração em apenas um perfil de risco).
+- **Para tomadores**: sugira parâmetros de taxa justos e alinhados tanto ao mercado quanto ao histórico do próprio usuário.
+
+A lógica não depende de Machine Learning neste estágio, mas de cálculos estatísticos, filtros e regras de negócio. Isso garante simplicidade, interpretabilidade e performance, além de atender diretamente às necessidades da solução.
+
+#### 2) Escopo e Premissas
+- **Investidores**:
+  - Recebem recomendações de novos empréstimos no marketplace, baseadas em ranges de valor, taxa e prazo semelhantes aos já investidos, priorizando a diversificação da carteira.
+  - Também recebem sugestões de taxa de juros (`taxa_analisada`) quando desejam abrir uma nova proposta de investimento, combinando parâmetros de mercado com seu histórico pessoal.
+- **Tomadores**:
+  - Recebem sugestão de taxa de juros (`taxa_analisada`) ao criar uma nova proposta de empréstimo, ajustada pela média de mercado e pelo histórico de propostas anteriores.
+  - Também recebem recomendações de solicitações de empréstimos semelhantes às que já fizeram, organizadas por parâmetros como prazo, valor e taxa.
+- A recomendação não substitui a decisão, apenas apoia com transparência e mensagens claras no front.
+- **Orquestração**:
+  - **Sugestão de taxa (`taxa_analisada`)**:
+    - **Investidores e Tomadores**: a sugestão é calculada on-demand no front, no momento em que o usuário informa valor + prazo de uma nova proposta.
+    - O cálculo da taxa combina dados de mercado (faixa média por score) + histórico pessoal.
+    - A `taxa_analisada` é exibida em tela, podendo ser opcionalmente registrada em `analise_taxa` apenas para fins de auditoria/analytics.
+  - **Recomendações de empréstimos (matching)**:
+    - **Investidores**: listener recalcula recomendações sempre que um contrato novo é assinado ou quando novas solicitações entram no marketplace.
+    - **Tomadores**: listener recalcula recomendações de solicitações semelhantes sempre que o próprio usuário cria/edita uma proposta ou quando há novas oportunidades no mercado.
+
+Fluxo Geral
+
+![Fluxo da Recomendação](docs/assets/fluxo_recomendacao.png)
+
+
+#### 3) Fontes de Dados
+##### 3.1 Off-chain (Banco existente)
+- `usuarios` → perfil do investidor/tomador.
+- `negociacoes` → histórico de contratos fechados.
+- `propostas` → taxas, prazos e condições aceitas.
+- `scores_credito` → score final do tomador.
+- `metricas_investidor` → consolidação da carteira (diversificação, histórico).
+
+##### 3.2 Derivados Internos (calculados a partir do banco)
+- **Faixas de mercado**: valores agregados que representam a média/mediana das taxas praticadas por faixa de score.
+- **Exemplo**:
+  - Score 800–1000 → 10–13% a.m.
+  - Score 500–799 → 14–18% a.m.
+  - Score <500 → acima de 20% a.m.
+- Esses dados não vêm de um sistema externo, mas são recalculados internamente em batch diário e usados como insumo para sugerir a `taxa_analisada`.
+
+#### 4) Lógica de Recomendação
+##### 4.1 Recomendação de Empréstimos/Solicitações
+- **Objetivo**: sugerir oportunidades relevantes (para investir ou para solicitar) que se encaixam melhor no perfil do usuário.
+- **Passos**:
+  1. Coletar histórico do usuário (investimentos ou solicitações anteriores):
+     - Valor médio.
+     - Faixa de taxa mais recorrente.
+     - Prazo médio.
+     - Score dos tomadores com quem já se relacionou.
+  2. Montar um array de solicitações/empréstimos ativos no marketplace que batem com esse padrão.
+  3. Ordenar esse array pelo grau de compatibilidade com o perfil.
+- **Exibição no front**:
+  - **Tela inicial** → mostrar apenas o primeiro item da lista (recomendação principal).
+  - **Botão “Ver todos”** → exibir todas as oportunidades disponíveis, mas com as mais compatíveis no topo.
+
+##### 4.2 Recomendação de Taxa (`taxa_analisada`)
+- **Objetivo**: apoiar o usuário ao definir a taxa de uma nova proposta, equilibrando o histórico pessoal com a média de mercado.
+- **Passos**:
+  1. **Usuário decide abrir nova oferta/solicitação**:
+     - Depois de tentar encontrar opções existentes no marketplace, o usuário escolhe abrir uma proposta nova.
+  2. **Sistema sugere `taxa_analisada`**:
+     - O sistema calcula a taxa sugerida com base em:
+       - Média de mercado (faixa de taxa por categoria de score).
+       - Histórico do usuário (taxas praticadas em propostas semelhantes calculadas em tempo real a partir dos parâmetros digitados na tela de “Encontrar ofertas/solicitações”, quando o usuário digita os dados de seu empréstimo ideal).
+     - Essa taxa é exibida junto de mensagens de contexto (ex.: justa, alta, agressiva).
+  3. **Usuário revisa e confirma**:
+     - O usuário pode aceitar a taxa sugerida ou definir outra.
+     - Nesse momento ele também revisa os demais parâmetros (valor, prazo, perfil de risco aceito).
+- **Exibição no front**:
+  - Mostrar a taxa sugerida.
+  - Mostrar mensagens de contexto, como:
+    - “Você definiu uma taxa justa e alinhada à média de mercado para este perfil de risco. Ótimo!”
+    - “Esta taxa de juros é muito alta para o mercado. Sua oferta pode ficar muito tempo sem interessados.”
+- **Proposta é criada no banco**:
+  - Só após a confirmação, a oferta/solicitação é registrada em `propostas`.
+  - A `taxa_analisada` pode ser salva para auditoria.
+
+#### 5) Fluxo Técnico (Front ↔ Back)
+- **Criação de proposta (investidor ou tomador)**:
+  1. **Usuário decide abrir uma nova oferta/solicitação**:
+     - Após consultar o marketplace e não encontrar algo compatível, o usuário opta por criar sua própria proposta.
+     - Neste momento, ele já informou valor e prazo no front.
+  2. **Front solicita recomendação de taxa**:
+     - O front envia os parâmetros temporários (valor + prazo + score do tomador, se aplicável) para o serviço de recomendação.
+     - O dado ainda não foi persistido no banco, é apenas input de tela.
+  3. **Back calcula `taxa_analisada`**:
+     - Com base em:
+       - Faixa de mercado (média de taxas por score, derivada internamente a partir do histórico da plataforma).
+       - Histórico do usuário (taxas médias de propostas anteriores semelhantes, filtradas por valor e prazo próximos aos informados).
+     - O back retorna:
+       - `taxa_analisada` (valor sugerido).
+       - `faixa_mercado` (ex.: `[11%, 14%]`) para comparação.
+  4. **Front exibe recomendação**:
+     - Mostra a taxa sugerida (`taxa_analisada`).
+     - Mostra mensagens de contexto de acordo com a posição da taxa escolhida pelo usuário em relação à `faixa_mercado`:
+       - Dentro da faixa → “Taxa justa e alinhada à média de mercado.”
+       - Acima da faixa → “Taxa alta, pode demorar a atrair interessados.”
+       - Abaixo da faixa → “Taxa agressiva, pode atrair investidores rapidamente, mas avalie se é sustentável.”
+  5. **Usuário revisa e confirma**:
+     - Pode aceitar a taxa sugerida ou definir outra.
+     - Também revisa demais parâmetros (valor, prazo, perfis de risco aceitos, possibilidade de negociação).
+  6. **Persistência no banco**:
+     - Só ao confirmar, o sistema cria o registro na tabela `propostas`.
+     - A `taxa_analisada` pode ser opcionalmente salva em `analise_taxa` para auditoria/analytics, mas não é campo obrigatório da proposta.
+
+#### 6) Serviço de Recomendação — FastAPI
+##### Endpoints
+- `GET /internal/recommendations/solicitacoes/{user_id}`
+  → retorna lista de empréstimos/solicitações no marketplace, ordenados por compatibilidade com o perfil do usuário (investidor ou tomador).
+- `GET /internal/recommendations/taxa?user_id=...&valor=...&prazo=...`
+  → retorna `taxa_analisada` + faixa de mercado + mensagens de contexto para front exibir ao abrir nova proposta.
+- `POST /internal/recommendations/recalculate/{user_id}`
+  → força recálculo de métricas do investidor (ex.: diversificação de carteira) e das recomendações de matching.
+
+##### Stack
+- FastAPI + Uvicorn.
+- SQLAlchemy para métricas de histórico.
+- Redis → listener para eventos (assinatura de contratos).
+
+#### 8) Roadmap de Evolução
+- **Fase 1 (MVP)**: lógica de regras simples (ranges e médias).
+- **Fase 2**: enriquecimento com dados setoriais (agro, serviços, etc.).
+- **Fase 3**: possível evolução para ML (learning-to-rank, collaborative filtering) caso base cresça e justifique complexidade.
 
 ---
 
