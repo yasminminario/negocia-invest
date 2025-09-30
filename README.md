@@ -84,6 +84,8 @@ src/
             │   ├── negociacao.py
             │   ├── proposta.py
             │   └── usuario.py
+            │   └── score.py
+            │   └── metricas_investidor.py
             ├── services/
             │   ├── api_score.py
             │   ├── blockchain.py
@@ -123,6 +125,8 @@ Contém os modelos (entidades) que representam as tabelas do banco e objetos de 
 - **negociacao.py** – Modelo da negociação entre tomador e investidor.  
 - **proposta.py** – Modelo das propostas e contrapropostas.  
 - **usuario.py** – Modelo dos usuários, incluindo dados cadastrais.  
+- **score.py** – Modelo das análises de score de crédito. 
+- **metricas_investidor.py** – Modelo das métricas do investidor.
 
 ### 📂 app/services
 Serviços e regras de negócio que dão suporte às rotas.  
