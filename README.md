@@ -603,7 +603,7 @@ Toda vez que a aplicação fizer `UPDATE` em `scores_credito.analise`, publica o
 
 ---
 
-## 22. Modelo de Negócio/Planejamento Financeiro
+## 22. Modelo de Negócio
 
 ### Custos
 
@@ -656,6 +656,24 @@ Toda vez que a aplicação fizer `UPDATE` em `scores_credito.analise`, publica o
 - **Consultas Serasa**: assumem cache de 24h, custo médio R$ 1–2 por requisição.  
 - Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
 - Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
+
+### Fontes de Receita Pensadas
+
+#### 1) Taxa sobre cada empréstimo
+- **Descrição**: cobrança de uma taxa de intermediação em cada contrato fechado.  
+- **Modelo possível**: percentual sobre o valor do empréstimo (ex.: 1%–3%).  
+- **Observação**: precisa de validação jurídica para garantir conformidade com o Banco Central (SEP – Sociedade de Empréstimo entre Pessoas).
+
+#### 2) Cobrança por inadimplência
+- **Descrição**: taxa administrativa aplicada em casos de atraso, para cobrir custos de cobrança e eventual registro em bureaus de crédito (ex.: Serasa).  
+- **Objetivo**: compensar o risco operacional e desestimular o atraso.
+
+### 3) Parcerias com empresas/serviços
+- **Descrição**: acordos com terceiros para geração de receita indireta, como:  
+  - Seguradoras (proteção contra inadimplência).  
+  - Bureaus de crédito (consultas adicionais).  
+  - Instituições financeiras (wallets digitais, custódia).  
+- **Objetivo**: diversificar receitas sem onerar diretamente a operação principal.
 
 ---
 
