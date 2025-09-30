@@ -1,0 +1,1 @@
+-- Cria o banco de dados local e suas tabelas no PostgreSQL para armazenar e gerenciar dados da aplicação.

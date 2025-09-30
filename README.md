@@ -67,6 +67,105 @@
 ---
 
 ## 8. Arquitetura do Sistema
+
+
+# Estrutura de Pastas do negocia.ai
+
+src/
+└── backend/
+    └── src/
+        └── app/
+            ├── api/
+            │   └── routers.py
+            ├── database/
+            │   ├── create_database.sql
+            │   └── Dockerfile
+            ├── models/
+            │   ├── negociacao.py
+            │   ├── proposta.py
+            │   └── usuario.py
+            │   └── score.py
+            │   └── metricas_investidor.py
+            ├── services/
+            │   ├── api_score.py
+            │   ├── blockchain.py
+            │   ├── calculo_taxas_juros.py
+            │   ├── dashboard.py
+            │   ├── negociacao.py
+            │   ├── proposta.py
+            │   └── usuario.py
+            └── model/
+                └── model_analise_credito.py
+        ├── config.py
+        ├── Dockerfile
+        ├── requirements.txt
+        └── docker-compose.yml
+    frontend/
+    (adicionar)
+.env
+README.md
+
+## 📂 src/backend/src
+
+Código-fonte principal da aplicação backend, organizado por camadas (API, database, models, services, ML).
+
+### 📂 app/api
+- **routers.py**  
+  Define as rotas da API (endpoints HTTP) do FastAPI.  
+  Centraliza a orquestração dos serviços e expõe as funcionalidades para o front-end/mobile.
+
+### 📂 app/database
+- **create_database.sql**  
+  Script SQL inicial para criação das tabelas e relações do banco de dados (Postgres).  
+- **Dockerfile**  
+  Dockerfile específico para configurar a imagem do banco local (quando usado com `docker-compose`).
+
+### 📂 app/models
+Contém os modelos (entidades) que representam as tabelas do banco e objetos de negócio.  
+- **negociacao.py** – Modelo da negociação entre tomador e investidor.  
+- **proposta.py** – Modelo das propostas e contrapropostas.  
+- **usuario.py** – Modelo dos usuários, incluindo dados cadastrais.  
+- **score.py** – Modelo das análises de score de crédito. 
+- **metricas_investidor.py** – Modelo das métricas do investidor.
+
+### 📂 app/services
+Serviços e regras de negócio que dão suporte às rotas.  
+- **api_score.py** – Serviço responsável pela consulta/integração com API de score de crédito (integrada ao Serasa).  
+- **blockchain.py** – Serviço para interação com a blockchain Polygon (registro de contratos e leitura de hashes).  
+- **calculo_taxas_juros.py** – Funções auxiliares para cálculo de taxas e juros dos empréstimos.  
+- **dashboard.py** – Serviço para agregação e cálculo de métricas exibidas nas dashboards dos usuários.  
+- **negociacao.py** – Lógica de negócio das negociações (criação, atualização de status).  
+- **proposta.py** – Lógica de envio/validação de propostas e contrapropostas.  
+- **usuario.py** – Serviço para cadastro, login e gestão de dados de usuários.  
+
+### 📂 model
+- **model_analise_credito.py**  
+  Implementação de modelo de análise de crédito (através de machine learning).  
+  Utilizado para classificação de risco de tomadores de empréstimo.
+
+---
+
+## Arquivos de Configuração
+
+- **config.py**  
+  Configurações globais do backend (chaves de API, conexões de banco, parâmetros de blockchain).  
+
+- **Dockerfiles**  
+  Dockerfile para empacotar e rodar o backend no ECS Fargate (ou localmente), e outro para a construção da imagem do banco Postgres para testes locais, configurado de maneira análoga à instância RDS (AWS) em produção.  
+
+- **requirements.txt**  
+  Lista de dependências Python (FastAPI, Web3.py, scikit-learn, entre demais utilitários do aplicativo).  
+
+- **docker-compose.yml**  
+  Orquestração de containers para desenvolvimento local (ex.: Postgres + backend).  
+
+- **.env**  
+  Variáveis de ambiente sensíveis (senhas, tokens, chaves de API).  
+
+- **README.md**  
+  Documentação inicial do projeto, instruções de setup e guia rápido.  
+
+
 - Visão geral da arquitetura (monolito, microserviços, serverless, etc.)
 - Componentes principais
 - Fluxo de dados entre front-end, backend e blockchain

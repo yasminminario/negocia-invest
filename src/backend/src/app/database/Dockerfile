@@ -1,0 +1,2 @@
+# Este arquivo é o Dockerfile responsável pela configuração do banco de dados.
+# Ele será utilizado para criar uma imagem Docker que, ao ser executada, irá gerar um container contendo o banco de dados configurado conforme as instruções abaixo. Também terá as mesmas configurações para o banco de dados de produção na RDS (AWS).

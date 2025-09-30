@@ -1,0 +1,2 @@
+# O arquivo requirements.txt lista todas as dependências necessárias para o aplicativo.
+# Ele permite instalar facilmente os pacotes requeridos usando o comando 'pip install -r requirements.txt'.
