@@ -1,0 +1,5 @@
+"""
+Este arquivo é responsável pelas lógicas de salvamento dos dados de negociação de empréstimos, incluindo a criação, atualização e consulta de negociações no banco de dados.
+
+Leia mais sobre as negociações na seção XX do projeto (README.md).
+"""
