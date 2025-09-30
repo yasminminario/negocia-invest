@@ -212,6 +212,10 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 * O score **não considera ações como investidor** (emprestador); só como **tomador**.
 * A análise interna adota diretamente um **modelo supervisionado**, que utiliza rótulos de inadimplência e quitação para treinar a previsão de risco. O modelo estima a **probabilidade de *default*** de cada tomador com base em seu histórico operacional e dados da plataforma, convertendo esse resultado em um score contínuo de **0 a 1000**. Dessa forma, a solução já nasce alinhada às práticas do mercado de crédito e evolui em precisão conforme mais dados históricos são acumulados.
 
+Fluxo Geral:
+
+![Fluxo de Score](docs/assets/fluxo_score.png)
+
 
 #### 3) Fontes de Dados
 
@@ -529,6 +533,11 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
     - **Investidores**: listener recalcula recomendações sempre que um contrato novo é assinado ou quando novas solicitações entram no marketplace.
     - **Tomadores**: listener recalcula recomendações de solicitações semelhantes sempre que o próprio usuário cria/edita uma proposta ou quando há novas oportunidades no mercado.
 
+Fluxo Geral
+
+![Fluxo da Recomendação](docs/assets/fluxo_recomendacao.png)
+
+
 #### 3) Fontes de Dados
 ##### 3.1 Off-chain (Banco existente)
 - `usuarios` → perfil do investidor/tomador.
@@ -628,7 +637,7 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
 - **Fase 1 (MVP)**: lógica de regras simples (ranges e médias).
 - **Fase 2**: enriquecimento com dados setoriais (agro, serviços, etc.).
 - **Fase 3**: possível evolução para ML (learning-to-rank, collaborative filtering) caso base cresça e justifique complexidade.
-- 
+
 ---
 
 ## 12. Smart Contracts (On-chain)
