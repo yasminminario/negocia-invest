@@ -214,7 +214,9 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 
 Fluxo Geral:
 
-![Fluxo de Score](docs/assets/fluxo_score.png)
+<p align="center">
+  <img src="docs/assets/fluxo_score.png" alt="Fluxo de Score" width="75%">
+</p>
 
 
 #### 3) Fontes de Dados
