@@ -554,7 +554,7 @@ Fluxo Geral
   - Score <500 → acima de 20% a.m.
 - Esses dados não vêm de um sistema externo, mas são recalculados internamente em batch diário e usados como insumo para sugerir a `taxa_analisada`.
 
-### 4) Lógica de Recomendação
+#### 4) Lógica de Recomendação
 ##### 4.1 Recomendação de Empréstimos/Solicitações
 - **Objetivo**: sugerir oportunidades relevantes (para investir ou para solicitar) que se encaixam melhor no perfil do usuário.
 - **Passos**:
