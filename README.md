@@ -189,7 +189,7 @@ Serviços e regras de negócio que dão suporte às rotas.
 
 ---
 
-## 11. Escpecificação de Modelos
+## 11. Motores de Decisão
 
 ### 11.1 Motor de Score
 
