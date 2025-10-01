@@ -1027,11 +1027,102 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
 
 ---
 
-## Protótipo no Figma
-- Link para o protótipo
-- Screenshots de telas principais
-- Fluxos simulados
-- Observações de design e UX
+## 🎨 Introdução e Objetivo do Protótipo no Figma
+
+Este documento detalha o fluxo de navegação do **protótipo de alta fidelidade** do **Negoci.ai**, desenvolvido no **Figma**.
+
+Devido ao tempo limitado do hackathon, nossa estratégia foi focar na prototipação da **jornada principal** e do nosso maior diferencial competitivo: **o fluxo de negociação**.  
+- O fluxo do **Tomador** está mais completo.  
+- O fluxo do **Investidor** foi prototipado em momentos-chave para demonstrar consistência da interface e visão da interação entre perfis.  
+- Algumas telas estão marcadas como **[EM DESENVOLVIMENTO]** ou **[NÃO PROTOTIPADO]**.  
+
+---
+
+## 🎨 Legenda de Cores e Perfis
+
+Para reforçar o contexto da navegação, adotamos um sistema de cores consistente:  
+
+- 🔵 **Perfil Tomador** – Azul `#57d9ff` como cor de destaque e ação.  
+- 🟣 **Perfil Investidor** – Roxo `#9B59B6` como cor de destaque e ação.  
+
+---
+
+## 🔵 Fluxo 1: Jornada do Tomador (Carlos) – O Fluxo Principal
+
+Jornada mais detalhada do protótipo, desde o **cadastro até a negociação** de um empréstimo.
+
+### 1. Cadastro e Onboarding *(Cadastro 1-4 a 4-4)*
+- Criação de conta com e-mail e senha.  
+- Preenchimento de dados pessoais para análise de crédito.  
+- Verificação facial (KYC – *Know Your Customer*).  
+- Tela final de sucesso com direcionamento para login.  
+
+### 2. Login e Seleção de Perfil *(Entrar 1-2, Entrar 2-2)*
+- Após login, usuário escolhe entre **Tomador** ou **Investidor**.  
+- Cards explicativos orientam sobre cada perfil.  
+- Lembrete de como alternar entre perfis posteriormente.  
+
+### 3. Dashboard do Tomador *(Dashboard Tomador)*
+- **Anel de score** em destaque, com feedback visual do crédito.  
+- Cards de **Produtos ativos**: *Empréstimos* e *Negociações*.  
+- Pontos de entrada para:  
+  - **[EM DESENVOLVIMENTO]** Empréstimos Solicitados.  
+  - **[EM DESENVOLVIMENTO]** Negociações de Ofertas (Tomador).  
+
+### 4. O Core da Solução – A Negociação
+- **Passo 4a – Descoberta**: Dashboard → Detalhes da oferta.  
+  - Lista de empréstimos disponíveis.  
+  - Usuário visualiza condições propostas.  
+
+- **Passo 4b – Ação**: Detalhes da oferta.  
+  - Opções: *Aceitar oferta* ou *Iniciar negociação* (CTA principal).  
+
+- **Passo 4c – A Proposta** *(Negociação 1-2)*  
+  - Comparação entre oferta original e proposta do usuário.  
+  - Ajuste de taxa em *slider* com “Zona sugerida”.  
+  - Visualização em tempo real da economia estimada.  
+  - Justificativa escrita para humanizar a negociação.  
+
+- **Passo 4d – Sucesso** *(Negociação 2-2)*  
+  - Confirmação da proposta enviada.  
+  - Orientação para acompanhar via notificações.  
+
+---
+
+## 🟣 Fluxo 2: Jornada da Investidora (Sofia) – O Fluxo Complementar
+
+Prototipado para mostrar momentos críticos de interação, mantendo consistência com o fluxo do Tomador.
+
+### 1. Dashboard da Investidora *(Dashboard Investidor)*
+- Interface muda para **roxo**.  
+- Destaques: Rentabilidade, Risco da Carteira, Lucro.  
+- Cards de **Produtos ofertados ativos** levam para:  
+  - **[EM DESENVOLVIMENTO]** Empréstimos Concedidos.  
+  - **[EM DESENVOLVIMENTO]** Negociações de Ofertas (Investidor).  
+
+### 2. A Análise e a Contraproposta – O Core do Investidor
+- **Passo 2a – Análise (Detalhes da negociação)**  
+  - Visualização da proposta original + contraproposta do tomador.  
+  - Diferença de valores + justificativa escrita.  
+  - Perfil detalhado do tomador (Pontuação, tempo de conta etc.).  
+
+- **Passo 2b – Ação (Contraproposta)**  
+  - Caso não aceite a proposta do tomador.  
+  - Tela espelho da negociação do Tomador.  
+  - Foco no **Lucro estimado** para a investidora.  
+
+### 3. Telas Análogas
+- Fluxo de criação de uma oferta *(Ofertar empréstimo 1-4 etc.)*.  
+- Prototipado para mostrar consistência visual.  
+- Fluxo completo seria análogo ao de *Solicitar Empréstimo* do Tomador.  
+
+---
+
+## 📌 Observações Gerais sobre o Protótipo
+- O protótipo cobre o **“caminho feliz”** e a jornada principal.  
+- Telas adicionais não desenvolvidas: recuperação de senha, edição de perfil, notificações e configurações.  
+- O trabalho representa a **espinha dorsal funcional** e a visão de UX do **Negoci.ai**.  
+
 
 ---
 
