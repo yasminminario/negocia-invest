@@ -189,7 +189,7 @@ Serviços e regras de negócio que dão suporte às rotas.
 
 ---
 
-## 11. Escpecificação de Modelos
+## 11. Motores de Decisão
 
 ### 11.1 Motor de Score
 
@@ -792,16 +792,83 @@ Fluxo Geral
 - Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
 
 
-## 22. Roadmap / Próximos Passos
+## 22. Modelo de Negócio
+
+### Custos
+
+#### Motor de Score (embutido no monólito)
+
+| Item | Descrição | Frequência | Estimativa (R$/mês) |
+|------|-----------|------------|----------------------|
+| **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
+| **Integração Serasa** | Consulta de score externo com cache 24h | Variável (depende nº de usuários) | 2.000 |
+| **Equipe Dev/Data** | Desenvolvimento inicial (2 devs backend + 1 data scientist por 3 meses) | Investimento único | 90.000 (único) |
+| **Manutenção Modelo** | Re-treino mensal (data scientist) + monitoramento | Recorrente | 8.000 |
+| **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
+
+**Total Operacional Mensal (score)**: ~11.500  
+**Investimento Inicial (score)**: ~90.000  
+
+
+#### Motor de Recomendação (embutido no monólito)
+
+| Item | Descrição | Frequência | Estimativa (R$/mês) |
+|------|-----------|------------|----------------------|
+| **Infraestrutura** | Uso do mesmo container monolítico + Redis | Contínuo | incluso na infra (~1.800) |
+| **Desenvolvimento** | 2 devs backend por 2 meses (lógica de regras e API) | Investimento único | 60.000 (único) |
+| **Manutenção** | Ajuste das regras de recomendação, melhorias de UX | Recorrente | 2.500 |
+| **Batch diário** | Cálculo das faixas de mercado e estatísticas | Recorrente | incluso na infra |
+| **Analytics/Auditoria** | Armazenamento de taxas sugeridas para análise | Recorrente | 500 |
+
+**Total Operacional Mensal (recomendação)**: ~2.500  
+**Investimento Inicial (recomendação)**: ~60.000  
+
+
+#### Backend Consolidado (Infraestrutura)
+
+| Item | Descrição | Frequência | Estimativa (R$/mês) |
+|------|-----------|------------|----------------------|
+| **Container Monolítico** | Execução do backend completo (incluindo os motores) | Contínuo | 1.800 |
+| **Banco de Dados (RDS)** | Postgres relacional | Contínuo | incluso no valor acima |
+| **Redis (ElastiCache)** | Fila/eventos | Contínuo | incluso no valor acima |
+
+**Total Infra Consolidada**: ~1.800/mês   
+
+
+#### Considerações Importantes
+
+- Arquitetura baseada em **monólito containerizado na AWS** → simplifica custos de infra e orquestração.  
+- Infraestrutura compartilhada (container, banco, Redis) → nada de microsserviços isolados neste estágio.  
+- Estimativas baseadas em **MVP com 5k–10k usuários ativos/mês**.  
+- **Score**: recalculado 1x/dia por usuário ativo (batch).  
+- **Recomendação**: usado on-demand ao abrir/criar propostas.  
+- **Consultas Serasa**: assumem cache de 24h, custo médio R$ 1–2 por requisição.  
+- Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
+- Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
+
+### Fontes de Receita Pensadas
+
+#### 1) Taxa sobre cada empréstimo
+- **Descrição**: cobrança de uma taxa de intermediação em cada contrato fechado.  
+- **Modelo possível**: percentual sobre o valor do empréstimo (ex.: 1%–3%).  
+- **Observação**: precisa de validação jurídica para garantir conformidade com o Banco Central (SEP – Sociedade de Empréstimo entre Pessoas).
+
+#### 2) Cobrança por inadimplência
+- **Descrição**: taxa administrativa aplicada em casos de atraso, para cobrir custos de cobrança e eventual registro em bureaus de crédito (ex.: Serasa).  
+- **Objetivo**: compensar o risco operacional e desestimular o atraso.
+
+### 3) Parcerias com empresas/serviços
+- **Descrição**: acordos com terceiros para geração de receita indireta, como:  
+  - Seguradoras (proteção contra inadimplência).  
+  - Bureaus de crédito (consultas adicionais).  
+  - Instituições financeiras (wallets digitais, custódia).  
+- **Objetivo**: diversificar receitas sem onerar diretamente a operação principal.
+
+---
+
+## 23. Roadmap / Próximos Passos
 - Fases de implementação
 - Funcionalidades futuras
 - Escalabilidade planejada
 - Evolução esperada da solução
 
----
-
-## 23. Anexos
-- Referências técnicas
-- Links de artigos e papers
-- Documentos legais
-- Guias de APIs externas
