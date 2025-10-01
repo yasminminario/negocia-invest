@@ -1,34 +1,68 @@
 # 📄 Documentação do Projeto: NegociaInvest
 
----
+## 1. Introdução
+A QI Tech é referência no mercado de infraestrutura para soluções financeiras digitais, com foco em criar tecnologias seguras, escaláveis e inovadoras. Dentro desse ecossistema, o **Inovacamp QI Tech 2025** propõe o desenvolvimento de soluções criativas no setor financeiro, aproximando participantes da realidade prática de produtos digitais e dos desafios regulatórios.
 
-## 1. Introdução/Contexto
-- Descrição breve do cenário atual, da QI
-- Panorama do mercado --> falar do PEER to PEER
-- Justificativa para o desenvolvimento da solução
+O mercado de **empréstimos peer-to-peer (P2P)** tem ganhado força globalmente ao oferecer crédito de forma direta entre pessoas, sem intermediários tradicionais como bancos. Essa modalidade promete mais agilidade, taxas potencialmente melhores e inclusão financeira de públicos que ficam à margem do sistema bancário. No entanto, ainda enfrenta problemas de confiança, rigidez nas regras e dificuldade de avaliar riscos de crédito com transparência.
+
+É nesse contexto que surge o **NegociaInvest**, uma plataforma de crédito P2P que busca resolver as falhas atuais do setor e criar um ambiente mais justo, flexível e confiável para tomadores e investidores.
 
 ---
 
 ## 2. Problema
-- Problema principal identificado
-- Impactos do problema (econômicos, sociais, operacionais)
-- Exemplos práticos de dor do usuário
-- Lacunas em soluções existentes
+O acesso a crédito no modelo P2P tradicional — e em muitos protocolos descentralizados — ainda enfrenta barreiras significativas:
+
+1. **Rigidez dos protocolos atuais (over-collateralized)**  
+   A exigência de colaterais maiores que o valor do empréstimo restringe o acesso apenas a quem já tem liquidez, excluindo grande parte dos potenciais usuários.
+
+2. **Ausência de diálogo entre as partes**  
+   Plataformas automatizadas fixam taxas e prazos de forma imutável, sem espaço para negociação ou contraproposta. Isso reduz flexibilidade e ignora o perfil individual do tomador ou o apetite de risco do investidor.
+
+3. **Assimetria de informação e fragilidade na análise de crédito**  
+   Investidores têm dificuldade em avaliar o risco de emprestar devido à falta de dados ou critérios limitados. Sem métricas confiáveis, a insegurança reduz o incentivo a participar.
+
+4. **Execução frágil de contratos**  
+   Sem garantias automáticas de cumprimento das condições acordadas, negociações podem perder credibilidade e se tornar pouco confiáveis.
+
+**Impactos:**
+- Exclusão de usuários com baixo acesso a colateral.
+- Baixa adesão de investidores por medo de inadimplência.
+- Experiência de uso limitada e desconfiança no sistema.
+- Perda de eficiência em relação ao potencial do crédito P2P.
 
 ---
 
 ## 3. Solução Proposta
-- Visão geral da solução
-- Como resolve o problema identificado
-- Diferenciais em relação a soluções existentes
-- Principais benefícios para os usuários e stakeholders
+O **NegociaInvest** é uma plataforma P2P de crédito que conecta tomadores e investidores em um ambiente seguro, transparente e com espaço para negociação direta. A solução se apoia em três pilares principais:
+
+- **Negociação flexível**: tomadores e investidores podem fazer contrapropostas em taxa e prazo, recriando a dinâmica de negociação do mundo real, mas com garantias digitais.  
+- **Análise de crédito transparente**: cada usuário recebe um score de crédito consolidado a partir de fontes externas (ex.: Serasa) e histórico interno da plataforma, reduzindo assimetria de informação e apoiando decisões mais seguras.  
+- **Execução confiável**: contratos são formalizados digitalmente, garantindo rastreabilidade, clareza e automação de etapas críticas.  
+
+**Diferenciais em relação a soluções existentes**:
+- Espaço real de negociação, e não apenas “take it or leave it”.
+- Score híbrido (interno + externo), adaptado ao perfil e histórico do usuário.
+- Transparência e rastreabilidade em todas as etapas, fortalecendo a confiança.
+
+**Principais benefícios:**
+- **Tomadores**: acesso a crédito justo e flexível, mesmo sem colateral elevado.
+- **Investidores**: maior clareza sobre risco, suporte na diversificação e proteção contra inadimplência.
+- **Mercado**: inclusão financeira, mais eficiência e fortalecimento do modelo P2P.
 
 ---
 
 ## 4. Objetivos do Projeto
-- Objetivo geral
-- Objetivos específicos
-- Metas de curto, médio e longo prazo
+
+### Objetivo Geral
+Desenvolver uma plataforma de crédito P2P que reduza barreiras de acesso, aumente a confiança entre as partes e ofereça um sistema de negociação transparente, flexível e seguro.
+
+### Objetivos Específicos
+- Criar um **sistema de cadastro e validação antifraude** para onboarding confiável.
+- Implementar um **motor de score híbrido (interno + externo)** para avaliação de risco.
+- Oferecer **funcionalidades de solicitação e oferta de crédito** com espaço para contraproposta.
+- Desenvolver dashboards personalizados para **monitorar carteira, risco e histórico**.
+- Garantir **execução automática e rastreável** dos contratos.
+ 
 
 ---
 
