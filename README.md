@@ -1,11 +1,17 @@
-# 📄 Documentação do Projeto: NegociaInvest
+# 📄 Proposta de projeto: negocia.ai
+## G35 | João Victor de Souza Campos | Nataly de Souza Cunha | Yasmin Ingrid Silva Minário
 
 ## 1. Introdução
+
+<p align="center">
+  <img src="./img/bannerQI.png" alt="negocia.ai - capa do projeto" width="100%">
+</p>
+
 A QI Tech é referência no mercado de infraestrutura para soluções financeiras digitais, com foco em criar tecnologias seguras, escaláveis e inovadoras. Dentro desse ecossistema, o **Inovacamp QI Tech 2025** propõe o desenvolvimento de soluções criativas no setor financeiro, aproximando participantes da realidade prática de produtos digitais e dos desafios regulatórios.
 
 O mercado de **empréstimos peer-to-peer (P2P)** tem ganhado força globalmente ao oferecer crédito de forma direta entre pessoas, sem intermediários tradicionais como bancos. Essa modalidade promete mais agilidade, taxas potencialmente melhores e inclusão financeira de públicos que ficam à margem do sistema bancário. No entanto, ainda enfrenta problemas de confiança, rigidez nas regras e dificuldade de avaliar riscos de crédito com transparência.
 
-É nesse contexto que surge o **NegociaInvest**, uma plataforma de crédito P2P que busca resolver as falhas atuais do setor e criar um ambiente mais justo, flexível e confiável para tomadores e investidores.
+É nesse contexto que surge o **negocia.ai**, um aplicativo de crédito P2P que busca resolver as falhas atuais do setor e criar um ambiente mais justo, flexível e confiável para tomadores e investidores.
 
 ---
 
@@ -31,9 +37,14 @@ O acesso a crédito no modelo P2P tradicional — e em muitos protocolos descent
 - Perda de eficiência em relação ao potencial do crédito P2P.
 
 ---
+<br>
+
+<p align="center">
+  <img src="./img/bannerSolucao.png" alt="negocia.ai - capa do projeto" width="100%">
+</p>
 
 ## 3. Solução Proposta
-O **NegociaInvest** é uma plataforma P2P de crédito que conecta tomadores e investidores em um ambiente seguro, transparente e com espaço para negociação direta. A solução se apoia em três pilares principais:
+O **negocia.ai** é uma plataforma P2P de crédito que conecta tomadores e investidores em um ambiente seguro, transparente e com espaço para negociação direta. A solução se apoia em três pilares principais:
 
 - **Negociação flexível**: tomadores e investidores podem fazer contrapropostas em taxa e prazo, recriando a dinâmica de negociação do mundo real, mas com garantias digitais.  
 - **Análise de crédito transparente**: cada usuário recebe um score de crédito consolidado a partir de fontes externas (ex.: Serasa) e histórico interno da plataforma, reduzindo assimetria de informação e apoiando decisões mais seguras.  
@@ -67,44 +78,63 @@ Desenvolver uma plataforma de crédito P2P que reduza barreiras de acesso, aumen
 ---
 
 ## 5. Personas
-### 5.1 Persona 1
-- Nome fictício
-- Idade
-- Profissão
-- Necessidades/dor
-- Como a solução atende
 
-### 5.2 Persona 2
-- Nome fictício
-- Idade
-- Profissão
-- Necessidades/dor
-- Como a solução atende
+### 🧑 Persona 1: O Tomador Planejado (Carlos)
 
-*(Adicionar quantas forem necessárias)*
+**Nome:**	Carlos, 30 anos <br>
+**Profissão:**	Profissional de TI <br>
+**Score:**	Excelente (790)
+
+### Cenário:
+Carlos é um profissional dedicado e financeiramente responsável. Ele sempre pagou suas contas em dia e construiu um ótimo score de crédito ao longo dos anos. Ele quer fazer um curso de especialização em Inteligência Artificial que custa R$10.000, um investimento que pode alavancar seu salário em até 30% em um ano, mas ele não quer descapitalizar sua reserva de emergência.
+
+### Objetivos:
+
+- Conseguir um empréstimo de R$10.000 com o mínimo de burocracia.
+
+- Pagar uma taxa de juros justa, que reflita seu status de excelente pagador.
+
+- Sentir que seu bom comportamento financeiro é reconhecido e recompensado.
+
+### Frustrações (A Jornada que o trouxe até aqui):
+
+- **A Frustração com os Grandes Bancos:** Carlos primeiro foi ao seu banco tradicional. Por ser cliente há anos, achou que teria uma boa oferta. O banco lhe ofereceu um crédito pré-aprovado, mas com uma taxa de juros padrão, alta, a mesma que ofereceriam para alguém com score muito inferior. Ele se sentiu apenas mais um número em uma planilha, e seu bom histórico não valeu nada.
+
+- **A Frustração com as Fintechs Tradicionais:** Em seguida, ele tentou uma fintech de crédito conhecida. O processo foi rápido e digital, mas o algoritmo, apesar de reconhecer seu bom score, só liberou um limite de R$7.500 – insuficiente para seu curso. Não havia canal para explicar seu objetivo ou para solicitar uma reavaliação. A decisão foi final, fria e sem espaço para diálogo.
+
+- **A Dor Principal do Carlos:** Ele percebe uma grande injustiça no mercado. *"De que adianta eu ser um ótimo pagador e ter um score excelente se, no final, sou tratado com as mesmas taxas abusivas ou com limites que não atendem minha necessidade? Eu não quero um favor, quero uma condição justa pelo meu bom perfil."*
+
+### 👩 Persona 2: A Investidora Estratégica (Sofia)
+**Nome:**	Sofia, 45 anos <br>
+**Profissão:**	Gerente de Projetos <br>
+**Perfil de Investidora:**	Moderado
+
+### Cenário:
+Sofia tem um bom capital guardado e busca diversificar seus investimentos. Ela já investe em opções de renda fixa (CDB, Tesouro), mas está frustrada com a baixa rentabilidade. Ela também tem ações, mas não gosta da volatilidade e da falta de controle.
+
+### Objetivos:
+
+- Obter uma rentabilidade superior à da renda fixa tradicional.
+
+- Investir em ativos com um risco controlado e previsível.
+
+- Ter transparência e controle sobre onde seu dinheiro está alocado.
+
+### Frustrações (O que a faz buscar alternativas):
+
+- **Renda Fixa:** Retornos muito baixos, mal acompanham a inflação.
+
+- **Bolsa de Valores:** Muita volatilidade e requer um acompanhamento constante que ela não tem tempo para fazer.
+
+- **Outras Plataformas P2P:** Ela já explorou outras plataformas P2P, mas o modelo era uma "caixa-preta". Ela colocava o dinheiro em um "fundo" de risco moderado, mas não sabia exatamente para quem estava emprestando. Ela não tinha poder de escolha ou negociação.
+
+- **A Oportunidade que Sofia Vê:** *"Eu quero investir em pessoas, não apenas em siglas. Se uma plataforma pudesse me apresentar uma carteira de tomadores já pré-selecionados, com os melhores scores do Brasil, e me desse a chance de negociar um retorno justo diretamente com eles, eu teria o melhor dos dois mundos: risco baixo e rentabilidade atrativa."*
 
 ---
-
-## 6. Jornada do Usuário
-- Fluxo passo a passo de como o usuário interage com a solução
-- Cenários de uso (investidor, tomador, administrador, etc.)
-- Pain points atuais e como são resolvidos
-
----
-
-## 7. Estrutura de Banco de Dados
-- Diagrama de Entidade-Relacionamento (DER)
-- Principais tabelas e relacionamentos
-- Campos críticos e justificativa
-- Considerações de escalabilidade e segurança
-
----
-
-## 8. Arquitetura do Sistema
-
 
 # Estrutura de Pastas do negocia.ai
 
+```bash
 src/
 └── backend/
     └── src/
@@ -138,6 +168,7 @@ src/
     (adicionar)
 .env
 README.md
+```
 
 ## 📂 src/backend/src
 
@@ -207,25 +238,252 @@ Serviços e regras de negócio que dão suporte às rotas.
 
 ---
 
-## 9. Estrutura de Front-end
-- Frameworks e bibliotecas utilizadas
-- Estrutura de diretórios e componentes
-- Padrões de UI/UX aplicados
-- Responsividade e acessibilidade
+## 🛠️ **Requisitos Funcionais**
+
+| ID    | Descrição                                                                                                                                                                                                                                                | Prioridade |
+|-------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| RF001 | **Cadastro e Onboarding de Usuários**<br>O sistema deve permitir que novos usuários (tomadores e investidores) se cadastrem fornecendo dados pessoais e documentos.                                                                                          | Alta       |
+| RF002 | **Validação de Cadastro e Antifraude**<br>O sistema deve integrar-se com as APIs de Risk Solutions da QI Tech para validação de documentos, classificação de perfil e verificação antifraude durante o onboarding do usuário.                                 | Alta       |
+| RF003 | **Cálculo/Aquisição de Score de Crédito**<br>O sistema deve calcular um score de crédito interno baseado em modelos de automação com inteligência artificial próprios e, em caso de dados insuficientes de usuários novos, consultar a API do Serasa.         | Alta       |
+| RF004 | **Gerenciamento de Perfil de Risco**<br>O sistema deve manter um perfil de risco atualizado para cada usuário, baseado no score, histórico de empréstimos, dados de smart contracts e Open Finance (mockado inicialmente).                                   | Média      |
+| RF005 | **Solicitação de Empréstimo**<br>O tomador deve poder solicitar um empréstimo informando o valor desejado, prazo e finalidade.                                                                                                                               | Alta       |
+| RF006 | **Dashboard de Propostas de Empréstimo (Investidor)**<br>O sistema deve exibir para o investidor uma lista de empréstimos solicitados, com as taxas e juros sugeridos pelo tomador, juntamente com recomendações baseadas no perfil de risco do tomador.      | Alta       |
+| RF007 | **Negociação de Taxas e Juros**<br>O investidor deve poder fazer uma proposta de taxa e juros diferente da sugerida pelo tomador. O tomador deve poder aceitar, recusar ou fazer uma contraproposta.                                                         | Alta       |
+| RF008 | **Histórico de Negociações**<br>O sistema deve armazenar o histórico completo de todas as propostas e contrapropostas realizadas para cada solicitação de empréstimo.                                                                                        | Média      |
+| RF009 | **Histórico de Empréstimos**<br>O sistema deve manter um histórico completo de todos os empréstimos de um usuário, incluindo valor, taxas acordadas, tempo de vigência, status e dados do smart contract.                                                    | Alta       |
+| RF010 | **Dashboard de Performance (Investidor)**<br>O sistema deve fornecer ao investidor um dashboard com métricas de performance de sua carteira (ex: retorno total, taxa de inadimplência, diversificação).                                                     | Alta       |
+| RF011 | **Recomendações de Diversificação**<br>O sistema deve recomendar ao investidor oportunidades de diversificação de sua carteira, tanto em tipos de empréstimo quanto em perfis de tomadores.                                                                  | Baixa      |
+| RF012 | **Integração com Open Finance (Futuro)**<br>O sistema deve ser preparado para uma futura integração com o Open Finance para enriquecer a análise de perfil com dados transacionais reais.                                                                    | Baixa      |
+| RF013 | **Navegação entre Funcionalidades**<br>O sistema deve permitir que o usuário navegue entre funcionalidades como investidor ou tomador de empréstimos.                                                                                                        | Alta       |
+| RF014 | **Cálculo de Margens de Taxas/Juros por Risco**<br>O sistema deve ser capaz de realizar cálculos de margens das taxas/juros por risco comumente aceitas nas negociações da plataforma, auxiliando tomadores e investidores no sucesso das negociações.        | Alta       |
 
 ---
 
-## 10. Estrutura de Back-end
-- Linguagem e framework
-- Organização do código
-- Padrões de segurança (ex.: autenticação, criptografia, logs)
-- Estratégia de integração com blockchain e APIs externas
+## ✨ **Requisitos Não Funcionais**
+
+| ID     | Categoria    | Descrição                                                                                                                                                                                                                                         |
+|--------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| RNF001 | Segurança    | O sistema deve seguir as melhores práticas de segurança (OWASP), com todos os dados sensíveis criptografados em trânsito e em repouso.                                                                                                            |
+| RNF002 | Desempenho   | As páginas principais (login, dashboard) devem carregar em menos de 5 segundos em uma conexão de 3G. Para dados de menor volatilidade, as APIs devem responder em até 2 segundos para 95% das requisições, utilizando armazenamento local para otimização das entregas. |
+| RNF004 | Usabilidade  | A interface deve ser intuitiva, seguindo princípios de UX/UI, e responsiva, funcionando adequadamente em dispositivos desktop e móveis.                                                                                                            |
+| RNF005 | Confiabilidade | As transações financeiras e a execução dos smart contracts devem ser atômicas (não podem falhar parcialmente) e garantir a consistência dos dados.                                                                                              |
+| RNF006 | Escalabilidade | A arquitetura do sistema deve incluir sistema de filas para ser capaz de organizar as requisições e escalar horizontalmente, suportando um aumento de 10x no número de usuários sem degradação crítica do desempenho.                           |
+| RNF007 | Integração   | As integrações com APIs externas devem ser resilientes, com mecanismos de retry e fallback para lidar com indisponibilidades temporárias.                                                                                                         |
+| RNF008 | Conformidade | O sistema deve estar em conformidade com a LGPD (Lei Geral de Proteção de Dados), garantindo o tratamento adequado dos dados pessoais dos usuários.                                                         |
+
+### Requisitos como User Stories
+
+Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, facilitando o entendimento das necessidades reais do público alvo da nossa solução.
+
+### User Stories — Requisitos Funcionais
+
+#### 1. Cadastro e onboarding de usuários
+
+- **Como usuário**, quero me cadastrar informando meus dados pessoais e documentos para que eu possa acessar a plataforma.
+- **Como administrador**, quero que o sistema valide os dados do cadastro para evitar usuários falsos.
 
 ---
 
-## 11. Motores de Decisão
+#### 2. Validação de cadastro e antifraude
 
-### 11.1 Motor de Score
+- **Como usuário**, quero que meus documentos sejam verificados automaticamente para que eu tenha mais segurança no processo de cadastro.
+- **Como administrador**, quero que o sistema integre com a QI Tech Risk Solutions para garantir que perfis fraudulentos sejam bloqueados.
+
+---
+
+#### 3. Cálculo e aquisição de score de crédito
+
+- **Como investidor**, quero consultar o score de crédito de um tomador para decidir se vou investir nele.
+- **Como tomador**, quero que o sistema busque meu score do Serasa quando não houver histórico interno, para que eu possa solicitar crédito.
+
+---
+
+#### 4. Gerenciamento de perfil de risco
+
+- **Como investidor**, quero acessar um perfil de risco consolidado de cada tomador para entender o risco antes de emprestar.
+- **Como administrador**, quero que o sistema atualize perfis de risco dinamicamente a partir de score, histórico de empréstimos e dados do Open Finance (quando disponível).
+
+---
+
+#### 5. Solicitação de empréstimo
+
+- **Como tomador**, quero solicitar um empréstimo informando valor, prazo, taxas e juros para obter recursos de forma rápida.
+
+---
+
+#### 6. Dashboard de propostas de empréstimo (investidor)
+
+- **Como investidor**, quero visualizar todos os pedidos de empréstimos ativos com informações de score e taxas sugeridas para escolher onde investir.
+- **Como investidor**, quero receber recomendações de empréstimos alinhados ao meu perfil de risco.
+
+---
+
+#### 7. Negociação de taxas e juros
+
+- **Como investidor**, quero fazer uma proposta de taxa diferente da sugerida para tentar obter melhores condições.
+- **Como tomador**, quero visualizar as contrapropostas de investidores e decidir se aceito, recuso ou faço outra contraproposta.
+
+---
+
+#### 8. Histórico de negociações
+
+- **Como usuário (investidor ou tomador)**, quero acessar o histórico de todas as propostas e contrapropostas de um empréstimo para acompanhar a negociação.
+
+---
+
+#### 9. Histórico de empréstimos
+
+- **Como usuário**, quero acessar meu histórico de empréstimos com informações sobre valores, prazos, taxas e status.
+
+---
+
+#### 10. Dashboard de performance (investidor)
+
+- **Como investidor**, quero visualizar métricas de performance da minha carteira (retorno total, taxa de inadimplência, diversificação) para acompanhar meus resultados.
+
+---
+
+#### 11. Recomendações de diversificação
+
+- **Como investidor**, quero receber sugestões de diversificação de carteira para reduzir riscos e equilibrar meu portfólio.
+
+---
+
+#### 12. Integração com Open Finance (futuro)
+
+- **Como administrador**, quero que o sistema esteja preparado para integrar dados do Open Finance no futuro para enriquecer os perfis de risco.
+
+---
+
+#### 13. Navegação entre funcionalidades
+
+- **Como usuário**, quero poder alternar entre a aba de tomador e a aba de investidor para usar a plataforma tanto para pegar quanto para emprestar dinheiro.
+- **Como sistema**, quero que o dashboard permita alternar entre as visões de “investidor” e “tomador” de forma fluida, garantindo consistência nos dados apresentados.
+
+---
+
+#### 14. Cálculo de sugestões de taxas/juros
+
+- **Como usuário tomador ou investidor**, quero poder visualizar recomendações de taxas/juros mais aceitos dentre os usuários da plataforma, para aumentar as minhas chances de sucesso de ofertas e contrapropostas.
+- **Como sistema**, nas visualizações de oferta, proposta ou contraproposta, quero que seja mostrado ao usuário frases de recomendações de taxas e juros, garantindo mecanismos de melhoria de negociações.
+
+---
+
+### User Stories — Requisitos Não Funcionais
+
+#### Segurança
+
+- **Como usuário**, quero que meus dados sejam criptografados em trânsito e em repouso para garantir privacidade.
+- **Como administrador**, quero que o sistema siga práticas OWASP para mitigar ataques.
+
+---
+
+#### Desempenho
+
+- **Como usuário**, quero que o login e o dashboard carreguem em até 5 segundos mesmo em redes lentas para não perder tempo.
+- **Como usuário**, quero que as respostas da API sejam rápidas para ter fluidez na navegação.
+
+---
+
+#### Usabilidade
+
+- **Como usuário**, quero que a interface seja intuitiva e responsiva para usar facilmente no celular e no computador.
+
+---
+
+#### Confiabilidade
+
+- **Como usuário**, quero que as transações financeiras sejam atômicas e consistentes para não perder dinheiro em caso de falhas.
+
+---
+
+#### Escalabilidade
+
+- **Como administrador**, quero que o sistema consiga suportar 10x mais usuários sem degradação de performance para acompanhar o crescimento.
+
+---
+
+#### Integração
+
+- **Como sistema**, quero ter mecanismos de retry e fallback em APIs externas para não prejudicar o usuário em caso de indisponibilidade.
+
+---
+
+#### Conformidade
+
+- **Como usuário**, quero que o sistema esteja em conformidade com a LGPD para que meus dados pessoais sejam tratados corretamente.
+
+
+---
+
+## 🏛️ Modelagem de dados e arquitetura
+
+### Diagrama de Componentes
+
+<div align="center">
+<sub>Figura X - Diagrama de componentes + Cloud</sub><br>
+<br>
+<img src="./img/componentes.png" alt='Diagrama de componentes + Cloud' width="80%">
+<br>
+<br>
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+</div>
+<br>
+
+A arquitetura do aplicativo mobile negocia.ai foi desenhada para modularizar as principais partes da solução em componentes independentes, facilitando manutenção, escalabilidade e integração contínua. Os três componentes centrais são: banco de dados relacional, backend de serviços e frontend mobile.
+
+### Banco de Dados
+
+<div align="center">
+<sub>Figura X - Modelagem lógica do banco de dados</sub><br>
+<br>
+<img src="./img/banco.png" alt='Modelagem lógica do banco de dados' width="80%">
+<br>
+<br>
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+</div>
+<br>
+
+O banco de dados relacional utiliza PostgreSQL, encapsulado em uma imagem Docker para padronização do ambiente de desenvolvimento e produção. Ele armazena informações em cinco tabelas principais:
+
+- **usuários**: dados cadastrais, validação e perfil.
+- **negociações**: registros de negociações entre tomadores e investidores.
+- **propostas**: termos de empréstimo, taxas, prazos, status e justificativas.
+- **scores de crédito**: resultados da análise de crédito, integrando machine learning e API Serasa.
+- **métricas do investidor**: dados de performance dos investimentos ofertados.
+
+Os relacionamentos seguem as seguintes cardinalidades:
+
+- Um usuário possui um score de crédito (1:1).
+- Um usuário pode participar de várias negociações; cada negociação envolve dois usuários (N:N), intermediada pela tabela de propostas.
+- Um usuário possui um registro único de métricas de investidor (1:1).
+
+O banco é executado localmente via Docker e, em produção, é provisionado em uma instância RDS (AWS), garantindo escalabilidade, segurança e alta disponibilidade.
+
+### Backend
+
+O backend é desenvolvido em Python, utilizando frameworks como FastAPI para APIs REST e integração com serviços externos (ex.: Serasa, Blockchain). Ele é containerizado e executado em AWS ECS Fargate, eliminando a necessidade de gerenciamento manual de servidores.
+
+Principais serviços implementados:
+
+- Gerenciamento de usuários (criação, validação, autenticação).
+- Fluxos de negociações e propostas de empréstimo.
+- Visualização de métricas de performance para investidores.
+- Cálculo de score de crédito, integrando machine learning e API Serasa.
+- Filtragem de ofertas e condições de empréstimo por perfil de risco.
+- Registro de contratos de empréstimo na Blockchain Polygon.
+
+A orquestração dos serviços é feita via containers, com deploy automatizado e escalável.
+
+### Frontend
+
+O frontend é desenvolvido em React Native, garantindo experiência nativa em dispositivos móveis (Android/iOS) e integração direta com as APIs do backend. A escolha do React Native se dá pela alta produtividade, comunidade ativa e facilidade de manutenção multiplataforma. Por ser um aplicativo mobile nativo, o deploy é realizado diretamente nas lojas de aplicativos, dispensando infraestrutura cloud dedicada para o frontend.
+
+---
+
+## 🧠 Motores de Decisão
+
+### **1. Motor de Score**
 
 #### 1) Objetivo
 
@@ -246,7 +504,7 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 * O score **não considera ações como investidor** (emprestador); só como **tomador**.
 * A análise interna adota diretamente um **modelo supervisionado**, que utiliza rótulos de inadimplência e quitação para treinar a previsão de risco. O modelo estima a **probabilidade de *default*** de cada tomador com base em seu histórico operacional e dados da plataforma, convertendo esse resultado em um score contínuo de **0 a 1000**. Dessa forma, a solução já nasce alinhada às práticas do mercado de crédito e evolui em precisão conforme mais dados históricos são acumulados.
 
-Fluxo Geral:
+### **Fluxo Geral:**
 
 <p align="center">
   <img src="docs/assets/fluxo_score.png" alt="Fluxo de Score" width="75%">
@@ -543,7 +801,9 @@ Toda vez que a aplicação fizer `UPDATE` em `scores_credito.analise`, publica o
 2.  **Fase 2:** Enriquecer features (sazonalidade, granularidade por parcela).
 3.  **Fase 3:** Ensemble supervisionado (Logistic Regression + modelos de árvore, como XGBoost/LightGBM).
 
-### 11.2 Motor de Recomendação
+---
+
+### 🚀 **2. Motor de Recomendação**
 
 #### 1) Objetivo
 Construir um mecanismo de recomendação que:
@@ -569,7 +829,7 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
     - **Investidores**: listener recalcula recomendações sempre que um contrato novo é assinado ou quando novas solicitações entram no marketplace.
     - **Tomadores**: listener recalcula recomendações de solicitações semelhantes sempre que o próprio usuário cria/edita uma proposta ou quando há novas oportunidades no mercado.
 
-Fluxo Geral
+### **Fluxo Geral**
 
 ![Fluxo da Recomendação](docs/assets/fluxo_recomendacao.png)
 
@@ -676,270 +936,7 @@ Fluxo Geral
 
 ---
 
-## 12. Smart Contracts (On-chain)
-- Estrutura dos contratos
-- Principais variáveis armazenadas on-chain
-- Eventos emitidos
-- Como se relacionam com os dados off-chain
-
----
-
-## 12. Funcionalidades Principais
-- Cadastro e onboarding
-- Validação antifraude
-- Solicitação de empréstimos
-- Negociação (propostas e contrapropostas)
-- Execução de smart contracts
-- Dashboard de performance
-- Recomendações de diversificação
-- Integração futura com Open Finance
-
----
-
-## 13. Requisitos Funcionais
-
-| ID    | Descrição                                                                                                                                                                                                                                                | Prioridade |
-|-------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
-| RF001 | **Cadastro e Onboarding de Usuários**<br>O sistema deve permitir que novos usuários (tomadores e investidores) se cadastrem fornecendo dados pessoais e documentos.                                                                                          | Alta       |
-| RF002 | **Validação de Cadastro e Antifraude**<br>O sistema deve integrar-se com as APIs de Risk Solutions da QI Tech para validação de documentos, classificação de perfil e verificação antifraude durante o onboarding do usuário.                                 | Alta       |
-| RF003 | **Cálculo/Aquisição de Score de Crédito**<br>O sistema deve calcular um score de crédito interno baseado em modelos de automação com inteligência artificial próprios e, em caso de dados insuficientes de usuários novos, consultar a API do Serasa.         | Alta       |
-| RF004 | **Gerenciamento de Perfil de Risco**<br>O sistema deve manter um perfil de risco atualizado para cada usuário, baseado no score, histórico de empréstimos, dados de smart contracts e Open Finance (mockado inicialmente).                                   | Média      |
-| RF005 | **Solicitação de Empréstimo**<br>O tomador deve poder solicitar um empréstimo informando o valor desejado, prazo e finalidade.                                                                                                                               | Alta       |
-| RF006 | **Dashboard de Propostas de Empréstimo (Investidor)**<br>O sistema deve exibir para o investidor uma lista de empréstimos solicitados, com as taxas e juros sugeridos pelo tomador, juntamente com recomendações baseadas no perfil de risco do tomador.      | Alta       |
-| RF007 | **Negociação de Taxas e Juros**<br>O investidor deve poder fazer uma proposta de taxa e juros diferente da sugerida pelo tomador. O tomador deve poder aceitar, recusar ou fazer uma contraproposta.                                                         | Alta       |
-| RF008 | **Histórico de Negociações**<br>O sistema deve armazenar o histórico completo de todas as propostas e contrapropostas realizadas para cada solicitação de empréstimo.                                                                                        | Média      |
-| RF009 | **Histórico de Empréstimos**<br>O sistema deve manter um histórico completo de todos os empréstimos de um usuário, incluindo valor, taxas acordadas, tempo de vigência, status e dados do smart contract.                                                    | Alta       |
-| RF010 | **Dashboard de Performance (Investidor)**<br>O sistema deve fornecer ao investidor um dashboard com métricas de performance de sua carteira (ex: retorno total, taxa de inadimplência, diversificação).                                                     | Alta       |
-| RF011 | **Recomendações de Diversificação**<br>O sistema deve recomendar ao investidor oportunidades de diversificação de sua carteira, tanto em tipos de empréstimo quanto em perfis de tomadores.                                                                  | Baixa      |
-| RF012 | **Integração com Open Finance (Futuro)**<br>O sistema deve ser preparado para uma futura integração com o Open Finance para enriquecer a análise de perfil com dados transacionais reais.                                                                    | Baixa      |
-| RF013 | **Navegação entre Funcionalidades**<br>O sistema deve permitir que o usuário navegue entre funcionalidades como investidor ou tomador de empréstimos.                                                                                                        | Alta       |
-| RF014 | **Cálculo de Margens de Taxas/Juros por Risco**<br>O sistema deve ser capaz de realizar cálculos de margens das taxas/juros por risco comumente aceitas nas negociações da plataforma, auxiliando tomadores e investidores no sucesso das negociações.        | Alta       |
-
----
-
-## 14. Requisitos Não Funcionais
-
-| ID     | Categoria    | Descrição                                                                                                                                                                                                                                         |
-|--------|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| RNF001 | Segurança    | O sistema deve seguir as melhores práticas de segurança (OWASP), com todos os dados sensíveis criptografados em trânsito e em repouso.                                                                                                            |
-| RNF002 | Desempenho   | As páginas principais (login, dashboard) devem carregar em menos de 5 segundos em uma conexão de 3G. Para dados de menor volatilidade, as APIs devem responder em até 2 segundos para 95% das requisições, utilizando armazenamento local para otimização das entregas. |
-| RNF004 | Usabilidade  | A interface deve ser intuitiva, seguindo princípios de UX/UI, e responsiva, funcionando adequadamente em dispositivos desktop e móveis.                                                                                                            |
-| RNF005 | Confiabilidade | As transações financeiras e a execução dos smart contracts devem ser atômicas (não podem falhar parcialmente) e garantir a consistência dos dados.                                                                                              |
-| RNF006 | Escalabilidade | A arquitetura do sistema deve incluir sistema de filas para ser capaz de organizar as requisições e escalar horizontalmente, suportando um aumento de 10x no número de usuários sem degradação crítica do desempenho.                           |
-| RNF007 | Integração   | As integrações com APIs externas devem ser resilientes, com mecanismos de retry e fallback para lidar com indisponibilidades temporárias.                                                                                                         |
-| RNF008 | Conformidade | O sistema deve estar em conformidade com a LGPD (Lei Geral de Proteção de Dados), garantindo o tratamento adequado dos dados pessoais dos usuários.                                                         |
-
-### 14.1 Requisitos como User Stories
-
-Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, facilitando o entendimento das necessidades reais do público alvo da nossa solução.
-
-### User Stories — Requisitos Funcionais
-
-#### 1. Cadastro e onboarding de usuários
-
-- **Como usuário**, quero me cadastrar informando meus dados pessoais e documentos para que eu possa acessar a plataforma.
-- **Como administrador**, quero que o sistema valide os dados do cadastro para evitar usuários falsos.
-
----
-
-#### 2. Validação de cadastro e antifraude
-
-- **Como usuário**, quero que meus documentos sejam verificados automaticamente para que eu tenha mais segurança no processo de cadastro.
-- **Como administrador**, quero que o sistema integre com a QI Tech Risk Solutions para garantir que perfis fraudulentos sejam bloqueados.
-
----
-
-#### 3. Cálculo e aquisição de score de crédito
-
-- **Como investidor**, quero consultar o score de crédito de um tomador para decidir se vou investir nele.
-- **Como tomador**, quero que o sistema busque meu score do Serasa quando não houver histórico interno, para que eu possa solicitar crédito.
-
----
-
-#### 4. Gerenciamento de perfil de risco
-
-- **Como investidor**, quero acessar um perfil de risco consolidado de cada tomador para entender o risco antes de emprestar.
-- **Como administrador**, quero que o sistema atualize perfis de risco dinamicamente a partir de score, histórico de empréstimos e dados do Open Finance (quando disponível).
-
----
-
-#### 5. Solicitação de empréstimo
-
-- **Como tomador**, quero solicitar um empréstimo informando valor, prazo, taxas e juros para obter recursos de forma rápida.
-
----
-
-#### 6. Dashboard de propostas de empréstimo (investidor)
-
-- **Como investidor**, quero visualizar todos os pedidos de empréstimos ativos com informações de score e taxas sugeridas para escolher onde investir.
-- **Como investidor**, quero receber recomendações de empréstimos alinhados ao meu perfil de risco.
-
----
-
-#### 7. Negociação de taxas e juros
-
-- **Como investidor**, quero fazer uma proposta de taxa diferente da sugerida para tentar obter melhores condições.
-- **Como tomador**, quero visualizar as contrapropostas de investidores e decidir se aceito, recuso ou faço outra contraproposta.
-
----
-
-#### 8. Histórico de negociações
-
-- **Como usuário (investidor ou tomador)**, quero acessar o histórico de todas as propostas e contrapropostas de um empréstimo para acompanhar a negociação.
-
----
-
-#### 9. Histórico de empréstimos
-
-- **Como usuário**, quero acessar meu histórico de empréstimos com informações sobre valores, prazos, taxas e status.
-
----
-
-#### 10. Dashboard de performance (investidor)
-
-- **Como investidor**, quero visualizar métricas de performance da minha carteira (retorno total, taxa de inadimplência, diversificação) para acompanhar meus resultados.
-
----
-
-#### 11. Recomendações de diversificação
-
-- **Como investidor**, quero receber sugestões de diversificação de carteira para reduzir riscos e equilibrar meu portfólio.
-
----
-
-#### 12. Integração com Open Finance (futuro)
-
-- **Como administrador**, quero que o sistema esteja preparado para integrar dados do Open Finance no futuro para enriquecer os perfis de risco.
-
----
-
-#### 13. Navegação entre funcionalidades
-
-- **Como usuário**, quero poder alternar entre a aba de tomador e a aba de investidor para usar a plataforma tanto para pegar quanto para emprestar dinheiro.
-- **Como sistema**, quero que o dashboard permita alternar entre as visões de “investidor” e “tomador” de forma fluida, garantindo consistência nos dados apresentados.
-
----
-
-#### 14. Cálculo de sugestões de taxas/juros
-
-- **Como usuário tomador ou investidor**, quero poder visualizar recomendações de taxas/juros mais aceitos dentre os usuários da plataforma, para aumentar as minhas chances de sucesso de ofertas e contrapropostas.
-- **Como sistema**, nas visualizações de oferta, proposta ou contraproposta, quero que seja mostrado ao usuário frases de recomendações de taxas e juros, garantindo mecanismos de melhoria de negociações.
-
----
-
-### User Stories — Requisitos Não Funcionais
-
-#### Segurança
-
-- **Como usuário**, quero que meus dados sejam criptografados em trânsito e em repouso para garantir privacidade.
-- **Como administrador**, quero que o sistema siga práticas OWASP para mitigar ataques.
-
----
-
-#### Desempenho
-
-- **Como usuário**, quero que o login e o dashboard carreguem em até 5 segundos mesmo em redes lentas para não perder tempo.
-- **Como usuário**, quero que as respostas da API sejam rápidas para ter fluidez na navegação.
-
----
-
-#### Usabilidade
-
-- **Como usuário**, quero que a interface seja intuitiva e responsiva para usar facilmente no celular e no computador.
-
----
-
-#### Confiabilidade
-
-- **Como usuário**, quero que as transações financeiras sejam atômicas e consistentes para não perder dinheiro em caso de falhas.
-
----
-
-#### Escalabilidade
-
-- **Como administrador**, quero que o sistema consiga suportar 10x mais usuários sem degradação de performance para acompanhar o crescimento.
-
----
-
-#### Integração
-
-- **Como sistema**, quero ter mecanismos de retry e fallback em APIs externas para não prejudicar o usuário em caso de indisponibilidade.
-
----
-
-#### Conformidade
-
-- **Como usuário**, quero que o sistema esteja em conformidade com a LGPD para que meus dados pessoais sejam tratados corretamente.
-
-
----
-
-## 15. Modelagem de dados e arquitetura
-
-### Diagrama de Componentes
-
-<div align="center">
-<sub>Figura X - Diagrama de componentes + Cloud</sub><br>
-<br>
-<img src="./img/componentes.png" alt='Diagrama de componentes + Cloud' width="80%">
-<br>
-<br>
-<sup>Fonte: Material produzido pelos autores (2025)</sup>
-</div>
-<br>
-
-A arquitetura do aplicativo mobile negocia.ai foi desenhada para modularizar as principais partes da solução em componentes independentes, facilitando manutenção, escalabilidade e integração contínua. Os três componentes centrais são: banco de dados relacional, backend de serviços e frontend mobile.
-
-### Banco de Dados
-
-<div align="center">
-<sub>Figura X - Modelagem lógica do banco de dados</sub><br>
-<br>
-<img src="./img/banco.png" alt='Modelagem lógica do banco de dados' width="80%">
-<br>
-<br>
-<sup>Fonte: Material produzido pelos autores (2025)</sup>
-</div>
-<br>
-
-O banco de dados relacional utiliza PostgreSQL, encapsulado em uma imagem Docker para padronização do ambiente de desenvolvimento e produção. Ele armazena informações em cinco tabelas principais:
-
-- **usuários**: dados cadastrais, validação e perfil.
-- **negociações**: registros de negociações entre tomadores e investidores.
-- **propostas**: termos de empréstimo, taxas, prazos, status e justificativas.
-- **scores de crédito**: resultados da análise de crédito, integrando machine learning e API Serasa.
-- **métricas do investidor**: dados de performance dos investimentos ofertados.
-
-Os relacionamentos seguem as seguintes cardinalidades:
-
-- Um usuário possui um score de crédito (1:1).
-- Um usuário pode participar de várias negociações; cada negociação envolve dois usuários (N:N), intermediada pela tabela de propostas.
-- Um usuário possui um registro único de métricas de investidor (1:1).
-
-O banco é executado localmente via Docker e, em produção, é provisionado em uma instância RDS (AWS), garantindo escalabilidade, segurança e alta disponibilidade.
-
-### Backend
-
-O backend é desenvolvido em Python, utilizando frameworks como FastAPI para APIs REST e integração com serviços externos (ex.: Serasa, Blockchain). Ele é containerizado e executado em AWS ECS Fargate, eliminando a necessidade de gerenciamento manual de servidores.
-
-Principais serviços implementados:
-
-- Gerenciamento de usuários (criação, validação, autenticação).
-- Fluxos de negociações e propostas de empréstimo.
-- Visualização de métricas de performance para investidores.
-- Cálculo de score de crédito, integrando machine learning e API Serasa.
-- Filtragem de ofertas e condições de empréstimo por perfil de risco.
-- Registro de contratos de empréstimo na Blockchain Polygon.
-
-A orquestração dos serviços é feita via containers, com deploy automatizado e escalável.
-
-### Frontend
-
-O frontend é desenvolvido em React Native, garantindo experiência nativa em dispositivos móveis (Android/iOS) e integração direta com as APIs do backend. A escolha do React Native se dá pela alta produtividade, comunidade ativa e facilidade de manutenção multiplataforma. Por ser um aplicativo mobile nativo, o deploy é realizado diretamente nas lojas de aplicativos, dispensando infraestrutura cloud dedicada para o frontend.
-
----
-
-## 15. Protótipo no Figma
+## Protótipo no Figma
 - Link para o protótipo
 - Screenshots de telas principais
 - Fluxos simulados
@@ -947,65 +944,7 @@ O frontend é desenvolvido em React Native, garantindo experiência nativa em di
 
 ---
 
-## 16. Fluxos de Integração
-### 16.1 Integração com [API Externa X]
-- Fluxo de dados
-- Autenticação e segurança
-- Tratamento de erros
-
-### 16.2 Integração com Blockchain
-- Eventos escutados
-- Chamadas de função
-- Estratégia de sincronização off-chain
-
----
-
-## 17. Considerações de Arquitetura
-- Segurança
-- Escalabilidade
-- Consistência
-- Auditoria
-- Conformidade regulatória (LGPD, Bacen, etc.)
-
----
-
-## 18. Imagens e Diagramas
-- Diagramas de fluxo
-- Arquitetura de alto nível
-- Mockups de telas
-- Exemplos de jornadas
-
----
-
-## 19. Código de Exemplo
-- Estrutura mínima de API
-- Exemplo de criação de contrato
-- Exemplo de integração com frontend
-
----
-
-## 20. Requisitos Técnicos
-- Infraestrutura (servidores, bancos, cache, monitoramento)
-- Integrações externas necessárias
-- Custos estimados
-- Licenciamento
-
----
-
-## 21. KPIs e Métricas de Sucesso
-### KPIs Técnicos
-- Disponibilidade
-- Latência
-- Throughput
-- Taxa de erro
-
-### KPIs de Negócio
-- Adoção de usuários
-- Volume de transações
-- Satisfação (NPS)
-- Retorno para investidores
-
-## 22. Modelo de Negócio/Planejamento Financeiro
+## 💵 Modelo de Negócio/Planejamento Financeiro
 
 ### Custos
 
@@ -1058,8 +997,86 @@ O frontend é desenvolvido em React Native, garantindo experiência nativa em di
 - Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
 - Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
 
+---
 
-## 22. Modelo de Negócio
+## 🔗 Uso da Blockchain Polygon e Smart Contracts
+
+### 1. Por que Blockchain (e por que Polygon)
+
+Imagine o cenário: Carlos (tomador) e Sofia (investidora) negociam um empréstimo dentro do app.  
+Tudo corre bem até surgiram algumas dúvidas: **"Será que os termos aceitos são exatamente esses? Será que essa transação realmente foi oficializada?"**  
+
+Tradicionalmente, seria preciso um contrato em papel, custas cartoriais ou confiança cega na plataforma. Contudo, aqui entra a vantagem de se utilizar blockchain: cada negociação aceita é registrada como um **carimbo digital imutável** na **Polygon**, uma rede pública, barata e confiável.  
+
+Isso garante que:
+- O **tomador** tem certeza de que as condições que aceitou são as que serão cumpridas.  
+- O **investidor** confia que sua decisão está registrada de forma transparente e incontestável.  
+- A **plataforma** se posiciona como um árbitro neutro, sem poder manipular acordos e controlando a custódia de valores conforme os termos combinados.  
+
+Este tipo de utilização garante mais mais confiança, menos burocracia, custo muito menor que cartórios ou sistemas tradicionais. A Blockchain de escolha, considerando o cenário da nossa solução, foi a Polygon, já que ela oferece algumas vantagens:
+
+- **Custos baixos**: transações custam centavos de dólar.  
+- **Popularidade**: ampla aceitação no ecossistema Web3.  
+- **Compatível com ERC-4337 (Account Abstraction)**: permite login com e-mail (Web3Auth), dispensando a gestão manual de chaves privadas pelo usuário.  
+
+### 2. Decisões de design da blockchain pro MVP
+
+- **On-chain**: registramos apenas um **hash da negociação** (evento-only), suficiente como prova pública.  
+- **Off-chain**: todos os dados sensíveis (nome, CPF, score, histórico, valores) ficam no banco relacional (armazenado em nuvem, através do banco RDS).  
+- **Wallet automática**: criada ou logada (caso existente) para o usuário via **Web3Auth** + **Account Abstraction**, simplificando a experiência, já que o usuário não passa pelo atrito de necessidade de gerenciamento de blockchain.  
+- **Backend**: garante integridade (gera o hash canônico) e audita o status da transação.  
+
+Em termos de negócio:  
+- Reduzimos custo (pagando apenas por eventos de registro de empréstimo na blockchain).  
+- Ganhamos a **força de uma evidência pública** em caso de disputas.  
+- Entregamos ao usuário uma sensação de **segurança comparável a um cartório**, mas em segundos e dentro do app.
+
+---
+
+## Fluxo resumido de uso
+
+1. **Onboarding**: Carlos cria conta com e-mail → app detecta que ele não tem uma smart wallet, portanto, gera uma automaticamente.  
+2. **Perfil**: o backend consulta score do Serasa e cruza com histórico de uso.  
+3. **Negociação**: Carlos e Sofia trocam propostas até chegarem a um acordo.  
+4. **Registro on-chain**: o backend gera um `termsHash`, e a smart wallet do usuário assina o envio.  
+5. **Confirmação**: a blockchain devolve um `tx_hash`, que é armazenado no banco e exibido para ambos.  
+
+Assim, Carlos sabe que o contrato dele está **protegido contra alterações**, e Sofia sabe que sua decisão está **publicamente comprovada**.
+
+## Análise de Custos Financeiros da Blockchain
+
+### Premissas do Cenário
+- **Usuários ativos**: 5.000  
+- **Empréstimos/mês por usuário**: 5 (cenário improvável, mas bom para stress test)  
+- **Total transações/mês** = 5.000 × 5 = **25.000**  
+- **Total transações/ano** = 25.000 × 12 = **300.000**  
+
+Cada transação corresponde ao **registro on-chain do hash da negociação** (evento-only).  
+O custeio do gas será patrocinado pela solução, via **Paymaster**, evitando preocupações de custos do usuário.  
+
+---
+
+### 1. Custos de Gas – Polygon PoS
+- **Gas médio por evento**: 50.000 gas  
+- **Gas price médio**: 30 gwei (0,00000003 MATIC)  
+- **Custo por transação** = 50.000 × 30 gwei = **0.0015 MATIC**  
+- **Conversão (MATIC ~ US$ 0.50)** → **US$ 0.00075 por transação**
+
+Totais:
+- **Mensal (25.000 tx)** ≈ **US$ 18,75**  
+- **Anual (300.000 tx)** ≈ **US$ 225,00**
+
+---
+
+## 2. Custos de Identidade – Web3Auth (AA + MPC)
+- Free tier até 1.000 MAUs.  
+- Estimativa: **US$ 0.05 / usuário ativo**.  
+
+Totais:
+- **Mensal (5.000 usuários)** ≈ **US$ 250**  
+- **Anual** ≈ **US$ 3.000**
+
+## Modelo de Negócio
 
 ### Custos
 
@@ -1113,7 +1130,7 @@ O frontend é desenvolvido em React Native, garantindo experiência nativa em di
 - Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
 - Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
 
-### Fontes de Receita Pensadas
+### 💵 **Fontes de Receita Pensadas**
 
 #### 1) Taxa sobre cada empréstimo
 - **Descrição**: cobrança de uma taxa de intermediação em cada contrato fechado.  
@@ -1130,12 +1147,4 @@ O frontend é desenvolvido em React Native, garantindo experiência nativa em di
   - Bureaus de crédito (consultas adicionais).  
   - Instituições financeiras (wallets digitais, custódia).  
 - **Objetivo**: diversificar receitas sem onerar diretamente a operação principal.
-
----
-
-## 23. Roadmap / Próximos Passos
-- Fases de implementação
-- Funcionalidades futuras
-- Escalabilidade planejada
-- Evolução esperada da solução
 
