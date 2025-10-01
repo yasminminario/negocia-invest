@@ -1,0 +1,1 @@
+// Tela onde o Tomador inicia ou continua uma negociação para uma oferta específica.

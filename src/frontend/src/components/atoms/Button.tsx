@@ -1,0 +1,1 @@
+// Define o componente de botão reutilizável, seguindo o Design System, com variações de estilo (primário, secundário).

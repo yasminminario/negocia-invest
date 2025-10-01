@@ -1,0 +1,1 @@
+// Centraliza todas as definições de tipos e interfaces TypeScript (User, Loan, Negotiation) da aplicação.
