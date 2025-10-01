@@ -512,7 +512,7 @@ Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, 
 ### Diagrama de Componentes
 
 <div align="center">
-<sub>Figura X - Diagrama de componentes + Cloud</sub><br>
+<sub>Figura 1 - Diagrama de componentes + Cloud</sub><br>
 <br>
 <img src="./img/componentes.png" alt='Diagrama de componentes + Cloud' width="80%">
 <br>
@@ -526,7 +526,7 @@ A arquitetura do aplicativo mobile negocia.ai foi desenhada para modularizar as 
 ### Banco de Dados
 
 <div align="center">
-<sub>Figura X - Modelagem lógica do banco de dados</sub><br>
+<sub>Figura 2 - Modelagem lógica do banco de dados</sub><br>
 <br>
 <img src="./img/banco.png" alt='Modelagem lógica do banco de dados' width="80%">
 <br>
@@ -598,6 +598,7 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 ### **Fluxo Geral:**
 
 <p align="center">
+<sub>Figura 3 - Fluxo do motor de decisão</sub><br>
   <img src="docs/assets/fluxo_score.png" alt="Fluxo de Score" width="75%">
 </p>
 
@@ -922,7 +923,10 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
 
 ### **Fluxo Geral**
 
-![Fluxo da Recomendação](docs/assets/fluxo_recomendacao.png)
+<p align="center">
+<sub>Figura 4 - Fluxo do motor de score</sub><br>
+  <img src="docs/assets/fluxo_recomendacao.png" alt="Fluxo da Recomendação" width="75%">
+</p>
 
 
 #### 3) Fontes de Dados
