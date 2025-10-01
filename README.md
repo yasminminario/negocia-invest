@@ -1241,5 +1241,65 @@ Totais:
 
 --- 
 
-## Planos futuros
+## 📈 Planos Futuros e Evolução da Plataforma
 
+Para garantir que o *Negoci.ai* continue na vanguarda da inovação em empréstimos P2P, planejamos três grandes evoluções para o futuro da plataforma, focadas em torná-la mais inclusiva, inteligente e precisa.
+
+---
+
+### 1️⃣ Acessibilidade e Inclusão Financeira – Integração com VLibras
+
+*📌 O Que é?*  
+A Suíte *VLibras* é um conjunto de ferramentas de código aberto do Governo Federal que traduz conteúdos digitais (textos, áudios e vídeos) para a *Língua Brasileira de Sinais (Libras)*, tornando plataformas digitais acessíveis para a comunidade surda.
+
+**⚙ Como Funciona no Negoci.ai?**  
+- Integração via widget flutuante na interface.  
+- Ao ativá-lo, um avatar 3D traduz em tempo real os textos da tela para Libras.  
+- Disponível em todas as jornadas, do cadastro às negociações.  
+- Termos técnicos como Taxa de Juros, Parcela Mensal e Descrição da Proposta seriam traduzidos.  
+
+*🎯 Impacto e Vantagens*  
+- *Para o Tomador* – Democratiza o acesso ao crédito para milhões de brasileiros surdos.  
+- *Para o Investidor* – Aumenta a confiança na plataforma, que demonstra responsabilidade social.  
+- *Para a Plataforma* – Expande a base de usuários e fortalece a marca como fintech inclusiva e inovadora.  
+
+---
+
+### 2️⃣ Inteligência de Nicho – Modelo de Recomendação por Área de Atuação
+
+*📌 O Que é?*  
+Um modelo de Machine Learning que vai além do score de crédito. Ele analisa a *área de atuação profissional do tomador* e os *interesses do investidor* para sugerir taxas ainda mais personalizadas.
+
+**⚙ Como Funciona no Negoci.ai?**  
+- Aprende com dados históricos quais áreas profissionais (ex.: TI, Saúde, Engenharia) têm menor inadimplência.  
+- Sugere taxas com base no nicho profissional.  
+
+*🧑‍💻 Exemplo para o Tomador (Carlos):*  
+"Profissionais de TI como você costumam conseguir taxas próximas a 1.2% a.m. Sua proposta é muito competitiva!"  
+
+*👩‍💼 Exemplo para a Investidora (Sofia):*  
+"Este tomador é da área de Engenharia. Investidores com seu perfil costumam ter sucesso com ofertas de 1.5% a.m. para este nicho."  
+
+*🎯 Impacto e Vantagens*  
+- *Hiper-personalização* – Taxas mais inteligentes e relevantes.  
+- *Comunidades de Investimento* – Criação de nichos de afinidade entre investidores e tomadores.  
+- *Precisão de Risco* – Adiciona uma camada setorial e comportamental ao risco.  
+
+---
+
+### 3️⃣ Análise de Risco 360° – Integração com Open Finance
+
+*📌 O Que é?*  
+Integração com o *Open Finance Brasil, permitindo que usuários compartilhem seus dados financeiros (com consentimento) com o **Negoci.ai*.
+
+**⚙ Como Funciona no Negoci.ai?**  
+- Durante cadastro ou solicitação, o usuário pode conectar suas contas bancárias.  
+- Dados são usados para:  
+  - *Aprimorar o Modelo de Crédito* – Treinar o model_analise_credito.py com dados reais.  
+  - *Validar Renda Automaticamente* – Eliminando preenchimento manual.  
+  - *Calcular Métricas Avançadas* – Analisar gastos, investimentos e dívidas.  
+
+*🎯 Impacto e Vantagens*  
+- *Redução de Fraudes* – Dados validados via Open Finance.  
+- *Confiança Máxima para o Investidor* – Perfis com histórico financeiro completo.  
+- *Melhores Taxas para o Tomador* – Mais poder de negociação com perfil validado.  
