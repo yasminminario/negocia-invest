@@ -165,7 +165,37 @@ src/
         ├── requirements.txt
         └── docker-compose.yml
     frontend/
-    (adicionar)
+    └──src/
+          ├── assets/
+          │   ├── fonts/
+          │   └── images/
+          ├── components/
+          │   ├── atoms/
+          │   ├── molecules/
+          │   └── organisms/
+          ├── contexts/
+          │   └── AuthContext.tsx
+          ├── hooks/
+          │   ├── useAuth.ts
+          │   └── useNegotiations.ts
+          ├── navigation/
+          │   ├── AppNavigator.tsx
+          │   └── AuthStack.tsx
+          ├── screens/
+          │   ├── Auth/
+          │   ├── Borrower/
+          │   └── Investor/
+          ├── services/
+          │   └── api.ts
+          ├── styles/
+          │   ├── colors.ts
+          │   ├── spacing.ts
+          │   └── typography.ts
+          ├── types/
+          │   └── index.ts
+          └── utils/
+              └── formatters.ts
+    bash
 .env
 README.md
 ```
@@ -236,7 +266,68 @@ Serviços e regras de negócio que dão suporte às rotas.
 - Fluxo de dados entre front-end, backend e blockchain
 - Integrações externas (ex.: APIs, parceiros)
 
----
+## 📂 src/frontend/src
+
+Código-fonte principal da aplicação mobile em React Native, organizado por funcionalidade e responsabilidade para garantir escalabilidade e manutenibilidade.
+
+### 📂 assets
+Recursos estáticos da aplicação.
+
+- **fonts/** – Arquivos de fontes customizadas (ex: `Inter-Regular.ttf`, `Inter-Bold.ttf`).  
+- **images/** – Imagens e ícones estáticos (ex: logo, ícone do trevo do estado vazio).  
+
+### 📂 components
+Componentes de UI reutilizáveis, organizados seguindo uma abordagem inspirada no Atomic Design.
+
+- **atoms/** – Os menores componentes possíveis, como `Button.tsx`, `Input.tsx`, `ScoreRing.tsx`. Eles são os blocos de construção da UI.  
+- **molecules/** – Combinações de átomos para formar componentes mais complexos, como `SearchBar.tsx` ou `LoanOfferCard.tsx`.  
+- **organisms/** – Seções maiores da interface compostas por moléculas e/ou átomos, como `Header.tsx` ou `LoanList.tsx`.  
+
+### 📂 contexts
+Gerenciamento de estado global com a Context API do React.  
+
+- **AuthContext.tsx** – Contexto para gerenciar o estado de autenticação do usuário (token, dados do usuário logado).  
+
+### 📂 hooks
+Hooks customizados que encapsulam lógicas de negócio e interações com serviços.
+
+- **useAuth.ts** – Hook para interagir com o `AuthContext`, provendo funções como `signIn`, `signOut`, `signUp`.  
+- **useNegotiations.ts** – Hook para buscar, criar e atualizar o estado das negociações de um usuário.  
+
+### 📂 navigation
+Configuração da navegação do app usando React Navigation.
+
+- **AuthStack.tsx** – Navegador do tipo *Stack* para o fluxo de autenticação (Login, Cadastro, Seleção de Perfil).  
+- **AppNavigator.tsx** – Navegador principal que controla a navegação pós-login, incluindo o *Tab Navigator* ou *Drawer*.  
+
+### 📂 screens
+Contém as telas completas da aplicação, organizadas por fluxo.  
+
+- **Auth/** – Telas de `LoginScreen.tsx`, `SignUpScreen.tsx`, `ProfileSelectionScreen.tsx`.  
+- **Borrower/** – Telas do fluxo do Tomador: `DashboardScreen.tsx`, `OfferDetailsScreen.tsx`, `NegotiationScreen.tsx`, etc.  
+- **Investor/** – Telas do fluxo do Investidor: `DashboardScreen.tsx`, `SolicitationDetailsScreen.tsx`, `CounterProposalScreen.tsx`, etc.  
+
+### 📂 services
+Camada responsável pela comunicação com APIs externas, principalmente o backend.  
+
+- **api.ts** – Configuração da instância do Axios (ou outra lib HTTP), com URL base e interceptors.  
+
+### 📂 styles (ou theme)
+Definição do Design System em código.  
+
+- **colors.ts** – Exporta a paleta de cores (ex: `primaryBlue`, `investorPurple`, `warningYellow`).  
+- **spacing.ts** – Exporta tokens de espaçamento (ex: `spacing.md = 16`).  
+- **typography.ts** – Exporta estilos de fonte (ex: `H1`, `H2`, `Body`).  
+
+### 📂 types
+Definições de tipos e interfaces TypeScript para garantir tipagem.  
+
+- **index.ts** – Exporta tipos como `User`, `LoanOffer`, `Negotiation`.  
+
+### 📂 utils
+Funções auxiliares e utilitárias puras.  
+
+- **formatters.ts** – Funções para formatar valores, como `formatCurrency(10000)` → `"R$10.000,00"`.  
 
 ## 🛠️ **Requisitos Funcionais**
 
