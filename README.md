@@ -1032,9 +1032,7 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
 Este documento detalha o fluxo de navegação do **protótipo de alta fidelidade** do **Negoci.ai**, desenvolvido no **Figma**.
 
 Devido ao tempo limitado do hackathon, nossa estratégia foi focar na prototipação da **jornada principal** e do nosso maior diferencial competitivo: **o fluxo de negociação**.  
-- O fluxo do **Tomador** está mais completo.  
-- O fluxo do **Investidor** foi prototipado em momentos-chave para demonstrar consistência da interface e visão da interação entre perfis.  
-- Algumas telas estão marcadas como **[EM DESENVOLVIMENTO]** ou **[NÃO PROTOTIPADO]**.  
+- O fluxo do **Investidor** e do **Tomador** foi prototipado em momentos-chave para demonstrar consistência da interface e visão da interação entre perfis.  
 
 ---
 
@@ -1095,7 +1093,7 @@ Prototipado para mostrar momentos críticos de interação, mantendo consistênc
 
 ### 1. Dashboard da Investidora *(Dashboard Investidor)*
 - Interface muda para **roxo**.  
-- Destaques: Rentabilidade, Risco da Carteira, Lucro.  
+- Destaques: Rentabilidade e Lucro.  
 - Cards de **Produtos ofertados ativos** levam para:  
   - **[EM DESENVOLVIMENTO]** Empréstimos Concedidos.  
   - **[EM DESENVOLVIMENTO]** Negociações de Ofertas (Investidor).  
@@ -1123,7 +1121,14 @@ Prototipado para mostrar momentos críticos de interação, mantendo consistênc
 - Telas adicionais não desenvolvidas: recuperação de senha, edição de perfil, notificações e configurações.  
 - O trabalho representa a **espinha dorsal funcional** e a visão de UX do **Negoci.ai**.  
 
+# Figma
 
+<div align="center">
+<sub>Figma</sub>
+<img src="./img/print_figma.png" width="100%" >
+</div>
+
+# [👉 Clique aqui para acessar o Figma 👈](https://www.figma.com/design/YlRuYlxMbx0ebh2WVgzVZx/QI-Tech---Hackthon?node-id=0-1&t=v1IXBJMadz2ipSfx-1)
 ---
 
 ## 💵 Modelo de Negócio/Planejamento Financeiro
