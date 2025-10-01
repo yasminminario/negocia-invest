@@ -210,7 +210,7 @@ Serviços e regras de negócio que dão suporte às rotas.
 
 ---
 
-## Arquivos de Configuração
+## ⚙️ Arquivos de Configuração
 
 - **config.py**  
   Configurações globais do backend (chaves de API, conexões de banco, parâmetros de blockchain).  
@@ -1141,10 +1141,14 @@ Totais:
 - **Descrição**: taxa administrativa aplicada em casos de atraso, para cobrir custos de cobrança e eventual registro em bureaus de crédito (ex.: Serasa).  
 - **Objetivo**: compensar o risco operacional e desestimular o atraso.
 
-### 3) Parcerias com empresas/serviços
+#### 3) Parcerias com empresas/serviços
 - **Descrição**: acordos com terceiros para geração de receita indireta, como:  
   - Seguradoras (proteção contra inadimplência).  
   - Bureaus de crédito (consultas adicionais).  
   - Instituições financeiras (wallets digitais, custódia).  
 - **Objetivo**: diversificar receitas sem onerar diretamente a operação principal.
+
+--- 
+
+## Planos futuros
 
