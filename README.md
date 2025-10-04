@@ -156,6 +156,7 @@ src/
             │   ├── calculo_taxas_juros.py
             │   ├── dashboard.py
             │   ├── negociacao.py
+            │   ├── bacen.py
             │   ├── proposta.py
             │   └── usuario.py
             └── model/
@@ -229,6 +230,7 @@ Serviços e regras de negócio que dão suporte às rotas.
 - **blockchain.py** – Serviço para interação com a blockchain Polygon (registro de contratos e leitura de hashes).  
 - **calculo_taxas_juros.py** – Funções auxiliares para cálculo de taxas e juros dos empréstimos.  
 - **dashboard.py** – Serviço para agregação e cálculo de métricas exibidas nas dashboards dos usuários.  
+- **bacen.py** – Serviço para integração com API's oficiais do Banco Central, para comunicações das transações.  
 - **negociacao.py** – Lógica de negócio das negociações (criação, atualização de status).  
 - **proposta.py** – Lógica de envio/validação de propostas e contrapropostas.  
 - **usuario.py** – Serviço para cadastro, login e gestão de dados de usuários.  
@@ -347,7 +349,8 @@ Funções auxiliares e utilitárias puras.
 | RF012 | **Integração com Open Finance (Futuro)**<br>O sistema deve ser preparado para uma futura integração com o Open Finance para enriquecer a análise de perfil com dados transacionais reais.                                                                    | Baixa      |
 | RF013 | **Navegação entre Funcionalidades**<br>O sistema deve permitir que o usuário navegue entre funcionalidades como investidor ou tomador de empréstimos.                                                                                                        | Alta       |
 | RF014 | **Cálculo de Margens de Taxas/Juros por Risco**<br>O sistema deve ser capaz de realizar cálculos de margens das taxas/juros por risco comumente aceitas nas negociações da plataforma, auxiliando tomadores e investidores no sucesso das negociações.        | Alta       |
-
+| RF015 | **Integração com API de consumo QI Tech**<br>O sistema deve se integrar à uma API que consolida todas as negociações realizadas, reunindo valores de requisições pagas e taxas de intermediação acordadas do aplicativo. Essa API serve como base para a QI Tech calcular e emitir a fatura mensal referente ao uso do white label, garantindo transparência e automação no processo de cobrança. | Alta |
+| RF016 | **Comunicação com Banco Central após registro na blockchain**<br>O sistema deve enviar informações das negociações de empréstimos registradas na blockchain para o Banco Central, garantindo transparência, conformidade regulatória e correto balanceamento das operações conforme exigências oficiais. | Alta |
 ---
 
 ## ✨ **Requisitos Não Funcionais**
@@ -361,6 +364,7 @@ Funções auxiliares e utilitárias puras.
 | RNF006 | Escalabilidade | A arquitetura do sistema deve incluir sistema de filas para ser capaz de organizar as requisições e escalar horizontalmente, suportando um aumento de 10x no número de usuários sem degradação crítica do desempenho.                           |
 | RNF007 | Integração   | As integrações com APIs externas devem ser resilientes, com mecanismos de retry e fallback para lidar com indisponibilidades temporárias.                                                                                                         |
 | RNF008 | Conformidade | O sistema deve estar em conformidade com a LGPD (Lei Geral de Proteção de Dados), garantindo o tratamento adequado dos dados pessoais dos usuários.                                                         |
+| RNF009 | Conformidade Técnica com o BACEN | O sistema deve garantir que todas as informações de empréstimos enviadas ao Sistema de Informações de Empréstimos (SISBACEN) estejam no formato exigido pelo Banco Central (ex.: XML, JSON padronizado) e sejam transmitidas pelo protocolo de comunicação oficial (API, Webservice ou FTP seguro), conforme especificações regulatórias. |
 
 ### Requisitos como User Stories
 
@@ -457,6 +461,18 @@ Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, 
 
 - **Como usuário tomador ou investidor**, quero poder visualizar recomendações de taxas/juros mais aceitos dentre os usuários da plataforma, para aumentar as minhas chances de sucesso de ofertas e contrapropostas.
 - **Como sistema**, nas visualizações de oferta, proposta ou contraproposta, quero que seja mostrado ao usuário frases de recomendações de taxas e juros, garantindo mecanismos de melhoria de negociações.
+
+#### 15. Integração com API de consumo QI Tech
+
+- **Como administrador**, quero que o sistema consolide todas as negociações realizadas e envie os valores de requisições pagas e taxas de intermediação para a API da QI Tech, para que a fatura mensal do uso do white label seja calculada automaticamente.
+- **Como usuário**, quero que as taxas e valores das negociações sejam registrados de forma transparente, garantindo que a cobrança mensal seja clara e automatizada.
+
+---
+
+#### 16. Comunicação com Banco Central após registro na blockchain
+
+- **Como administrador**, quero que o sistema envie informações das negociações registradas na blockchain para o Banco Central, garantindo conformidade regulatória e correto balanceamento das operações financerias.
+- **Como investidor ou tomador**, quero que minhas negociações sejam comunicadas oficialmente ao Banco Central após o registro na blockchain, para garantir transparência e segurança jurídica.
 
 ---
 
@@ -559,6 +575,8 @@ Principais serviços implementados:
 
 - Gerenciamento de usuários (criação, validação, autenticação).
 - Fluxos de negociações e propostas de empréstimo.
+- Integração com API de consumo QI Tech para consolidação das negociações, envio de valores pagos e taxas de intermediação, automatizando o cálculo da fatura mensal do white label.
+- Comunicação automática com o Banco Central após registro dos contratos na blockchain, garantindo conformidade regulatória e transparência das operações.
 - Visualização de métricas de performance para investidores.
 - Cálculo de score de crédito, integrando machine learning e API Serasa.
 - Filtragem de ofertas e condições de empréstimo por perfil de risco.
@@ -607,13 +625,13 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 
 ##### 3.1 Off-chain (Banco existente)
 
-Tabelas principais já existentes (não alterar):
+Tabelas principais já existentes:
 
 * `usuarios`
 * `negociacoes`
 * `propostas`
 * `scores_credito` (usaremos apenas `analise` e `valor_score` + `atualizado_em`)
-* `metricas_investidor` (apenas se algum campo ajudar na extração; não entra no score final por ser ótica do investidor)
+* `metricas_investidor` 
 
 ##### 3.2 Externa
 
@@ -1266,6 +1284,29 @@ Totais:
 Totais:
 - **Mensal (5.000 usuários)** ≈ **US$ 250**  
 - **Anual** ≈ **US$ 3.000**
+
+## 🏦 Serviço de Integração Backend/Bacen.py — Comunicação com o Banco Central
+
+O módulo `backend/bacen.py` é responsável por garantir a comunicação oficial entre a plataforma negocia.ai e o Banco Central (BC) após o registro dos contratos de empréstimo na blockchain. Ele atende ao requisito funcional RF016, assegurando transparência, conformidade regulatória e correto balanceamento das operações financeiras.
+
+### Principais Funcionalidades
+
+- **Transformação de Dados:** Converte os registros de negociações e contratos (incluindo dados do tomador, investidor, valores, taxas, prazos e status) para o formato exigido pelo BC, como XML ou JSON padronizado.
+- **Envio Automatizado:** Realiza a transmissão dos dados via protocolo oficial (API, Webservice ou FTP seguro), conforme especificações do SISBACEN ou SCR.
+- **Eventos de Comunicação:** Dispara notificações ao BC em dois momentos principais:
+  - Após assinatura do contrato via smart contract (registro on-chain).
+  - A cada pagamento de parcela, inadimplência ou liquidação antecipada.
+- **Segurança:** Garante criptografia TLS, autenticação robusta e controle de acesso mínimo necessário.
+- **Monitoramento e Auditoria:** Mantém logs detalhados de todas as transmissões, status de envio, tentativas de retry em caso de falha e relatórios internos para auditoria e conformidade.
+
+### Fluxo Técnico na solução
+
+1. **Registro do Contrato:** Após o acordo entre tomador e investidor e registro do hash na blockchain Polygon, o backend coleta todos os dados relevantes e prepara o payload para o BC.
+2. **Envio ao BC:** O serviço `bacen.py` transforma e transmite os dados, marcando o status de envio no banco de dados.
+3. **Atualizações de Pagamento:** Cada evento relevante (pagamento, atraso, quitação) é reportado automaticamente.
+5. **Resiliência:** Em caso de falha, o sistema realiza retries automáticos e alerta a equipe de conformidade.
+
+Este serviço é fundamental para garantir que a plataforma opere dentro das normas do mercado financeiro brasileiro, fortalecendo a confiança dos usuários e parceiros institucionais.
 
 ## Modelo de Negócio
 
