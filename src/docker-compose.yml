@@ -1,2 +1,28 @@
 # Este arquivo define o docker-compose da solução, focando principalmente nos serviços de banco de dados e backend.
 # O frontend não está incluído aqui, pois seria implementado de forma nativa no aplicativo.
+
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ./backend/src/app/database
+      dockerfile: Dockerfile
+    container_name: negociaai-db
+    environment:
+      POSTGRES_DB: negociaai
+      POSTGRES_USER: grupo35
+      POSTGRES_PASSWORD: 75N6uHRcrigx7qx9tPCyHmAel1Xa1INg
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U grupo35 -d negociaai"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  postgres_data:
