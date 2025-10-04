@@ -1,7 +1,16 @@
 # O arquivo requirements.txt lista todas as dependências necessárias para o aplicativo.
 # Ele permite instalar facilmente os pacotes requeridos usando o comando 'pip install -r requirements.txt'.
 
+<<<<<<< HEAD
 uvicorn[standard]==0.30.6
 fastapi==0.115.0
 psycopg2-binary==2.9.9
 python-dotenv==1.0.0
+=======
+pandas
+numpy
+scikit-learn
+joblib
+uvicorn
+fastapi
+>>>>>>> 5763acdd9bedb3d7822c87bb1523143c10894ac2

@@ -5,11 +5,11 @@ Aqui são definidos os caminhos e associações entre URLs e suas respectivas fu
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from model.model_analise_credito import predict_default_probability, score_from_probability
 from typing import Optional
 from app.services.negociacao import NegociacaoService
 from app.services.proposta import PropostaService
 import psycopg2
-import psycopg2.extras
 from datetime import datetime
 import os
 
@@ -132,3 +132,9 @@ def health_check(db=Depends(get_db)):
         return {"success": True, "message": "Banco de dados conectado", "result": result[0]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro na conexão: {str(e)}")
+
+@router.post("/score")
+async def calcular_score(features: dict):
+    prob_default = predict_default_probability(features)
+    score = score_from_probability(prob_default)
+    return {"score": score, "prob_default": prob_default}
