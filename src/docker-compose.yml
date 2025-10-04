@@ -25,6 +25,8 @@ services:
       retries: 3
 
   backend:
+    env_file:
+      - ../../.env
     build:
       context: ./backend
       dockerfile: Dockerfile
