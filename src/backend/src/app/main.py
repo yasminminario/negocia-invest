@@ -1,5 +1,12 @@
 from fastapi import FastAPI
-from api.routers import router  # ajuste o import conforme o conteúdo do routers.py
+from app.api.routers import router 
+from app.database.database import Base, engine 
+from app.models import negociacao, proposta 
 
-app = FastAPI()
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="NegociaAi API")
+
 app.include_router(router)
+
+

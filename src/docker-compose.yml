@@ -1,6 +1,3 @@
-# Este arquivo define o docker-compose da solução, focando principalmente nos serviços de banco de dados e backend.
-# O frontend não está incluído aqui, pois seria implementado de forma nativa no aplicativo.
-
 version: '3.8'
 
 services:
@@ -23,6 +20,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - negociaai-net
 
   backend:
     build:
@@ -32,10 +31,17 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://grupo35:75N6uHRcrigx7qx9tPCyHmAel1Xa1INg@postgres:5432/negociaai
     restart: unless-stopped
+    networks:
+      - negociaai-net
 
 volumes:
   postgres_data:
+
+networks:
+  negociaai-net:
+    driver: bridge
