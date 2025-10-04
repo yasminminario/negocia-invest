@@ -10,6 +10,7 @@ ENV POSTGRES_PASSWORD=75N6uHRcrigx7qx9tPCyHmAel1Xa1INg
 
 # Copiar scripts SQL para inicialização automática do banco
 COPY create_database.sql /docker-entrypoint-initdb.d/01-create-database.sql
+COPY insert_data.sql /docker-entrypoint-initdb.d/02-insert-data.sql
 
 # Expor a porta padrão do PostgreSQL
 EXPOSE 5432
