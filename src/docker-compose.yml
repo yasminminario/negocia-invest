@@ -23,6 +23,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - negociaai-net
 
   backend:
     build:
@@ -36,6 +38,12 @@ services:
     environment:
       DATABASE_URL: postgresql://grupo35:75N6uHRcrigx7qx9tPCyHmAel1Xa1INg@postgres:5432/negociaai
     restart: unless-stopped
+    networks:
+      - negociaai-net
 
 volumes:
   postgres_data:
+
+networks:
+  negociaai-net:
+    driver: bridge

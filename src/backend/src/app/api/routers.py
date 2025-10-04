@@ -12,41 +12,29 @@ from app.services.proposta import PropostaService
 import psycopg2
 from datetime import datetime
 import os
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from config import DATABASE_URL
 
-# Configuração do banco de dados
+engine = create_engine(
+    DATABASE_URL, pool_pre_ping=True
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+# Função de Dependência para o FastAPI
 def get_db():
-    # Detecta se está rodando dentro do Docker ou localmente
-    db_host = "postgres" if os.getenv("DOCKER_ENV") else "localhost"
-    
+    db = SessionLocal()
     try:
-        conn = psycopg2.connect(
-            dbname="negociaai",
-            user="grupo35",
-            password="75N6uHRcrigx7qx9tPCyHmAel1Xa1INg",
-            host=db_host,
-            port="5432",
-            # Configurações de encoding para evitar erros UTF-8
-            client_encoding='UTF8',
-            application_name='negocia_invest_api'
-        )
-        
-        # Configurar a conexão para usar UTF-8
-        conn.set_client_encoding('UTF8')
-        
-        yield conn
-    except psycopg2.Error as e:
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Erro na conexão com banco de dados: {str(e)}"
-        )
+        yield db
     finally:
-        if conn:
-            conn.close()
+        db.close()
 
 router = APIRouter()
 
 # Negociação endpoints
-
 @router.post("/negociacao")
 def criar_negociacao(
     id_tomador: str,
@@ -125,10 +113,8 @@ def get_propostas(
 @router.get("/health")
 def health_check(db=Depends(get_db)):
     try:
-        cursor = db.cursor()
-        cursor.execute("SELECT 1")
-        result = cursor.fetchone()
-        cursor.close()
+        # Usando SQLAlchemy para testar conexão
+        result = db.execute("SELECT 1").fetchone()
         return {"success": True, "message": "Banco de dados conectado", "result": result[0]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro na conexão: {str(e)}")
