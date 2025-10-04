@@ -1,8 +1,7 @@
 -- Cria o banco de dados local e suas tabelas no PostgreSQL para armazenar e gerenciar dados da aplicação.
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE usuarios (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     nome varchar(160) NOT NULL,
     email varchar(160) NOT NULL UNIQUE,
     cpf varchar(20) NOT NULL,
@@ -15,8 +14,8 @@ CREATE TABLE usuarios (
 );
 
 CREATE TABLE scores_credito (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    id_usuarios uuid NOT NULL UNIQUE,
+    id SERIAL PRIMARY KEY,
+    id_usuarios INT NOT NULL UNIQUE,
     valor_score numeric NOT NULL,
     atualizado_em timestamp NOT NULL,
     analise jsonb,
@@ -31,9 +30,9 @@ CREATE TABLE scores_credito (
 CREATE INDEX ix_scores_usuario_data ON scores_credito (id, atualizado_em);
 
 CREATE TABLE negociacoes (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    id_tomador uuid NOT NULL,
-    id_investidor uuid NOT NULL,
+    id SERIAL PRIMARY KEY,
+    id_tomador INT NOT NULL,
+    id_investidor INT NOT NULL,
     status varchar(20) NOT NULL,
     criado_em timestamp NOT NULL DEFAULT now(),
     atualizado_em timestamp NOT NULL DEFAULT now(),
@@ -57,8 +56,8 @@ CREATE TABLE negociacoes (
 CREATE INDEX ix_neg_tomador_status ON negociacoes (id_tomador, status);
 
 CREATE TABLE metricas_investidor (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    id_usuarios uuid NOT NULL,
+    id SERIAL PRIMARY KEY,
+    id_usuarios INT NOT NULL,
     valor_total_investido numeric NOT NULL DEFAULT 0,
     rentabilidade_media_am numeric NOT NULL DEFAULT 0,
     patrimonio numeric NOT NULL DEFAULT 0,
@@ -75,9 +74,9 @@ CREATE TABLE metricas_investidor (
 CREATE INDEX ix_prop_usuarios ON metricas_investidor (id_usuarios);
 
 CREATE TABLE propostas (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    id_negociacoes uuid NOT NULL,
-    id_autor uuid NOT NULL,
+    id SERIAL PRIMARY KEY,
+    id_negociacoes INT NOT NULL,
+    id_autor INT NOT NULL,
     autor_tipo varchar(12) NOT NULL,
     taxa_analisada varchar NOT NULL,
     taxa_sugerida varchar NOT NULL,

@@ -5,5 +5,8 @@ pandas
 numpy
 scikit-learn
 joblib
+sqlalchemy
 uvicorn
 fastapi
+psycopg2-binary
+python-dotenv
