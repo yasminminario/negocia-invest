@@ -24,21 +24,21 @@ INSERT INTO usuarios (nome, email, cpf, endereco, renda_mensal, celular, wallet_
 
 -- Inserindo scores de crédito (um para cada usuário)
 INSERT INTO scores_credito (id_usuarios, valor_score, atualizado_em, analise, risco) VALUES
-(1, 720, NOW() - INTERVAL '1 day', '{"historico_pagamento": "bom", "dividas_ativas": "baixas", "renda_compativel": true}', 0.3),
-(2, 850, NOW() - INTERVAL '2 days', '{"historico_pagamento": "excelente", "dividas_ativas": "nenhuma", "renda_compativel": true}', 0.1),
-(3, 580, NOW() - INTERVAL '3 days', '{"historico_pagamento": "regular", "dividas_ativas": "medias", "renda_compativel": true}', 0.6),
-(4, 920, NOW() - INTERVAL '1 day', '{"historico_pagamento": "excelente", "dividas_ativas": "nenhuma", "renda_compativel": true}', 0.05),
-(5, 890, NOW() - INTERVAL '2 days', '{"historico_pagamento": "muito_bom", "dividas_ativas": "baixas", "renda_compativel": true}', 0.15),
-(6, 680, NOW() - INTERVAL '4 days', '{"historico_pagamento": "bom", "dividas_ativas": "medias", "renda_compativel": true}', 0.4),
-(7, 620, NOW() - INTERVAL '5 days', '{"historico_pagamento": "regular", "dividas_ativas": "medias", "renda_compativel": false}', 0.55),
-(8, 780, NOW() - INTERVAL '1 day', '{"historico_pagamento": "bom", "dividas_ativas": "baixas", "renda_compativel": true}', 0.25),
-(9, 710, NOW() - INTERVAL '3 days', '{"historico_pagamento": "bom", "dividas_ativas": "baixas", "renda_compativel": true}', 0.35),
-(10, 840, NOW() - INTERVAL '2 days', '{"historico_pagamento": "muito_bom", "dividas_ativas": "nenhuma", "renda_compativel": true}', 0.12),
-(11, 650, NOW() - INTERVAL '6 days', '{"historico_pagamento": "regular", "dividas_ativas": "medias", "renda_compativel": true}', 0.45),
-(12, 900, NOW() - INTERVAL '1 day', '{"historico_pagamento": "excelente", "dividas_ativas": "nenhuma", "renda_compativel": true}', 0.08),
-(13, 540, NOW() - INTERVAL '7 days', '{"historico_pagamento": "ruim", "dividas_ativas": "altas", "renda_compativel": false}', 0.75),
-(14, 760, NOW() - INTERVAL '2 days', '{"historico_pagamento": "bom", "dividas_ativas": "baixas", "renda_compativel": true}', 0.28),
-(15, 950, NOW() - INTERVAL '1 day', '{"historico_pagamento": "excelente", "dividas_ativas": "nenhuma", "renda_compativel": true}', 0.02);
+(1, 720, NOW() - INTERVAL '1 day', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 2, "emprestimos_quitados": 2, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.2, "media_prazo_contratado": 12, "renda_mensal": 5500.0, "endividamento_estimado": 0.2, "propostas_realizadas": 3, "propostas_aceitas": 1, "media_tempo_negociacao_dias": 5.0}', 0.3),
+(2, 850, NOW() - INTERVAL '2 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 3, "emprestimos_quitados": 3, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.3, "media_prazo_contratado": 14, "renda_mensal": 8200.0, "endividamento_estimado": 0.1, "propostas_realizadas": 4, "propostas_aceitas": 2, "media_tempo_negociacao_dias": 4.0}', 0.1),
+(3, 580, NOW() - INTERVAL '3 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 1, "emprestimos_quitados": 0, "emprestimos_inadimplentes": 1, "taxa_inadimplencia": 1.0, "media_taxa_juros_paga": 1.8, "media_prazo_contratado": 18, "renda_mensal": 3200.0, "endividamento_estimado": 0.5, "propostas_realizadas": 2, "propostas_aceitas": 0, "media_tempo_negociacao_dias": 7.0}', 0.6),
+(4, 920, NOW() - INTERVAL '1 day', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 4, "emprestimos_quitados": 4, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.5, "media_prazo_contratado": 16, "renda_mensal": 12000.0, "endividamento_estimado": 0.05, "propostas_realizadas": 5, "propostas_aceitas": 3, "media_tempo_negociacao_dias": 3.0}', 0.05),
+(5, 890, NOW() - INTERVAL '2 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 2, "emprestimos_quitados": 2, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.7, "media_prazo_contratado": 15, "renda_mensal": 15000.0, "endividamento_estimado": 0.1, "propostas_realizadas": 3, "propostas_aceitas": 2, "media_tempo_negociacao_dias": 6.0}', 0.15),
+(6, 680, NOW() - INTERVAL '4 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 1, "emprestimos_quitados": 1, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 2.1, "media_prazo_contratado": 24, "renda_mensal": 6800.0, "endividamento_estimado": 0.3, "propostas_realizadas": 2, "propostas_aceitas": 1, "media_tempo_negociacao_dias": 8.0}', 0.4),
+(7, 620, NOW() - INTERVAL '5 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 1, "emprestimos_quitados": 0, "emprestimos_inadimplentes": 1, "taxa_inadimplencia": 1.0, "media_taxa_juros_paga": 1.5, "media_prazo_contratado": 12, "renda_mensal": 4500.0, "endividamento_estimado": 0.6, "propostas_realizadas": 1, "propostas_aceitas": 0, "media_tempo_negociacao_dias": 9.0}', 0.55),
+(8, 780, NOW() - INTERVAL '1 day', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 2, "emprestimos_quitados": 2, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.6, "media_prazo_contratado": 14, "renda_mensal": 9500.0, "endividamento_estimado": 0.18, "propostas_realizadas": 2, "propostas_aceitas": 1, "media_tempo_negociacao_dias": 4.0}', 0.25),
+(9, 710, NOW() - INTERVAL '3 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 2, "emprestimos_quitados": 1, "emprestimos_inadimplentes": 1, "taxa_inadimplencia": 0.5, "media_taxa_juros_paga": 1.8, "media_prazo_contratado": 16, "renda_mensal": 7300.0, "endividamento_estimado": 0.22, "propostas_realizadas": 2, "propostas_aceitas": 1, "media_tempo_negociacao_dias": 5.0}', 0.35),
+(10, 840, NOW() - INTERVAL '2 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 3, "emprestimos_quitados": 3, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.9, "media_prazo_contratado": 18, "renda_mensal": 11200.0, "endividamento_estimado": 0.09, "propostas_realizadas": 3, "propostas_aceitas": 2, "media_tempo_negociacao_dias": 3.0}', 0.12),
+(11, 650, NOW() - INTERVAL '6 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 1, "emprestimos_quitados": 1, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 2.3, "media_prazo_contratado": 30, "renda_mensal": 5900.0, "endividamento_estimado": 0.32, "propostas_realizadas": 2, "propostas_aceitas": 1, "media_tempo_negociacao_dias": 7.0}', 0.45),
+(12, 900, NOW() - INTERVAL '1 day', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 4, "emprestimos_quitados": 4, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 2.3, "media_prazo_contratado": 30, "renda_mensal": 13500.0, "endividamento_estimado": 0.07, "propostas_realizadas": 4, "propostas_aceitas": 3, "media_tempo_negociacao_dias": 2.0}', 0.08),
+(13, 540, NOW() - INTERVAL '7 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 0, "emprestimos_quitados": 0, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 0.0, "media_prazo_contratado": 0, "renda_mensal": 4200.0, "endividamento_estimado": 0.0, "propostas_realizadas": 0, "propostas_aceitas": 0, "media_tempo_negociacao_dias": 0.0}', 0.75),
+(14, 760, NOW() - INTERVAL '2 days', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 2, "emprestimos_quitados": 2, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 1.6, "media_prazo_contratado": 14, "renda_mensal": 8900.0, "endividamento_estimado": 0.19, "propostas_realizadas": 2, "propostas_aceitas": 1, "media_tempo_negociacao_dias": 3.0}', 0.28),
+(15, 950, NOW() - INTERVAL '1 day', '{"tempo_na_plataforma_meses": 1, "emprestimos_contratados": 5, "emprestimos_quitados": 5, "emprestimos_inadimplentes": 0, "taxa_inadimplencia": 0.0, "media_taxa_juros_paga": 2.5, "media_prazo_contratado": 36, "renda_mensal": 16800.0, "endividamento_estimado": 0.03, "propostas_realizadas": 5, "propostas_aceitas": 4, "media_tempo_negociacao_dias": 1.0}', 0.02);
 
 -- Inserindo métricas de investidores (para usuários com perfil de investidor)
 INSERT INTO metricas_investidor (id_usuarios, valor_total_investido, rentabilidade_media_am, patrimonio, risco_medio, analise_taxa, atualizado_em) VALUES
@@ -51,51 +51,53 @@ INSERT INTO metricas_investidor (id_usuarios, valor_total_investido, rentabilida
 (15, 600000.00, 2.5, 2000000.00, 0.8, '{"taxa_preferida": "2.0-3.5", "perfil": "arrojado"}', NOW());
 
 -- Inserindo negociações
-INSERT INTO negociacoes (id_tomador, id_investidor, status, criado_em, atualizado_em, taxa, quant_propostas, hash_onchain, contrato_tx_hash, assinado_em) VALUES
-(1, 2, 'finalizada', NOW() - INTERVAL '10 days', NOW() - INTERVAL '2 days', 1.2, 3, '0xabc123def456', '0x789ghi012jkl', NOW() - INTERVAL '2 days'),
-(3, 4, 'em_andamento', NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day', 1.8, 2, NULL, NULL, NULL),
-(6, 5, 'finalizada', NOW() - INTERVAL '15 days', NOW() - INTERVAL '5 days', 2.1, 4, '0xdef456ghi789', '0x012jkl345mno', NOW() - INTERVAL '5 days'),
-(7, 8, 'em_negociacao', NOW() - INTERVAL '3 days', NOW(), 1.5, 1, NULL, NULL, NULL),
-(9, 10, 'cancelada', NOW() - INTERVAL '8 days', NOW() - INTERVAL '3 days', 0, 2, NULL, NULL, NULL),
-(11, 12, 'em_andamento', NOW() - INTERVAL '2 days', NOW(), 2.3, 2, NULL, NULL, NULL),
-(13, 15, 'pendente', NOW() - INTERVAL '1 day', NOW(), 2.8, 1, NULL, NULL, NULL),
-(14, 4, 'em_negociacao', NOW(), NOW(), 1.6, 1, NULL, NULL, NULL);
+INSERT INTO negociacoes (
+    id_tomador, id_investidor, status, criado_em, atualizado_em, taxa, quant_propostas, prazo, valor, parcela, hash_onchain, contrato_tx_hash, assinado_em
+) VALUES
+(1, 2, 'finalizada', NOW() - INTERVAL '10 days', NOW() - INTERVAL '2 days', 1.2, 3, 12, 10000.00, 860.00, '0xabc123def456', '0x789ghi012jkl', NOW() - INTERVAL '2 days'),
+(3, 4, 'em_andamento', NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day', 1.8, 2, 18, 18000.00, 1150.00, NULL, NULL, NULL),
+(6, 5, 'finalizada', NOW() - INTERVAL '15 days', NOW() - INTERVAL '5 days', 2.1, 4, 24, 25000.00, 1290.00, '0xdef456ghi789', '0x012jkl345mno', NOW() - INTERVAL '5 days'),
+(7, 8, 'em_negociacao', NOW() - INTERVAL '3 days', NOW(), 1.5, 1, 15, 12000.00, 950.00, NULL, NULL, NULL),
+(9, 10, 'cancelada', NOW() - INTERVAL '8 days', NOW() - INTERVAL '3 days', NULL, 2, 20, 20000.00, 1220.00, NULL, NULL, NULL),
+(11, 12, 'em_andamento', NOW() - INTERVAL '2 days', NOW(), 2.3, 2, 30, 30000.00, 1150.00, NULL, NULL, NULL),
+(13, 15, 'pendente', NOW() - INTERVAL '1 day', NOW(), 2.8, 1, 36, 25000.00, 800.00, NULL, NULL, NULL),
+(14, 4, 'em_negociacao', NOW(), NOW(), 1.6, 1, 14, 14000.00, 1050.00, NULL, NULL, NULL);
 
 -- Os IDs das negociações agora serão 1 a 8 (na ordem acima)
 
 -- Inserindo propostas para as negociações
 INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, taxa_sugerida, prazo_meses, criado_em, tipo, status, parcela, valor, justificativa, negociavel) VALUES
 -- Propostas para negociação 1 (finalizada)
-(1, 1, 'tomador', '1.5%', '1.0%', 12, NOW() - INTERVAL '10 days', 'inicial', 'rejeitada', 850.00, 10000.00, 'Preciso de taxa mais baixa', true),
-(1, 2, 'investidor', '1.0%', '1.3%', 12, NOW() - INTERVAL '9 days', 'contraproposta', 'rejeitada', 870.00, 10000.00, 'Taxa muito baixa para o risco', true),
-(1, 1, 'tomador', '1.3%', '1.2%', 12, NOW() - INTERVAL '8 days', 'contraproposta', 'aceita', 860.00, 10000.00, 'Aceito essa taxa', false),
+(1, 1, 'tomador', '1.5-2.0', '1.0-3.0', 12, NOW() - INTERVAL '10 days', 'inicial', 'rejeitada', 850.00, 10000.00, 'Preciso de taxa mais baixa', true),
+(1, 2, 'investidor', '1.0-1.8', '1.3-2.0', 12, NOW() - INTERVAL '9 days', 'contraproposta', 'rejeitada', 870.00, 10000.00, 'Taxa muito baixa para o risco', true),
+(1, 1, 'tomador', '1.3-1.8', '1.2-2.0', 12, NOW() - INTERVAL '8 days', 'contraproposta', 'aceita', 860.00, 10000.00, 'Aceito essa taxa', false),
 
 -- Propostas para negociação 2 (em andamento)
-(2, 3, 'tomador', '2.0%', '1.5%', 18, NOW() - INTERVAL '5 days', 'inicial', 'pendente', 1100.00, 18000.00, 'Primeira casa própria', true),
-(2, 4, 'investidor', '1.5%', '1.8%', 18, NOW() - INTERVAL '4 days', 'contraproposta', 'em_analise', 1150.00, 18000.00, 'Ajuste necessário por risco', true),
+(2, 3, 'tomador', '2.0-2.5', '1.5-2.0', 18, NOW() - INTERVAL '5 days', 'inicial', 'pendente', 1100.00, 18000.00, 'Primeira casa própria', true),
+(2, 4, 'investidor', '1.5-2.0', '1.8-2.5', 18, NOW() - INTERVAL '4 days', 'contraproposta', 'em_analise', 1150.00, 18000.00, 'Ajuste necessário por risco', true),
 
 -- Propostas para negociação 3 (finalizada)
-(3, 6, 'tomador', '2.5%', '1.8%', 24, NOW() - INTERVAL '15 days', 'inicial', 'rejeitada', 1250.00, 25000.00, 'Capital de giro', true),
-(3, 5, 'investidor', '1.8%', '2.2%', 24, NOW() - INTERVAL '14 days', 'contraproposta', 'rejeitada', 1300.00, 25000.00, 'Risco elevado requer ajuste', true),
-(3, 6, 'tomador', '2.2%', '2.0%', 24, NOW() - INTERVAL '13 days', 'contraproposta', 'rejeitada', 1280.00, 25000.00, 'Consigo pagar um pouco mais', true),
-(3, 5, 'investidor', '2.0%', '2.1%', 24, NOW() - INTERVAL '12 days', 'final', 'aceita', 1290.00, 25000.00, 'Acordo fechado', false),
+(3, 6, 'tomador', '2.5-3.0', '1.8-2.5', 24, NOW() - INTERVAL '15 days', 'inicial', 'rejeitada', 1250.00, 25000.00, 'Capital de giro', true),
+(3, 5, 'investidor', '1.8-2.2', '2.2-2.8', 24, NOW() - INTERVAL '14 days', 'contraproposta', 'rejeitada', 1300.00, 25000.00, 'Risco elevado requer ajuste', true),
+(3, 6, 'tomador', '2.2-2.8', '2.0-2.5', 24, NOW() - INTERVAL '13 days', 'contraproposta', 'rejeitada', 1280.00, 25000.00, 'Consigo pagar um pouco mais', true),
+(3, 5, 'investidor', '2.0-2.1', '2.1-2.2', 24, NOW() - INTERVAL '12 days', 'final', 'aceita', 1290.00, 25000.00, 'Acordo fechado', false),
 
 -- Propostas para negociação 4 (em negociação)
-(4, 7, 'tomador', '1.8%', '1.3%', 15, NOW() - INTERVAL '3 days', 'inicial', 'em_analise', 950.00, 12000.00, 'Reforma residencial', true),
+(4, 7, 'tomador', '1.8-1.9', '1.3-1.4', 15, NOW() - INTERVAL '3 days', 'inicial', 'em_analise', 950.00, 12000.00, 'Reforma residencial', true),
 
 -- Propostas para negociação 5 (cancelada)
-(5, 9, 'tomador', '2.2%', '1.8%', 20, NOW() - INTERVAL '8 days', 'inicial', 'cancelada', 1200.00, 20000.00, 'Mudança de planos', true),
-(5, 10, 'investidor', '1.8%', '2.0%', 20, NOW() - INTERVAL '7 days', 'contraproposta', 'cancelada', 1220.00, 20000.00, 'Dentro do perfil', true),
+(5, 9, 'tomador', '2.2-2.5', '1.8-2.0', 20, NOW() - INTERVAL '8 days', 'inicial', 'cancelada', 1200.00, 20000.00, 'Mudança de planos', true),
+(5, 10, 'investidor', '1.8-2.0', '2.0-2.2', 20, NOW() - INTERVAL '7 days', 'contraproposta', 'cancelada', 1220.00, 20000.00, 'Dentro do perfil', true),
 
 -- Propostas para negociação 6 (em andamento)
-(6, 11, 'tomador', '2.5%', '2.0%', 30, NOW() - INTERVAL '2 days', 'inicial', 'pendente', 1100.00, 30000.00, 'Expansão negócio', true),
-(6, 12, 'investidor', '2.0%', '2.3%', 30, NOW() - INTERVAL '1 day', 'contraproposta', 'em_analise', 1150.00, 30000.00, 'Perfil de risco adequado', true),
+(6, 11, 'tomador', '2.5-3.0', '2.0-2.5', 30, NOW() - INTERVAL '2 days', 'inicial', 'pendente', 1100.00, 30000.00, 'Expansão negócio', true),
+(6, 12, 'investidor', '2.0-2.3', '2.3-2.5', 30, NOW() - INTERVAL '1 day', 'contraproposta', 'em_analise', 1150.00, 30000.00, 'Perfil de risco adequado', true),
 
 -- Propostas para negociação 7 (pendente)
-(7, 13, 'tomador', '3.0%', '2.5%', 36, NOW() - INTERVAL '1 day', 'inicial', 'pendente', 800.00, 25000.00, 'Necessidade urgente', true),
+(7, 13, 'tomador', '3.0-3.5', '2.5-3.0', 36, NOW() - INTERVAL '1 day', 'inicial', 'pendente', 800.00, 25000.00, 'Necessidade urgente', true),
 
 -- Propostas para negociação 8 (em negociação)
-(8, 14, 'tomador', '1.8%', '1.4%', 14, NOW(), 'inicial', 'em_analise', 1050.00, 14000.00, 'Investimento pessoal', true);
+(8, 14, 'tomador', '1.8-1.9', '1.4-1.5', 14, NOW(), 'inicial', 'em_analise', 1050.00, 14000.00, 'Investimento pessoal', true);
 
 -- Comentários informativos
 -- Total de registros inseridos:
