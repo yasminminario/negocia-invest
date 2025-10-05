@@ -50,3 +50,15 @@ class NegociacaoResponse(NegociacaoBase):
     atualizado_em: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class NegociacaoUpdate(BaseModel):
+    """Modelo específico para atualização - todos os campos opcionais."""
+    id_tomador: Optional[int] = None
+    id_investidor: Optional[int] = None
+    status: Optional[str] = None
+    taxa: Optional[float] = None
+    quant_propostas: Optional[int] = None
+    hash_onchain: Optional[str] = None
+    contrato_tx_hash: Optional[str] = None
+    assinado_em: Optional[datetime] = None

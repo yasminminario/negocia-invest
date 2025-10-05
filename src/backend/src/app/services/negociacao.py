@@ -6,9 +6,46 @@ from sqlalchemy.orm import Session
 from app.models.negociacao import Negociacao, NegociacaoCreate
 from datetime import datetime
 from typing import Optional, List
+import hashlib
 # from app.services.blockchain import registrar_hash_na_blockchain
 
 class NegociacaoService:
+
+    @staticmethod
+    def atualizar_negociacao(db: Session, negociacao_id: int, negociacao_update: dict) -> Optional[Negociacao]:
+        """
+        Atualiza os dados de uma negociação existente.
+        negociacao_update: dicionário com os campos a serem atualizados.
+        """
+        negociacao = db.query(Negociacao).filter(Negociacao.id == negociacao_id).first()
+        if not negociacao:
+            return None
+
+        for key, value in negociacao_update.items():
+            if hasattr(negociacao, key):
+                setattr(negociacao, key, value)
+
+        # Se o status foi atualizado para "aceita", gera o hash do contrato
+        if negociacao.status == "aceita":
+            # Prepara os dados do contrato para o hash
+            dados_contrato = (
+            f"{negociacao.id}|"
+            f"{negociacao.id_tomador}|"
+            f"{negociacao.id_investidor}|"
+            f"{negociacao.taxa}|"
+            f"{negociacao.prazo}|"
+            f"{negociacao.valor}|"
+            f"{negociacao.criado_em.isoformat() if negociacao.criado_em else ''}|"
+            f"{negociacao.atualizado_em.isoformat() if negociacao.atualizado_em else ''}"
+            )
+
+            # Gera o hash SHA256 e converte para bytes32
+            hash_bytes = hashlib.sha256(dados_contrato.encode("utf-8")).digest()
+            negociacao.contrato_tx_hash = hash_bytes
+        negociacao.atualizado_em = datetime.utcnow()
+        db.commit()
+        db.refresh(negociacao)
+        return negociacao
 
     @staticmethod
     def listar_negociacoes(db: Session, status: Optional[str] = None) -> List[Negociacao]:
@@ -21,7 +58,10 @@ class NegociacaoService:
             
         return query.all()
     
-
+    @staticmethod
+    def obter_negociacao_por_id(db: Session, negociacao_id: int) -> Optional[Negociacao]:
+        """Obtém uma negociação pelo ID."""
+        return db.query(Negociacao).filter(Negociacao.id == negociacao_id).first()
 
     # @staticmethod
     # def registrar_negociacao_na_blockchain(db: Session, negociacao_id: int):

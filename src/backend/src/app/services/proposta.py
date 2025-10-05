@@ -8,6 +8,8 @@ from app.models.proposta import Proposta, PropostaCreate
 from typing import Optional, List
 from app.services.calculo_taxas_juros import parse_taxa_range
 from app.models.negociacao import Negociacao, NegociacaoCreate
+from app.services.negociacao import NegociacaoService
+from datetime import datetime
 
 class PropostaService:
     
@@ -48,18 +50,31 @@ class PropostaService:
             # Atualiza a proposta com o ID da negociação criada
             proposta_dict = proposta_data.model_dump()
             proposta_dict['id_negociacoes'] = db_negociacao.id
-            
+
         else:
-            # Se já existe uma negociação, apenas usa os dados da proposta
+            # Se já existe uma negociação, prepara os dados para atualização
             proposta_dict = proposta_data.model_dump()
-            
-            # Atualiza o contador de propostas na negociação existente
+
             negociacao_existente = db.query(Negociacao).filter(
                 Negociacao.id == proposta_data.id_negociacoes
             ).first()
-            
+
             if negociacao_existente:
-                negociacao_existente.quant_propostas += 1
+                # Prepara todos os dados relevantes para atualizar a negociação
+                negociacao_update = {
+                    "quant_propostas": negociacao_existente.quant_propostas + 1,
+                    "taxa": float(proposta_data.taxa_sugerida.replace('%', '')) / 100 if proposta_data.taxa_sugerida else negociacao_existente.taxa,
+                    "prazo": proposta_data.prazo_meses if hasattr(proposta_data, "prazo_meses") else negociacao_existente.prazo,
+                    "valor": proposta_data.valor if hasattr(proposta_data, "valor") else negociacao_existente.valor,
+                    "status": negociacao_existente.status,
+                    "id_tomador": negociacao_existente.id_tomador,
+                    "id_investidor": negociacao_existente.id_investidor,
+                    "criado_em": negociacao_existente.criado_em,
+                    "atualizado_em": datetime.utcnow()
+                }
+                NegociacaoService.atualizar_negociacao(db, negociacao_existente.id, negociacao_update)
+
+        # Atualiza a proposta com o ID da negociação existente
 
         # Cria a proposta
         db_proposta = Proposta(**proposta_dict)
@@ -118,3 +133,15 @@ class PropostaService:
 
         # Para tomador, retorna todas ordenadas por data
         return sorted(propostas, key=lambda p: p.criado_em, reverse=True)
+    
+
+    @staticmethod
+    def get_propostas(db: Session, id_negociacoes: Optional[int] = None) -> List[Proposta]:
+        """Retorna uma lista de propostas, podendo filtrar por id_negociacoes."""
+
+        query = db.query(Proposta)
+
+        if id_negociacoes:
+            query = query.filter(Proposta.id_negociacoes == id_negociacoes)
+
+        return query.order_by(Proposta.criado_em.desc()).all()

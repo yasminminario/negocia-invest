@@ -15,7 +15,7 @@ from sqlalchemy import text
 
 # Imports para Negociação
 from app.services.negociacao import NegociacaoService
-from app.models.negociacao import NegociacaoCreate, NegociacaoResponse 
+from app.models.negociacao import NegociacaoCreate, NegociacaoResponse, NegociacaoUpdate 
 
 # Imports para Proposta
 from app.services.proposta import PropostaService
@@ -23,10 +23,39 @@ from app.models.proposta import PropostaCreate, PropostaResponse
 
 # Imports para Recomendação de Taxa
 from app.services.calculo_taxas_juros import taxa_analisada
+from fastapi import HTTPException
 
 
 # -- ROTEADOR GERAL --
 router = APIRouter()
+
+@router.put("/negociacoes/{negociacao_id}", response_model=NegociacaoResponse, tags=["Negociações"])
+def atualizar_negociacao_endpoint(
+    negociacao_id: int,
+    dados_atualizacao: NegociacaoUpdate,
+    db: Session = Depends(get_db)
+):
+    """Atualiza uma negociação existente."""
+    try:
+        # Converte para dict excluindo campos None
+        dados_dict = dados_atualizacao.model_dump(exclude_unset=True, exclude_none=True)
+        
+        negociacao = NegociacaoService.atualizar_negociacao(db, negociacao_id, dados_dict)
+        if not negociacao:
+            raise HTTPException(status_code=404, detail="Negociação não encontrada")
+        return negociacao
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/negociacoes/{negociacao_id}", response_model=NegociacaoResponse, tags=["Negociações"])
+def obter_negociacao_por_id_endpoint(
+    negociacao_id: int,
+    db: Session = Depends(get_db)
+):
+    negociacao = NegociacaoService.obter_negociacao_por_id(db, negociacao_id)
+    if not negociacao:
+        raise HTTPException(status_code=404, detail="Negociação não encontrada")
+    return negociacao
 
 @router.get("/negociacoes", response_model=list[NegociacaoResponse], tags=["Negociações"])
 def listar_negociacoes_endpoint(
