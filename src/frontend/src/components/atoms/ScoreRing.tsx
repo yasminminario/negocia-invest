@@ -1,1 +1,0 @@
-// Componente visual que renderiza o anel de score animado para o dashboard do tomador.

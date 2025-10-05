@@ -15,6 +15,9 @@ class Negociacao(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True) 
     id_tomador = Column(Integer, nullable=False, index=True)
     id_investidor = Column(Integer, nullable=False)
+    prazo = Column(Integer, nullable=True)
+    valor = Column(Float, nullable=True)
+    parcela = Column(Float, nullable=True)
     status = Column(String(20), nullable=False)
     taxa = Column(Float, nullable=False)
     quant_propostas = Column(Integer, nullable=False, default=0)
@@ -28,9 +31,12 @@ class Negociacao(Base):
 class NegociacaoBase(BaseModel):
     id_tomador: int
     id_investidor: int
+    prazo: Optional[int] = None
+    valor: Optional[float] = None
+    parcela: Optional[float] = None
     status: str
-    taxa: float
-    quant_propostas: int = 0
+    taxa: Optional[float] = None
+    quant_propostas: Optional[float] = 0
     hash_onchain: Optional[str] = None
     contrato_tx_hash: Optional[str] = None
     assinado_em: Optional[datetime] = None

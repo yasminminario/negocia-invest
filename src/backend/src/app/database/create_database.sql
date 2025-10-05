@@ -36,8 +36,11 @@ CREATE TABLE negociacoes (
     status varchar(20) NOT NULL,
     criado_em timestamp NOT NULL DEFAULT now(),
     atualizado_em timestamp NOT NULL DEFAULT now(),
-    taxa numeric NOT NULL,
-    quant_propostas int NOT NULL,
+    taxa numeric,
+    quant_propostas int,
+    prazo numeric,
+    valor numeric,
+    parcela numeric,
     hash_onchain varchar,
     contrato_tx_hash varchar,
     assinado_em timestamp,
@@ -75,7 +78,7 @@ CREATE INDEX ix_prop_usuarios ON metricas_investidor (id_usuarios);
 
 CREATE TABLE propostas (
     id SERIAL PRIMARY KEY,
-    id_negociacoes INT NOT NULL,
+    id_negociacoes INT,
     id_autor INT NOT NULL,
     autor_tipo varchar(12) NOT NULL,
     taxa_analisada varchar NOT NULL,
@@ -83,11 +86,11 @@ CREATE TABLE propostas (
     prazo_meses int NOT NULL,
     criado_em timestamp NOT NULL DEFAULT now(),
     tipo varchar(50),
-    status varchar(50),
+    status varchar(50) NOT NULL,
     parcela numeric,
     valor numeric,
     justificativa varchar(255),
-    negociavel bool,
+    negociavel boolean NOT NULL,
     CONSTRAINT fk_prop_negociacoes
         FOREIGN KEY (id_negociacoes)
         REFERENCES negociacoes(id)

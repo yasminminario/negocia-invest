@@ -1,1 +1,0 @@
-// Implementa a tela de sucesso, exibida após a conclusão do cadastro.

@@ -1,1 +1,0 @@
-// Define e exporta os tokens de espaçamento da aplicação (ex: spacing.md = 16).

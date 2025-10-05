@@ -1,1 +1,0 @@
-// Tela de lista que exibe todos os empréstimos que o Investidor concedeu.
