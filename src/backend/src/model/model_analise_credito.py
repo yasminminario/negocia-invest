@@ -12,8 +12,8 @@ import joblib
 import os
 
 
-MODEL_PATH = "model_credit.joblib"
-SCALER_PATH = "scaler_credit.joblib"
+MODEL_PATH = "../app/model/model_credit.joblib"
+SCALER_PATH = "../app/model/scaler_credit.joblib"
 
 def train_model(df: pd.DataFrame, label_col: str = "default"):
 	"""
@@ -46,6 +46,10 @@ def predict_default_probability(analise: dict):
 	Recebe o dict do campo analise do backend, retorna probabilidade de default.
 	"""
 	model, scaler = load_artifacts()
+	# Limpa NaN/None do dict analise
+	for k, v in analise.items():
+		if v is None or (isinstance(v, float) and np.isnan(v)):
+			analise[k] = 0.0
 	X = pd.DataFrame([analise])
 	X_scaled = scaler.transform(X)
 	prob_default = model.predict_proba(X_scaled)[0][1]
@@ -60,13 +64,11 @@ def score_from_probability(prob_default: float) -> int:
 	return score
 
 
-
-
 # Mock para treino do modelo (hackathon)
 def load_mock_data():
 	import random
 	data = []
-	for i in range(25):
+	for i in range(50):
 		data.append({
 			"tempo_na_plataforma_meses": random.randint(6, 48),
 			"emprestimos_contratados": random.randint(3, 20),
@@ -82,7 +84,7 @@ def load_mock_data():
 			"media_tempo_negociacao_dias": round(random.uniform(1.0, 4.0), 2),
 			"default": 0
 		})
-	for i in range(25):
+	for i in range(50):
 		inad = random.randint(1, 5)
 		contratos = random.randint(inad, inad+10)
 		quitados = max(0, contratos - inad)
@@ -132,10 +134,4 @@ if __name__ == "__main__":
 	save_artifacts(model, scaler)
 	print("[INFO] Modelo treinado e artefatos salvos.")
 
-	# Exemplo de uso: backend envia o dict analise
-	print("[INFO] Exemplo de inferência com analise do backend:")
-	analise = X_test.iloc[0].to_dict()  # Simula analise recebida
-	prob_default = predict_default_probability(analise)
-	score = score_from_probability(prob_default)
-	print(f"Probabilidade de default: {prob_default:.2f}")
-	print(f"Score calculado: {score}")
+	print("[INFO] Pronto para receber o dict analise do backend!")
