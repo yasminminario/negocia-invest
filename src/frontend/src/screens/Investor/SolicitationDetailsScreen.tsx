@@ -1,1 +1,0 @@
-// Exibe os detalhes completos de uma solicitação de empréstimo feita por um tomador.
