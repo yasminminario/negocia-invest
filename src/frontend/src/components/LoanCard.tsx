@@ -14,6 +14,7 @@ interface LoanCardProps {
   iconColor: string;
   rateColor: string;
   className?: string;
+  onClick?: () => void;
 }
 
 export const LoanCard: React.FC<LoanCardProps> = ({
@@ -29,14 +30,21 @@ export const LoanCard: React.FC<LoanCardProps> = ({
   iconColor,
   rateColor,
   className = ''
+  , onClick
 }) => {
   return (
-    <div className={`shadow-[0_4px_4px_0_rgba(10,32,81,0.08)] w-full overflow-hidden flex-1 bg-[#F5F8FE] p-4 rounded-2xl ${className}`}>
+    <div
+      role={onClick ? 'button' : undefined}
+      onClick={onClick}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { onClick(); } } : undefined}
+      className={`shadow-[0_4px_4px_0_rgba(10,32,81,0.08)] w-full overflow-hidden flex-1 bg-[#F5F8FE] p-4 rounded-2xl ${className} ${onClick ? 'cursor-pointer hover:shadow-lg' : ''}`}
+    >
       <div className="flex w-full gap-[40px_100px] justify-between">
         <div className="flex items-center gap-2">
           <div className={`justify-center items-center aspect-[1/1] self-stretch flex min-h-10 flex-col overflow-hidden w-10 h-10 ${iconBg} my-auto px-px rounded-[1000px]`}>
             <img
-              src={iconColor === '#9B59B6' 
+              src={iconColor === '#9B59B6'
                 ? "https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/eb28d6e92877d2283ac4c144ba3ba4a9a8411a1d?placeholderIfAbsent=true"
                 : "https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/793849a31fbc1a2249de6d233fba5a86dd2c80f4?placeholderIfAbsent=true"
               }
@@ -58,7 +66,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({
         </div>
         <StatusBadge status={type} />
       </div>
-      
+
       <div className="flex w-full items-center gap-[40px_58px] justify-between mt-4">
         <div className="self-stretch flex flex-col items-stretch justify-center my-auto">
           <div className="text-[#4A4A55] text-sm font-normal">Taxa de juros</div>
@@ -73,7 +81,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({
           <div className="text-black text-lg font-semibold mt-2">{monthlyPayment}</div>
         </div>
       </div>
-      
+
       <div className="justify-between items-center flex w-full gap-[40px_66px] text-sm text-black font-normal mt-4 pt-4 border-t-[#D1D1D1] border-t border-solid">
         <div className="self-stretch flex items-center gap-2 my-auto">
           <div className="text-black self-stretch my-auto">

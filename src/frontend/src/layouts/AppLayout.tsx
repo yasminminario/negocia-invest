@@ -1,50 +1,43 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { Header } from "@/components/Header";
-
-export type AppLayoutContextValue = {
-    userType: "borrower" | "investor";
-    setUserType: (type: "borrower" | "investor") => void;
-};
+import { useAuth, type ProfileType } from "@/contexts/AuthContext";
 
 const INVESTOR_PATH_FRAGMENT = "/app/investidor";
 const BORROWER_PATH_FRAGMENT = "/app/tomador";
 
+const mapProfileToUserType = (p: ProfileType | null) => (p === "investidor" ? "investor" : "borrower");
+const mapUserTypeToProfile = (t: "borrower" | "investor") => (t === "investor" ? "investidor" : "tomador");
+
 const AppLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { activeProfile, switchProfile } = useAuth();
 
-    const [userType, setUserType] = useState<AppLayoutContextValue["userType"]>(() =>
-        location.pathname.startsWith(INVESTOR_PATH_FRAGMENT) ? "investor" : "borrower",
-    );
-
+    // Sync a CSS variable with the active profile so the UI can react globally
     useEffect(() => {
-        if (location.pathname.startsWith(INVESTOR_PATH_FRAGMENT)) {
-            setUserType((current) => (current === "investor" ? current : "investor"));
-            return;
+        const primaryColor = activeProfile === "investidor" ? "#9B59B6" : "#57D9FF";
+        document.documentElement.style.setProperty("--primary-color", primaryColor);
+
+        return () => {
+            // optional cleanup: do not remove the variable to keep current theme
+        };
+    }, [activeProfile]);
+
+    const handleUserTypeChange = useCallback((type: "borrower" | "investor") => {
+        const targetProfile = mapUserTypeToProfile(type);
+        // update auth state
+        switchProfile(targetProfile);
+
+        // navigate to the corresponding dashboard
+        const targetPath = type === "investor" ? `${INVESTOR_PATH_FRAGMENT}/dashboard` : `${BORROWER_PATH_FRAGMENT}/dashboard`;
+        if (!location.pathname.startsWith(targetPath)) {
+            navigate(targetPath, { replace: false });
         }
+    }, [location.pathname, navigate, switchProfile]);
 
-        if (location.pathname.startsWith(BORROWER_PATH_FRAGMENT)) {
-            setUserType((current) => (current === "borrower" ? current : "borrower"));
-        }
-    }, [location.pathname]);
-
-    const handleUserTypeChange = useCallback<AppLayoutContextValue["setUserType"]>(
-        (type) => {
-            setUserType(type);
-
-            const targetPath =
-                type === "investor"
-                    ? `${INVESTOR_PATH_FRAGMENT}/dashboard`
-                    : `${BORROWER_PATH_FRAGMENT}/dashboard`;
-
-            if (!location.pathname.startsWith(targetPath)) {
-                navigate(targetPath, { replace: false });
-            }
-        },
-        [location.pathname, navigate],
-    );
+    const userType = mapProfileToUserType(activeProfile);
 
     return (
         <div className="min-h-screen bg-[#F5F8FE]">

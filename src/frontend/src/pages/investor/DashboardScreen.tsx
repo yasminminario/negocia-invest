@@ -5,6 +5,9 @@ import { ActionButtons } from "@/components/ActionButtons";
 import { ActiveProductsSection } from "@/components/ActiveProductsSection";
 import { InvestorStats } from "@/components/InvestorStats";
 import { LoanCard } from "@/components/LoanCard";
+import { useLoans } from "@/hooks/useLoans";
+import { useNegotiations } from "@/hooks/useNegotiations";
+import { useAuth } from "@/contexts/AuthContext";
 
 const InvestorDashboardScreen: React.FC = () => {
     const navigate = useNavigate();
@@ -15,6 +18,14 @@ const InvestorDashboardScreen: React.FC = () => {
         },
         [navigate],
     );
+
+    const { loans, fetchLoans } = useLoans();
+    const { negotiations, fetchNegotiations } = useNegotiations();
+    const { user } = useAuth();
+
+    // consider as market requests those that are not yet active
+    const marketLoans = loans.filter((l) => l.status !== "active");
+    const userNegotiations = negotiations.filter((n) => n.investorName === user?.name || n.investorName == null);
 
     const handleLoansClick = useCallback(() => {
         navigateTo("/app/investidor/emprestimos-concedidos");
@@ -39,8 +50,8 @@ const InvestorDashboardScreen: React.FC = () => {
             <div className="mt-6 w-full flex-1 overflow-hidden rounded-[30px_30px_0_0] bg-white py-6">
                 <ActiveProductsSection
                     userType="investor"
-                    loansCount={3}
-                    negotiationsCount={1}
+                    loansCount={marketLoans.length}
+                    negotiationsCount={userNegotiations.length}
                     onLoansClick={handleLoansClick}
                     onNegotiationsClick={handleNegotiationsClick}
                 />
@@ -52,20 +63,24 @@ const InvestorDashboardScreen: React.FC = () => {
                         </h2>
                     </div>
 
-                    <LoanCard
-                        company="Teste"
-                        score={597}
-                        type="fixed"
-                        interestRate="1,5% a.m."
-                        period="12 m"
-                        monthlyPayment="R$912,69"
-                        total="R$10.952,28"
-                        offeredValue="R$10.000"
-                        iconBg="bg-[rgba(87,217,255,0.16)]"
-                        iconColor="#57D9FF"
-                        rateColor="text-[#9B59B6]"
-                        className="mt-2"
-                    />
+                    {marketLoans.slice(0, 1).map((loan) => (
+                        <LoanCard
+                            key={loan.id}
+                            company={loan.company}
+                            score={loan.score}
+                            type={loan.status}
+                            interestRate={`${loan.interestRateMonthly}% a.m.`}
+                            period={`${loan.periodMonths} m`}
+                            monthlyPayment={`R$${loan.monthlyPayment.toFixed(2)}`}
+                            total={`R$${loan.totalAmount.toFixed(2)}`}
+                            offeredValue={`R$${loan.offeredValue.toFixed(2)}`}
+                            iconBg={loan.iconBackgroundClass ?? "bg-[rgba(87,217,255,0.16)]"}
+                            iconColor={loan.iconColor ?? "#57D9FF"}
+                            rateColor={loan.rateColorClass ?? "text-[#9B59B6]"}
+                            className="mt-2"
+                            onClick={() => navigateTo(`/app/investidor/solicitacao/${loan.id}`)}
+                        />
+                    ))}
                 </section>
 
                 <ActionButtons

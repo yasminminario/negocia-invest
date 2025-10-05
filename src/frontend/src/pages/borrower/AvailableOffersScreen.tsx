@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useLoans } from '@/hooks/useLoans';
 
 import { LoanCard } from "@/components/LoanCard";
 import { SearchAndFilter } from "@/components/SearchAndFilter";
@@ -13,11 +15,35 @@ const AvailableOffersScreen = () => {
 
     const handleFilter = () => {
         // TODO: implementar filtros quando regras estiverem definidas
-        console.log("Filter clicked");
     };
 
+    const navigate = useNavigate();
+    const { loans, loading, error, fetchLoans } = useLoans();
+
+    useEffect(() => {
+        void fetchLoans();
+    }, [fetchLoans]);
+
+    const handleOpenOffer = (id: string) => {
+        navigate(`/app/tomador/oferta/${id}`);
+    };
+
+    // Simulation state
+    const [amount, setAmount] = useState<number>(50000);
+    const [months, setMonths] = useState<number>(24);
+    const [rate, setRate] = useState<number>(1.5); // monthly %
+
+    const monthlyPayment = useMemo(() => {
+        const P = amount;
+        const i = rate / 100; // monthly decimal
+        const n = months;
+        if (i === 0) return P / n;
+        const payment = P * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+        return payment;
+    }, [amount, months, rate]);
+
     return (
-        <div className="h-full w-full overflow-hidden bg-[#F5F8FE]">
+        <div className="h-screen w-full overflow-hidden bg-[#F5F8FE]">
             <main className="mt-8 flex w-full flex-1 flex-col items-stretch overflow-hidden rounded-[30px_30px_0_0] bg-white px-4 pt-6 pb-[34px]">
                 <div className="flex w-full items-center justify-center gap-2 text-[28px] font-normal">
                     <img
@@ -33,19 +59,33 @@ const AvailableOffersScreen = () => {
                 <SearchAndFilter onSearch={handleSearch} onFilter={handleFilter} />
 
                 <section className="mt-6">
-                    <LoanCard
-                        company="QI Tech"
-                        score={983}
-                        type="negotiable"
-                        interestRate="1,5% a.m."
-                        period="48 m"
-                        monthlyPayment="R$5.642,50"
-                        total="R$270.840"
-                        offeredValue="R$192.000"
-                        iconBg="bg-[rgba(155,89,182,0.16)]"
-                        iconColor="#9B59B6"
-                        rateColor="text-[#57D9FF]"
-                    />
+                    {loading ? (
+                        <div className="text-sm text-slate-600">Carregando ofertas...</div>
+                    ) : error ? (
+                        <div className="text-sm text-red-600">{error}</div>
+                    ) : loans.length === 0 ? (
+                        <div className="text-sm text-slate-600">Nenhuma oferta disponível.</div>
+                    ) : (
+                        <div className="space-y-4">
+                            {loans.map((loan) => (
+                                <LoanCard
+                                    key={loan.id}
+                                    company={loan.company}
+                                    score={loan.score}
+                                    type={loan.status}
+                                    interestRate={`${loan.interestRateMonthly.toFixed(2)}% a.m.`}
+                                    period={`${loan.periodMonths} m`}
+                                    monthlyPayment={loan.monthlyPayment.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    total={loan.totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    offeredValue={loan.offeredValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                    iconBg={loan.iconBackgroundClass ?? 'bg-[rgba(155,89,182,0.16)]'}
+                                    iconColor={loan.iconColor ?? '#9B59B6'}
+                                    rateColor={loan.rateColorClass ?? 'text-[#57D9FF]'}
+                                    onClick={() => handleOpenOffer(loan.id)}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </section>
 
                 <div className="mt-6 flex items-center justify-center gap-1 text-center text-sm font-normal text-[#D1D1D1]">

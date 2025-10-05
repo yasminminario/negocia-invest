@@ -6,6 +6,9 @@ export interface Negotiation {
     investorName: string;
     amount: number;
     rate: number;
+    loanId?: string;
+    description?: string;
+    parentNegotiationId?: string;
     status: NegotiationStatus;
     createdAt: string;
     updatedAt?: string;

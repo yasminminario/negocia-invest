@@ -577,7 +577,6 @@ const Index = () => {
               currentRate="1,5%"
               proposedRate="1,38%"
               onSubmit={(data) => {
-                console.log('Negotiation submitted:', data);
                 setCurrentView('dashboard');
               }}
             />

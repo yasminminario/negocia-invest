@@ -15,18 +15,4 @@ export const mockLoans: Loan[] = [
         iconColor: "#9B59B6",
         rateColorClass: "text-[#57D9FF]",
     },
-    {
-        id: "loan-2",
-        company: "Cooperativa Blue",
-        score: 875,
-        status: "fixed",
-        interestRateMonthly: 1.2,
-        periodMonths: 36,
-        monthlyPayment: 3985.75,
-        totalAmount: 143487,
-        offeredValue: 115000,
-        iconBackgroundClass: "bg-[rgba(87,217,255,0.16)]",
-        iconColor: "#57D9FF",
-        rateColorClass: "text-[#57D9FF]",
-    },
 ];

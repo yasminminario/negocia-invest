@@ -24,10 +24,16 @@ const profiles: Array<{
 
 const ProfileSelectionScreen = () => {
     const navigate = useNavigate();
-    const { switchProfile } = useAuth();
+    const { switchProfile, confirmProfileSelection } = useAuth();
 
     const handleSelectProfile = (profile: ProfileType) => {
         switchProfile(profile);
+        try {
+            confirmProfileSelection();
+        } catch (err) {
+            // defensive: if confirmProfileSelection not available for some reason, ignore
+            // (keeps backward compatibility)
+        }
         navigate(`/app/${profile}/dashboard`, { replace: true });
     };
 
@@ -75,6 +81,25 @@ const ProfileSelectionScreen = () => {
                             </div>
                         </button>
                     ))}
+                </div>
+
+                <div className="pt-6 text-center">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            try {
+                                window.localStorage.removeItem('negocia.ai.mocks.negotiations');
+                                window.localStorage.removeItem('negocia.ai.mocks.loans');
+                            } catch (err) {
+                                console.warn('Failed to clear mock storage', err);
+                            }
+                            // reload to ensure in-memory copies are reset
+                            window.location.reload();
+                        }}
+                        className="text-sm text-slate-500 underline"
+                    >
+                        Resetar dados mock (limpar localStorage)
+                    </button>
                 </div>
             </div>
         </div>

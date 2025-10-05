@@ -12,11 +12,10 @@ export const AvailableOffersPage: React.FC = () => {
 
   const handleFilter = () => {
     // Implement filter logic here
-    console.log('Filter clicked');
   };
 
   return (
-    <div className="h-full w-full overflow-hidden bg-[#F5F8FE]">      
+    <div className="h-full w-full overflow-hidden bg-[#F5F8FE]">
       <main className="items-stretch flex w-full flex-col overflow-hidden flex-1 bg-white mt-8 pt-6 pb-[34px] px-4 rounded-[30px_30px_0_0]">
         <div className="flex w-full items-center gap-2 text-[28px] font-normal justify-center">
           <img
@@ -28,9 +27,9 @@ export const AvailableOffersPage: React.FC = () => {
             <span className="font-bold text-[#57D9FF]">Ofertas disponíveis</span>
           </h1>
         </div>
-        
+
         <SearchAndFilter onSearch={handleSearch} onFilter={handleFilter} />
-        
+
         <section className="mt-6">
           <LoanCard
             company="QI Tech"
@@ -46,7 +45,7 @@ export const AvailableOffersPage: React.FC = () => {
             rateColor="text-[#57D9FF]"
           />
         </section>
-        
+
         <div className="self-center flex items-center gap-1 text-sm text-[#D1D1D1] font-normal text-center mt-6">
           <img
             src="https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/ff618ac4e00001a08299f0889c2068f251e40331?placeholderIfAbsent=true"

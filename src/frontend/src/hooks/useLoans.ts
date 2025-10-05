@@ -1,32 +1,24 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/services/api";
 import type { Loan } from "@/types";
 
 export const useLoans = () => {
-    const [loans, setLoans] = useState<Loan[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const { data, isLoading, error, refetch } = useQuery<Loan[], Error>({
+        queryKey: ["loans"],
+        queryFn: () => api.getLoans(),
+        staleTime: 1000 * 60,
+    });
 
     const fetchLoans = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-
-        try {
-            const data = await api.getLoans();
-            setLoans(data);
-        } catch (err) {
-            console.error("Erro ao buscar empréstimos", err);
-            setError("Não foi possível carregar os empréstimos disponíveis.");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+        await refetch();
+    }, [refetch]);
 
     return {
-        loans,
-        loading,
-        error,
+        loans: data ?? [],
+        loading: isLoading,
+        error: error ? (error.message ?? String(error)) : null,
         fetchLoans,
     };
 };

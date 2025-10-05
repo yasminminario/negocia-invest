@@ -8,6 +8,7 @@ import { LoanCard } from "@/components/LoanCard";
 import { ScoreSection } from "@/components/ScoreSection";
 import { useLoans } from "@/hooks/useLoans";
 import { useNegotiations } from "@/hooks/useNegotiations";
+import { useAuth } from "@/contexts/AuthContext";
 
 const formatCurrency = (value: number) =>
     value.toLocaleString("pt-BR", {
@@ -106,7 +107,12 @@ const BorrowerDashboardScreen: FC = () => {
         );
     }
 
-    const hasLoans = loans.length > 0;
+    const { user } = useAuth();
+
+    const marketLoans = loans.filter((l) => l.status !== "active");
+    const userNegotiations = negotiations.filter((n) => n.borrowerName === user?.name);
+
+    const hasLoans = marketLoans.length > 0;
 
     return (
         <main className="min-h-[926px] w-full overflow-hidden bg-[#F5F8FE]">
@@ -115,8 +121,8 @@ const BorrowerDashboardScreen: FC = () => {
             <div className="mt-6 w-full flex-1 overflow-hidden rounded-[30px_30px_0_0] bg-white py-6">
                 <ActiveProductsSection
                     userType="borrower"
-                    loansCount={loans.length}
-                    negotiationsCount={negotiations.length}
+                    loansCount={marketLoans.length}
+                    negotiationsCount={userNegotiations.length}
                     onLoansClick={handleLoansClick}
                     onNegotiationsClick={handleNegotiationsClick}
                 />
@@ -130,7 +136,7 @@ const BorrowerDashboardScreen: FC = () => {
 
                     {hasLoans ? (
                         <div className="mt-4 space-y-4">
-                            {loans.map((loan, index) => (
+                            {marketLoans.slice(0, 1).map((loan, index) => (
                                 <LoanCard
                                     key={loan.id}
                                     company={loan.company}
@@ -145,6 +151,7 @@ const BorrowerDashboardScreen: FC = () => {
                                     iconColor={loan.iconColor ?? DEFAULT_ICON_COLOR}
                                     rateColor={loan.rateColorClass ?? DEFAULT_RATE_COLOR}
                                     className={index === 0 ? "mt-2" : ""}
+                                    onClick={() => navigateTo(`/app/tomador/oferta/${loan.id}`)}
                                 />
                             ))}
                         </div>

@@ -24,15 +24,18 @@ export interface AuthUser {
 interface PersistedAuthState {
     user: AuthUser;
     activeProfile: ProfileType | null;
+    hasChosenProfile?: boolean;
 }
 
 export interface AuthContextValue {
     user: AuthUser | null;
     activeProfile: ProfileType | null;
     loading: boolean;
+    hasChosenProfile: boolean;
     login: (userData: AuthUser) => void;
     logout: () => void;
     switchProfile: (profile: ProfileType) => void;
+    confirmProfileSelection: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -44,6 +47,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<AuthUser | null>(null);
     const [activeProfile, setActiveProfile] = useState<ProfileType | null>(null);
+    const [hasChosenProfile, setHasChosenProfile] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -68,6 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     parsedState.user.profiles?.[0] ??
                     null,
                 );
+                setHasChosenProfile(parsedState.hasChosenProfile ?? false);
             }
         } catch (error) {
             console.error("Failed to parse persisted auth state", error);
@@ -86,6 +91,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const payload: PersistedAuthState = {
                 user,
                 activeProfile,
+                hasChosenProfile,
             };
             window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
         } else {
@@ -98,13 +104,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setActiveProfile(
             userData.defaultProfile ?? userData.profiles?.[0] ?? null,
         );
+        setHasChosenProfile(false);
         setLoading(false);
     }, []);
 
     const logout = useCallback(() => {
         setUser(null);
         setActiveProfile(null);
+        setHasChosenProfile(false);
         setLoading(false);
+    }, []);
+
+    const confirmProfileSelection = useCallback(() => {
+        setHasChosenProfile(true);
     }, []);
 
     const switchProfile = useCallback(
@@ -125,8 +137,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     );
 
     const value = useMemo<AuthContextValue>(
-        () => ({ user, activeProfile, loading, login, logout, switchProfile }),
-        [user, activeProfile, loading, login, logout, switchProfile],
+        () => ({ user, activeProfile, loading, hasChosenProfile, login, logout, switchProfile, confirmProfileSelection }),
+        [user, activeProfile, loading, hasChosenProfile, login, logout, switchProfile, confirmProfileSelection],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

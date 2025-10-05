@@ -1,14 +1,18 @@
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { useAuth } from '@/contexts/AuthContext';
+
 interface HeaderProps {
-  userType: 'borrower' | 'investor';
-  onUserTypeChange: (type: 'borrower' | 'investor') => void;
+  onUserTypeChange?: (type: 'borrower' | 'investor') => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ userType, onUserTypeChange }) => {
+export const Header: React.FC<HeaderProps> = ({ onUserTypeChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { activeProfile, switchProfile, hasChosenProfile } = useAuth();
+
+  const userType = useMemo(() => (activeProfile === 'investidor' ? 'investor' : 'borrower'), [activeProfile]);
 
   const isDashboardRoute = useMemo(() => {
     if (userType === 'borrower') {
@@ -20,10 +24,23 @@ export const Header: React.FC<HeaderProps> = ({ userType, onUserTypeChange }) =>
     return false;
   }, [location.pathname, userType]);
 
-  const primaryColor = userType === 'borrower' ? '#57D9FF' : '#9B59B6';
+  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || (userType === 'borrower' ? '#57D9FF' : '#9B59B6');
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleToggle = () => {
+    // prefer the layout-level handler (for navigation) if provided
+    const targetUser = userType === 'borrower' ? 'investor' : 'borrower';
+    if (onUserTypeChange) {
+      onUserTypeChange(targetUser as 'borrower' | 'investor');
+      return;
+    }
+
+    // fallback: directly switch profile in auth context
+    const target = userType === 'borrower' ? 'investidor' : 'tomador';
+    switchProfile(target as any);
   };
 
   return (
@@ -39,28 +56,30 @@ export const Header: React.FC<HeaderProps> = ({ userType, onUserTypeChange }) =>
             Olá, <span className="font-bold">Carlos!</span>
           </div>
         </div>
-        <button
-          onClick={() => onUserTypeChange(userType === 'borrower' ? 'investor' : 'borrower')}
-          className={`justify-center items-center border shadow-[0_4px_4px_0_rgba(10,32,81,0.08)] flex gap-2 text-sm font-bold bg-opacity-16 mt-4 px-4 py-2 rounded-[1000px] border-solid transition-colors ${userType === 'borrower'
+        {hasChosenProfile && (
+          <button
+            onClick={handleToggle}
+            className={`justify-center items-center border shadow-[0_4px_4px_0_rgba(10,32,81,0.08)] flex gap-2 text-sm font-bold bg-opacity-16 mt-4 px-4 py-2 rounded-[1000px] border-solid transition-colors ${userType === 'borrower'
               ? 'text-[#9B59B6] bg-[rgba(155,89,182,0.16)] border-[#9B59B6]'
               : 'text-[#57D9FF] bg-[rgba(87,217,255,0.16)] border-[#57D9FF]'
-            }`}
-        >
-          <span>
-            {userType === 'borrower'
-              ? 'Mudar para perfil de investidor'
-              : 'Mudar para perfil de tomador'
-            }
-          </span>
-          <img
-            src={userType === 'borrower'
-              ? "https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/972ee3e3cfe1c36d7d7b18f71354c6f3395b82c0?placeholderIfAbsent=true"
-              : "https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/124470305ba1484a1385fde7fe08a67ea13db82c?placeholderIfAbsent=true"
-            }
-            className="aspect-[19/16] object-contain w-[19px] self-stretch shrink-0 my-auto"
-            alt="Switch profile"
-          />
-        </button>
+              }`}
+          >
+            <span>
+              {userType === 'borrower'
+                ? 'Mudar para perfil de investidor'
+                : 'Mudar para perfil de tomador'
+              }
+            </span>
+            <img
+              src={userType === 'borrower'
+                ? "https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/972ee3e3cfe1c36d7d7b18f71354c6f3395b82c0?placeholderIfAbsent=true"
+                : "https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/124470305ba1484a1385fde7fe08a67ea13db82c?placeholderIfAbsent=true"
+              }
+              className="aspect-[19/16] object-contain w-[19px] self-stretch shrink-0 my-auto"
+              alt="Switch profile"
+            />
+          </button>
+        )}
       </div>
       <div id="header-icons" className="flex items-center gap-6">
         {isDashboardRoute ? (
@@ -84,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ userType, onUserTypeChange }) =>
           <button
             onClick={handleBack}
             className="justify-center items-center border shadow-[0_4px_4px_0_rgba(10,32,81,0.08)] flex gap-1 text-base text-white font-normal px-6 py-4 rounded-[10000px] border-solid transition-colors hover:opacity-90"
-            style={{ backgroundColor: primaryColor, borderColor: primaryColor }}
+            style={{ backgroundColor: primaryColor.trim(), borderColor: primaryColor.trim() }}
           >
             <img
               src="https://api.builder.io/api/v1/image/assets/7672f9343bc0488a9cb06053f569dd73/4633cdae80e5de945df16a40dac0b99fef45623b?placeholderIfAbsent=true"
