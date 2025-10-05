@@ -13,7 +13,7 @@ class Proposta(Base):
     __tablename__ = "propostas"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    id_negociacoes = Column(Integer, nullable=False)
+    id_negociacoes = Column(Integer, nullable=True)
     id_autor = Column(Integer, nullable=False)
     autor_tipo = Column(String(12), nullable=False)
     taxa_analisada = Column(String, nullable=False)
@@ -29,16 +29,16 @@ class Proposta(Base):
 
 # 2. Pydantic Schemas (Definição da API)
 class PropostaBase(BaseModel):
-    id_negociacoes: int
+    id_negociacoes: Optional[int] = None
     id_autor: int
     autor_tipo: str
     taxa_analisada: str
     taxa_sugerida: str
     prazo_meses: int
-    tipo: str
+    tipo: Optional[str] = None
     status: str
-    parcela: float
-    valor: float
+    parcela: Optional[float] = None
+    valor: Optional[float] = None
     negociavel: bool
     justificativa: Optional[str] = None
 

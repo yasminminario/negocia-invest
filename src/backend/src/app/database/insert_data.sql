@@ -51,15 +51,17 @@ INSERT INTO metricas_investidor (id_usuarios, valor_total_investido, rentabilida
 (15, 600000.00, 2.5, 2000000.00, 0.8, '{"taxa_preferida": "2.0-3.5", "perfil": "arrojado"}', NOW());
 
 -- Inserindo negociações
-INSERT INTO negociacoes (id_tomador, id_investidor, status, criado_em, atualizado_em, taxa, quant_propostas, hash_onchain, contrato_tx_hash, assinado_em) VALUES
-(1, 2, 'finalizada', NOW() - INTERVAL '10 days', NOW() - INTERVAL '2 days', 1.2, 3, '0xabc123def456', '0x789ghi012jkl', NOW() - INTERVAL '2 days'),
-(3, 4, 'em_andamento', NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day', 1.8, 2, NULL, NULL, NULL),
-(6, 5, 'finalizada', NOW() - INTERVAL '15 days', NOW() - INTERVAL '5 days', 2.1, 4, '0xdef456ghi789', '0x012jkl345mno', NOW() - INTERVAL '5 days'),
-(7, 8, 'em_negociacao', NOW() - INTERVAL '3 days', NOW(), 1.5, 1, NULL, NULL, NULL),
-(9, 10, 'cancelada', NOW() - INTERVAL '8 days', NOW() - INTERVAL '3 days', 0, 2, NULL, NULL, NULL),
-(11, 12, 'em_andamento', NOW() - INTERVAL '2 days', NOW(), 2.3, 2, NULL, NULL, NULL),
-(13, 15, 'pendente', NOW() - INTERVAL '1 day', NOW(), 2.8, 1, NULL, NULL, NULL),
-(14, 4, 'em_negociacao', NOW(), NOW(), 1.6, 1, NULL, NULL, NULL);
+INSERT INTO negociacoes (
+    id_tomador, id_investidor, status, criado_em, atualizado_em, taxa, quant_propostas, prazo, valor, parcela, hash_onchain, contrato_tx_hash, assinado_em
+) VALUES
+(1, 2, 'finalizada', NOW() - INTERVAL '10 days', NOW() - INTERVAL '2 days', 1.2, 3, 12, 10000.00, 860.00, '0xabc123def456', '0x789ghi012jkl', NOW() - INTERVAL '2 days'),
+(3, 4, 'em_andamento', NOW() - INTERVAL '5 days', NOW() - INTERVAL '1 day', 1.8, 2, 18, 18000.00, 1150.00, NULL, NULL, NULL),
+(6, 5, 'finalizada', NOW() - INTERVAL '15 days', NOW() - INTERVAL '5 days', 2.1, 4, 24, 25000.00, 1290.00, '0xdef456ghi789', '0x012jkl345mno', NOW() - INTERVAL '5 days'),
+(7, 8, 'em_negociacao', NOW() - INTERVAL '3 days', NOW(), 1.5, 1, 15, 12000.00, 950.00, NULL, NULL, NULL),
+(9, 10, 'cancelada', NOW() - INTERVAL '8 days', NOW() - INTERVAL '3 days', NULL, 2, 20, 20000.00, 1220.00, NULL, NULL, NULL),
+(11, 12, 'em_andamento', NOW() - INTERVAL '2 days', NOW(), 2.3, 2, 30, 30000.00, 1150.00, NULL, NULL, NULL),
+(13, 15, 'pendente', NOW() - INTERVAL '1 day', NOW(), 2.8, 1, 36, 25000.00, 800.00, NULL, NULL, NULL),
+(14, 4, 'em_negociacao', NOW(), NOW(), 1.6, 1, 14, 14000.00, 1050.00, NULL, NULL, NULL);
 
 -- Os IDs das negociações agora serão 1 a 8 (na ordem acima)
 

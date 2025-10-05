@@ -28,14 +28,6 @@ from app.services.calculo_taxas_juros import taxa_analisada
 # -- ROTEADOR GERAL --
 router = APIRouter()
 
-# --- ENDPOINTS DE NEGOCIAÇÃO ---
-@router.post("/negociacoes", response_model=NegociacaoResponse, status_code=status.HTTP_201_CREATED, tags=["Negociações"])
-def criar_negociacao_endpoint(
-    data: NegociacaoCreate,
-    db: Session = Depends(get_db)
-):
-    return NegociacaoService.criar_negociacao(db, data)
-
 @router.get("/negociacoes", response_model=list[NegociacaoResponse], tags=["Negociações"])
 def listar_negociacoes_endpoint(
     status: str | None = None,
