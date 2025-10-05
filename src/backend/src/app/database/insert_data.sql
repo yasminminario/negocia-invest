@@ -3,22 +3,22 @@
 -- Não insira valores para os campos id, eles serão gerados automaticamente
 
 -- Inserindo 15 usuários
-INSERT INTO usuarios (nome, email, cpf, endereco, renda_mensal, celular, wallet_adress, facial, criado_em) VALUES
-('João Silva Santos', 'joao.silva@email.com', '123.456.789-01', 'Rua das Flores, 123 - São Paulo/SP', 5500.00, '(11) 99999-0001', '0x1a2b3c4d5e6f7890abcdef1234567890abcdef01', 0.95, NOW() - INTERVAL '30 days'),
-('Maria Oliveira Costa', 'maria.oliveira@email.com', '234.567.890-12', 'Av. Paulista, 456 - São Paulo/SP', 8200.00, '(11) 99999-0002', '0x2b3c4d5e6f7890abcdef1234567890abcdef0102', 0.87, NOW() - INTERVAL '25 days'),
-('Pedro Henrique Lima', 'pedro.lima@email.com', '345.678.901-23', 'Rua Augusta, 789 - São Paulo/SP', 3200.00, '(11) 99999-0003', '0x3c4d5e6f7890abcdef1234567890abcdef010203', 0.78, NOW() - INTERVAL '20 days'),
-('Ana Carolina Ferreira', 'ana.ferreira@email.com', '456.789.012-34', 'Rua Oscar Freire, 321 - São Paulo/SP', 12000.00, '(11) 99999-0004', '0x4d5e6f7890abcdef1234567890abcdef01020304', 0.92, NOW() - INTERVAL '18 days'),
-('Carlos Roberto Souza', 'carlos.souza@email.com', '567.890.123-45', 'Av. Faria Lima, 654 - São Paulo/SP', 15000.00, '(11) 99999-0005', '0x5e6f7890abcdef1234567890abcdef0102030405', 0.89, NOW() - INTERVAL '15 days'),
-('Juliana Mendes Alves', 'juliana.alves@email.com', '678.901.234-56', 'Rua Consolação, 987 - São Paulo/SP', 6800.00, '(11) 99999-0006', '0x6f7890abcdef1234567890abcdef010203040506', 0.84, NOW() - INTERVAL '12 days'),
-('Rafael dos Santos', 'rafael.santos@email.com', '789.012.345-67', 'Av. Rebouças, 147 - São Paulo/SP', 4500.00, '(11) 99999-0007', '0x7890abcdef1234567890abcdef01020304050607', 0.76, NOW() - INTERVAL '10 days'),
-('Fernanda Costa Silva', 'fernanda.silva@email.com', '890.123.456-78', 'Rua Haddock Lobo, 258 - São Paulo/SP', 9500.00, '(11) 99999-0008', '0x890abcdef1234567890abcdef0102030405060708', 0.91, NOW() - INTERVAL '8 days'),
-('Lucas Pereira Rocha', 'lucas.rocha@email.com', '901.234.567-89', 'Rua Estados Unidos, 369 - São Paulo/SP', 7300.00, '(11) 99999-0009', '0x90abcdef1234567890abcdef010203040506070809', 0.82, NOW() - INTERVAL '6 days'),
-('Mariana Barbosa Lima', 'mariana.lima@email.com', '012.345.678-90', 'Av. Europa, 741 - São Paulo/SP', 11200.00, '(11) 99999-0010', '0xabcdef1234567890abcdef01020304050607080910', 0.88, NOW() - INTERVAL '5 days'),
-('Bruno Cardoso Nunes', 'bruno.nunes@email.com', '123.456.789-00', 'Rua Bela Cintra, 852 - São Paulo/SP', 5900.00, '(11) 99999-0011', '0xbcdef1234567890abcdef0102030405060708091011', 0.79, NOW() - INTERVAL '4 days'),
-('Camila Rodrigues Gomes', 'camila.gomes@email.com', '234.567.890-11', 'Av. Nove de Julho, 963 - São Paulo/SP', 13500.00, '(11) 99999-0012', '0xcdef1234567890abcdef010203040506070809101112', 0.93, NOW() - INTERVAL '3 days'),
-('Diego Santos Martins', 'diego.martins@email.com', '345.678.901-22', 'Rua Alameda Santos, 159 - São Paulo/SP', 4200.00, '(11) 99999-0013', '0xdef1234567890abcdef01020304050607080910111213', 0.73, NOW() - INTERVAL '2 days'),
-('Gabriela Fernandes', 'gabriela.fernandes@email.com', '456.789.012-33', 'Rua Pamplona, 357 - São Paulo/SP', 8900.00, '(11) 99999-0014', '0xef1234567890abcdef0102030405060708091011121314', 0.86, NOW() - INTERVAL '1 day'),
-('Henrique Almeida Costa', 'henrique.costa@email.com', '567.890.123-44', 'Av. Ibirapuera, 468 - São Paulo/SP', 16800.00, '(11) 99999-0015', '0xf1234567890abcdef010203040506070809101112131415', 0.94, NOW());
+INSERT INTO usuarios (nome, email, cpf, saldo_cc, endereco, renda_mensal, celular, wallet_adress, facial, criado_em) VALUES
+('João Silva Santos', 'joao.silva@email.com', '123.456.789-01', 1200.00, 'Rua das Flores, 123 - São Paulo/SP', 5500.00, '(11) 99999-0001', '0x1a2b3c4d5e6f7890abcdef1234567890abcdef01', 0.95, NOW() - INTERVAL '30 days'),
+('Maria Oliveira Costa', 'maria.oliveira@email.com', '234.567.890-12', 8000.00, 'Av. Paulista, 456 - São Paulo/SP', 8200.00, '(11) 99999-0002', '0x2b3c4d5e6f7890abcdef1234567890abcdef0102', 0.87, NOW() - INTERVAL '25 days'),
+('Pedro Henrique Lima', 'pedro.lima@email.com', '345.678.901-23', 500.00, 'Rua Augusta, 789 - São Paulo/SP', 3200.00, '(11) 99999-0003', '0x3c4d5e6f7890abcdef1234567890abcdef010203', 0.78, NOW() - INTERVAL '20 days'),
+('Ana Carolina Ferreira', 'ana.ferreira@email.com', '456.789.012-34', 15000.00, 'Rua Oscar Freire, 321 - São Paulo/SP', 12000.00, '(11) 99999-0004', '0x4d5e6f7890abcdef1234567890abcdef01020304', 0.92, NOW() - INTERVAL '18 days'),
+('Carlos Roberto Souza', 'carlos.souza@email.com', '567.890.123-45', 20000.00, 'Av. Faria Lima, 654 - São Paulo/SP', 15000.00, '(11) 99999-0005', '0x5e6f7890abcdef1234567890abcdef0102030405', 0.89, NOW() - INTERVAL '15 days'),
+('Juliana Mendes Alves', 'juliana.alves@email.com', '678.901.234-56', 3000.00, 'Rua Consolação, 987 - São Paulo/SP', 6800.00, '(11) 99999-0006', '0x6f7890abcdef1234567890abcdef010203040506', 0.84, NOW() - INTERVAL '12 days'),
+('Rafael dos Santos', 'rafael.santos@email.com', '789.012.345-67', 2500.00, 'Av. Rebouças, 147 - São Paulo/SP', 4500.00, '(11) 99999-0007', '0x7890abcdef1234567890abcdef01020304050607', 0.76, NOW() - INTERVAL '10 days'),
+('Fernanda Costa Silva', 'fernanda.silva@email.com', '890.123.456-78', 9000.00, 'Rua Haddock Lobo, 258 - São Paulo/SP', 9500.00, '(11) 99999-0008', '0x890abcdef1234567890abcdef0102030405060708', 0.91, NOW() - INTERVAL '8 days'),
+('Lucas Pereira Rocha', 'lucas.rocha@email.com', '901.234.567-89', 7000.00, 'Rua Estados Unidos, 369 - São Paulo/SP', 7300.00, '(11) 99999-0009', '0x90abcdef1234567890abcdef010203040506070809', 0.82, NOW() - INTERVAL '6 days'),
+('Mariana Barbosa Lima', 'mariana.lima@email.com', '012.345.678-90', 11000.00, 'Av. Europa, 741 - São Paulo/SP', 11200.00, '(11) 99999-0010', '0xabcdef1234567890abcdef01020304050607080910', 0.88, NOW() - INTERVAL '5 days'),
+('Bruno Cardoso Nunes', 'bruno.nunes@email.com', '123.456.789-00', 5000.00, 'Rua Bela Cintra, 852 - São Paulo/SP', 5900.00, '(11) 99999-0011', '0xbcdef1234567890abcdef0102030405060708091011', 0.79, NOW() - INTERVAL '4 days'),
+('Camila Rodrigues Gomes', 'camila.gomes@email.com', '234.567.890-11', 13000.00, 'Av. Nove de Julho, 963 - São Paulo/SP', 13500.00, '(11) 99999-0012', '0xcdef1234567890abcdef010203040506070809101112', 0.93, NOW() - INTERVAL '3 days'),
+('Diego Santos Martins', 'diego.martins@email.com', '345.678.901-22', 4000.00, 'Rua Alameda Santos, 159 - São Paulo/SP', 4200.00, '(11) 99999-0013', '0xdef1234567890abcdef01020304050607080910111213', 0.73, NOW() - INTERVAL '2 days'),
+('Gabriela Fernandes', 'gabriela.fernandes@email.com', '456.789.012-33', 8500.00, 'Rua Pamplona, 357 - São Paulo/SP', 8900.00, '(11) 99999-0014', '0xef1234567890abcdef0102030405060708091011121314', 0.86, NOW() - INTERVAL '1 day'),
+('Henrique Almeida Costa', 'henrique.costa@email.com', '567.890.123-44', 16000.00, 'Av. Ibirapuera, 468 - São Paulo/SP', 16800.00, '(11) 99999-0015', '0xf1234567890abcdef010203040506070809101112131415', 0.94, NOW());
 
 -- Os IDs dos usuários agora serão 1 a 15 (na ordem acima)
 

@@ -46,7 +46,7 @@ class NegociacaoService:
         negociacao.atualizado_em = datetime.utcnow()
 
         # Chama a função para registrar o hash na blockchain
-        registrar_hash_na_blockchain(contrato_tx_hash=negociacao.contrato_tx_hash)
+        # registrar_hash_na_blockchain(contrato_tx_hash=negociacao.contrato_tx_hash)
         db.commit()
         db.refresh(negociacao)
         return negociacao

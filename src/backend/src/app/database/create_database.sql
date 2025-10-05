@@ -5,6 +5,7 @@ CREATE TABLE usuarios (
     nome varchar(160) NOT NULL,
     email varchar(160) NOT NULL UNIQUE,
     cpf varchar(20) NOT NULL,
+    saldo_cc numeric NOT NULL DEFAULT 0,
     endereco varchar(255),
     renda_mensal numeric,
     celular varchar(40) NOT NULL,

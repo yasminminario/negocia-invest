@@ -62,15 +62,15 @@ class PropostaService:
             if negociacao_existente:
                 # Prepara todos os dados relevantes para atualizar a negociação
                 negociacao_update = {
-                    "quant_propostas": negociacao_existente.quant_propostas + 1,
-                    "taxa": float(proposta_data.taxa_sugerida.replace('%', '')) / 100 if proposta_data.taxa_sugerida else negociacao_existente.taxa,
-                    "prazo": proposta_data.prazo_meses if hasattr(proposta_data, "prazo_meses") else negociacao_existente.prazo,
-                    "valor": proposta_data.valor if hasattr(proposta_data, "valor") else negociacao_existente.valor,
-                    "status": negociacao_existente.status,
-                    "id_tomador": negociacao_existente.id_tomador,
-                    "id_investidor": negociacao_existente.id_investidor,
-                    "criado_em": negociacao_existente.criado_em,
-                    "atualizado_em": datetime.utcnow()
+                    "quant_propostas": str(negociacao_existente.quant_propostas + 1),
+                    "taxa": str(float(proposta_data.taxa_sugerida.replace('%', '')) / 100) if proposta_data.taxa_sugerida else str(negociacao_existente.taxa),
+                    "prazo": str(proposta_data.prazo_meses) if hasattr(proposta_data, "prazo_meses") else str(negociacao_existente.prazo),
+                    "valor": str(proposta_data.valor) if hasattr(proposta_data, "valor") else str(negociacao_existente.valor),
+                    "status": str(negociacao_existente.status),
+                    "id_tomador": str(negociacao_existente.id_tomador),
+                    "id_investidor": str(negociacao_existente.id_investidor),
+                    "criado_em": str(negociacao_existente.criado_em),
+                    "atualizado_em": str(datetime.utcnow())
                 }
                 NegociacaoService.atualizar_negociacao(db, negociacao_existente.id, negociacao_update)
 

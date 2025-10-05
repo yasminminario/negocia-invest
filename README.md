@@ -1313,11 +1313,13 @@ Este serviço é fundamental para garantir que a plataforma opere dentro das nor
 
 #### Motor de Score (embutido no monólito)
 
+&emsp;Considerando uma estimativa mensal de 10.000 novos usuários na solução arquitetada, tem-se as seguintes estimativas. 
+
 | Item | Descrição | Frequência | Estimativa (R$/mês) |
 |------|-----------|------------|----------------------|
 | **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
-| **Integração Serasa** | Consulta de score externo com cache 24h | Variável (depende nº de usuários) | 2.000 |
-| **Equipe Dev/Data** | Desenvolvimento inicial (2 devs backend + 1 data scientist por 3 meses) | Investimento único | 90.000 (único) |
+| **Integração Serasa** | Consulta de score de crédito na abertura da conta, com consulta periódica a cada 3 meses | Variável (depende nº de usuários) | 150.000 / a cada 3 meses => 150.000 / 3 = R$ 50.000 |
+| **Equipe Dev/Data** | Desenvolvimento inicial (1 Desenvolvedor Full-Stack Sênior + 2 estagiários QI Tech | Investimento único | R$ 29.000 |
 | **Manutenção Modelo** | Re-treino mensal (data scientist) + monitoramento | Recorrente | 8.000 |
 | **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
 
