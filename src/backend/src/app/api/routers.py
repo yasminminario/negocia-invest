@@ -1,3 +1,4 @@
+
 """
 Este arquivo é responsável pelo roteamento dos endpoints do aplicativo.
 Aqui são definidos os caminhos e associações entre URLs e suas respectivas funções de tratamento. Dentro de app/services estão as lógicas de negócio que processam as requisições recebidas.
@@ -105,3 +106,27 @@ def recomendar_taxa_endpoint(
     """
     resultado = taxa_analisada(db, user_id, valor, prazo, score, tipo)
     return resultado
+
+@router.get("/internal/recommendations/solicitacoes/{user_id}", tags=["Recomendação"])
+def get_recomendacoes_endpoint(
+    user_id: int,
+    perfil: str,
+    valor: float = None,
+    prazo: int = None,
+    taxa: str = None,
+    score: int = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint para retornar lista de propostas recomendadas, ordenadas por compatibilidade/diversidade.
+    """
+    propostas = PropostaService.get_propostas_recomendadas(
+        db=db,
+        user_id=user_id,
+        perfil=perfil,
+        valor=valor,
+        prazo=prazo,
+        taxa=taxa,
+        score=score
+    )
+    return propostas

@@ -61,7 +61,6 @@ def faixa_mercado_por_score(db: Session, score: int) -> Tuple[float, float]:
 	return min_taxa, max_taxa
 
 
-
 def taxa_analisada(
 	db: Session,
 	user_id: int,
