@@ -66,36 +66,36 @@ INSERT INTO negociacoes (id_tomador, id_investidor, status, criado_em, atualizad
 -- Inserindo propostas para as negociações
 INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, taxa_sugerida, prazo_meses, criado_em, tipo, status, parcela, valor, justificativa, negociavel) VALUES
 -- Propostas para negociação 1 (finalizada)
-(1, 1, 'tomador', '1.5%', '1.0%', 12, NOW() - INTERVAL '10 days', 'inicial', 'rejeitada', 850.00, 10000.00, 'Preciso de taxa mais baixa', true),
-(1, 2, 'investidor', '1.0%', '1.3%', 12, NOW() - INTERVAL '9 days', 'contraproposta', 'rejeitada', 870.00, 10000.00, 'Taxa muito baixa para o risco', true),
-(1, 1, 'tomador', '1.3%', '1.2%', 12, NOW() - INTERVAL '8 days', 'contraproposta', 'aceita', 860.00, 10000.00, 'Aceito essa taxa', false),
+(1, 1, 'tomador', '1.5-2.0', '1.0-3.0', 12, NOW() - INTERVAL '10 days', 'inicial', 'rejeitada', 850.00, 10000.00, 'Preciso de taxa mais baixa', true),
+(1, 2, 'investidor', '1.0-1.8', '1.3-2.0', 12, NOW() - INTERVAL '9 days', 'contraproposta', 'rejeitada', 870.00, 10000.00, 'Taxa muito baixa para o risco', true),
+(1, 1, 'tomador', '1.3-1.8', '1.2-2.0', 12, NOW() - INTERVAL '8 days', 'contraproposta', 'aceita', 860.00, 10000.00, 'Aceito essa taxa', false),
 
 -- Propostas para negociação 2 (em andamento)
-(2, 3, 'tomador', '2.0%', '1.5%', 18, NOW() - INTERVAL '5 days', 'inicial', 'pendente', 1100.00, 18000.00, 'Primeira casa própria', true),
-(2, 4, 'investidor', '1.5%', '1.8%', 18, NOW() - INTERVAL '4 days', 'contraproposta', 'em_analise', 1150.00, 18000.00, 'Ajuste necessário por risco', true),
+(2, 3, 'tomador', '2.0-2.5', '1.5-2.0', 18, NOW() - INTERVAL '5 days', 'inicial', 'pendente', 1100.00, 18000.00, 'Primeira casa própria', true),
+(2, 4, 'investidor', '1.5-2.0', '1.8-2.5', 18, NOW() - INTERVAL '4 days', 'contraproposta', 'em_analise', 1150.00, 18000.00, 'Ajuste necessário por risco', true),
 
 -- Propostas para negociação 3 (finalizada)
-(3, 6, 'tomador', '2.5%', '1.8%', 24, NOW() - INTERVAL '15 days', 'inicial', 'rejeitada', 1250.00, 25000.00, 'Capital de giro', true),
-(3, 5, 'investidor', '1.8%', '2.2%', 24, NOW() - INTERVAL '14 days', 'contraproposta', 'rejeitada', 1300.00, 25000.00, 'Risco elevado requer ajuste', true),
-(3, 6, 'tomador', '2.2%', '2.0%', 24, NOW() - INTERVAL '13 days', 'contraproposta', 'rejeitada', 1280.00, 25000.00, 'Consigo pagar um pouco mais', true),
-(3, 5, 'investidor', '2.0%', '2.1%', 24, NOW() - INTERVAL '12 days', 'final', 'aceita', 1290.00, 25000.00, 'Acordo fechado', false),
+(3, 6, 'tomador', '2.5-3.0', '1.8-2.5', 24, NOW() - INTERVAL '15 days', 'inicial', 'rejeitada', 1250.00, 25000.00, 'Capital de giro', true),
+(3, 5, 'investidor', '1.8-2.2', '2.2-2.8', 24, NOW() - INTERVAL '14 days', 'contraproposta', 'rejeitada', 1300.00, 25000.00, 'Risco elevado requer ajuste', true),
+(3, 6, 'tomador', '2.2-2.8', '2.0-2.5', 24, NOW() - INTERVAL '13 days', 'contraproposta', 'rejeitada', 1280.00, 25000.00, 'Consigo pagar um pouco mais', true),
+(3, 5, 'investidor', '2.0-2.1', '2.1-2.2', 24, NOW() - INTERVAL '12 days', 'final', 'aceita', 1290.00, 25000.00, 'Acordo fechado', false),
 
 -- Propostas para negociação 4 (em negociação)
-(4, 7, 'tomador', '1.8%', '1.3%', 15, NOW() - INTERVAL '3 days', 'inicial', 'em_analise', 950.00, 12000.00, 'Reforma residencial', true),
+(4, 7, 'tomador', '1.8-1.9', '1.3-1.4', 15, NOW() - INTERVAL '3 days', 'inicial', 'em_analise', 950.00, 12000.00, 'Reforma residencial', true),
 
 -- Propostas para negociação 5 (cancelada)
-(5, 9, 'tomador', '2.2%', '1.8%', 20, NOW() - INTERVAL '8 days', 'inicial', 'cancelada', 1200.00, 20000.00, 'Mudança de planos', true),
-(5, 10, 'investidor', '1.8%', '2.0%', 20, NOW() - INTERVAL '7 days', 'contraproposta', 'cancelada', 1220.00, 20000.00, 'Dentro do perfil', true),
+(5, 9, 'tomador', '2.2-2.5', '1.8-2.0', 20, NOW() - INTERVAL '8 days', 'inicial', 'cancelada', 1200.00, 20000.00, 'Mudança de planos', true),
+(5, 10, 'investidor', '1.8-2.0', '2.0-2.2', 20, NOW() - INTERVAL '7 days', 'contraproposta', 'cancelada', 1220.00, 20000.00, 'Dentro do perfil', true),
 
 -- Propostas para negociação 6 (em andamento)
-(6, 11, 'tomador', '2.5%', '2.0%', 30, NOW() - INTERVAL '2 days', 'inicial', 'pendente', 1100.00, 30000.00, 'Expansão negócio', true),
-(6, 12, 'investidor', '2.0%', '2.3%', 30, NOW() - INTERVAL '1 day', 'contraproposta', 'em_analise', 1150.00, 30000.00, 'Perfil de risco adequado', true),
+(6, 11, 'tomador', '2.5-3.0', '2.0-2.5', 30, NOW() - INTERVAL '2 days', 'inicial', 'pendente', 1100.00, 30000.00, 'Expansão negócio', true),
+(6, 12, 'investidor', '2.0-2.3', '2.3-2.5', 30, NOW() - INTERVAL '1 day', 'contraproposta', 'em_analise', 1150.00, 30000.00, 'Perfil de risco adequado', true),
 
 -- Propostas para negociação 7 (pendente)
-(7, 13, 'tomador', '3.0%', '2.5%', 36, NOW() - INTERVAL '1 day', 'inicial', 'pendente', 800.00, 25000.00, 'Necessidade urgente', true),
+(7, 13, 'tomador', '3.0-3.5', '2.5-3.0', 36, NOW() - INTERVAL '1 day', 'inicial', 'pendente', 800.00, 25000.00, 'Necessidade urgente', true),
 
 -- Propostas para negociação 8 (em negociação)
-(8, 14, 'tomador', '1.8%', '1.4%', 14, NOW(), 'inicial', 'em_analise', 1050.00, 14000.00, 'Investimento pessoal', true);
+(8, 14, 'tomador', '1.8-1.9', '1.4-1.5', 14, NOW(), 'inicial', 'em_analise', 1050.00, 14000.00, 'Investimento pessoal', true);
 
 -- Comentários informativos
 -- Total de registros inseridos:

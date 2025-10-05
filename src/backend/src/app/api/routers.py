@@ -20,6 +20,10 @@ from app.models.negociacao import NegociacaoCreate, NegociacaoResponse
 from app.services.proposta import PropostaService
 from app.models.proposta import PropostaCreate, PropostaResponse 
 
+# Imports para Recomendação de Taxa
+from app.services.calculo_taxas_juros import taxa_analisada
+
+
 # -- ROTEADOR GERAL --
 router = APIRouter()
 
@@ -85,3 +89,19 @@ def calcular_score_final_usuario(user_id: int, db: Session = Depends(get_db)):
         "valor_score": score,
         "prob_default": prob_default
     }
+
+@router.get("/recomendacao/taxa", tags=["Recomendação"])
+def recomendar_taxa_endpoint(
+    user_id: int,
+    valor: float,
+    prazo: int,
+    score: int,
+    tipo: str = "tomador",
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint para recomendar faixa de taxa (taxa_analisada) para nova proposta.
+    Retorna faixa sugerida, faixa de mercado, mensagem e média do usuário.
+    """
+    resultado = taxa_analisada(db, user_id, valor, prazo, score, tipo)
+    return resultado
