@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -58,6 +57,71 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Profile colors
+        borrower: {
+          DEFAULT: "hsl(var(--borrower))",
+          light: "hsl(var(--borrower-light))",
+          foreground: "hsl(var(--borrower-foreground))",
+        },
+        investor: {
+          DEFAULT: "hsl(var(--investor))",
+          light: "hsl(var(--investor-light))",
+          foreground: "hsl(var(--investor-foreground))",
+        },
+        // Semantic colors
+        positive: {
+          DEFAULT: "hsl(var(--positive))",
+          light: "hsl(var(--positive-light))",
+          foreground: "hsl(var(--positive-foreground))",
+        },
+        negative: {
+          DEFAULT: "hsl(var(--negative))",
+          light: "hsl(var(--negative-light))",
+          foreground: "hsl(var(--negative-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          light: "hsl(var(--success-light))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          light: "hsl(var(--warning-light))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          light: "hsl(var(--info-light))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+        // Status colors
+        status: {
+          active: "hsl(var(--status-active))",
+          "active-light": "hsl(var(--status-active-light))",
+          pending: "hsl(var(--status-pending))",
+          "pending-light": "hsl(var(--status-pending-light))",
+          cancelled: "hsl(var(--status-cancelled))",
+          "cancelled-light": "hsl(var(--status-cancelled-light))",
+          completed: "hsl(var(--status-completed))",
+          "completed-light": "hsl(var(--status-completed-light))",
+        },
+        // Chart colors
+        chart: {
+          principal: "hsl(var(--chart-principal))",
+          interest: "hsl(var(--chart-interest))",
+          fee: "hsl(var(--chart-fee))",
+          profit: "hsl(var(--chart-profit))",
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+        },
+      },
+      fontFamily: {
+        heading: "var(--font-heading)",
+        body: "var(--font-body)",
+        mono: "var(--font-mono)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -88,5 +152,5 @@ export default {
       },
     },
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
