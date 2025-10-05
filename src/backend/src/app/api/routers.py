@@ -1,3 +1,4 @@
+
 """
 Este arquivo é responsável pelo roteamento dos endpoints do aplicativo.
 Aqui são definidos os caminhos e associações entre URLs e suas respectivas funções de tratamento. Dentro de app/services estão as lógicas de negócio que processam as requisições recebidas.
@@ -19,6 +20,10 @@ from app.models.negociacao import NegociacaoCreate, NegociacaoResponse
 # Imports para Proposta
 from app.services.proposta import PropostaService
 from app.models.proposta import PropostaCreate, PropostaResponse 
+
+# Imports para Recomendação de Taxa
+from app.services.calculo_taxas_juros import taxa_analisada
+
 
 # -- ROTEADOR GERAL --
 router = APIRouter()
@@ -77,3 +82,43 @@ def calcular_score_final_usuario(user_id: int, db: Session = Depends(get_db)):
         "valor_score": score,
         "prob_default": prob_default
     }
+
+@router.get("/recomendacao/taxa", tags=["Recomendação"])
+def recomendar_taxa_endpoint(
+    user_id: int,
+    valor: float,
+    prazo: int,
+    score: int,
+    tipo: str = "tomador",
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint para recomendar faixa de taxa (taxa_analisada) para nova proposta.
+    Retorna faixa sugerida, faixa de mercado, mensagem e média do usuário.
+    """
+    resultado = taxa_analisada(db, user_id, valor, prazo, score, tipo)
+    return resultado
+
+@router.get("/internal/recommendations/solicitacoes/{user_id}", tags=["Recomendação"])
+def get_recomendacoes_endpoint(
+    user_id: int,
+    perfil: str,
+    valor: float = None,
+    prazo: int = None,
+    taxa: str = None,
+    score: int = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Endpoint para retornar lista de propostas recomendadas, ordenadas por compatibilidade/diversidade.
+    """
+    propostas = PropostaService.get_propostas_recomendadas(
+        db=db,
+        user_id=user_id,
+        perfil=perfil,
+        valor=valor,
+        prazo=prazo,
+        taxa=taxa,
+        score=score
+    )
+    return propostas

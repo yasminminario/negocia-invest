@@ -42,10 +42,34 @@ def montar_analise_usuario(user_id: int, db: Session) -> dict:
     ).scalar() or 0.0
 
     # Média taxa de juros paga / média prazo contratado
-    media_taxa_juros_paga, media_prazo_contratado = db.execute(text(
-        "SELECT AVG(REPLACE(p.taxa_sugerida, '%', '')::float) AS media_taxa, AVG(p.prazo_meses) AS media_prazo FROM propostas p JOIN negociacoes n ON n.id = p.id_negociacoes WHERE n.id_tomador = :user_id AND n.assinado_em IS NOT NULL AND p.status = 'aceita';"),
+    # Adaptar para faixas: taxa_sugerida pode ser '12-15', '10', etc.
+    rows = db.execute(text(
+        "SELECT p.taxa_sugerida, p.prazo_meses FROM propostas p JOIN negociacoes n ON n.id = p.id_negociacoes WHERE n.id_tomador = :user_id AND n.assinado_em IS NOT NULL AND p.status = 'aceita';"),
         {"user_id": user_id}
-    ).fetchone() or (0.0, 0.0)
+    ).fetchall()
+    taxas = []
+    prazos = []
+    for taxa_str, prazo in rows:
+        if taxa_str:
+            if '-' in taxa_str:
+                partes = taxa_str.split('-')
+                try:
+                    min_t = float(partes[0].strip())
+                    max_t = float(partes[1].strip())
+                    taxa = (min_t + max_t) / 2
+                except Exception:
+                    taxa = None
+            else:
+                try:
+                    taxa = float(taxa_str.strip())
+                except Exception:
+                    taxa = None
+            if taxa is not None:
+                taxas.append(taxa)
+        if prazo is not None:
+            prazos.append(prazo)
+    media_taxa_juros_paga = round(sum(taxas) / len(taxas), 2) if taxas else 0.0
+    media_prazo_contratado = round(sum(prazos) / len(prazos), 2) if prazos else 0.0
 
     # Renda mensal
     renda_mensal = db.execute(text(
