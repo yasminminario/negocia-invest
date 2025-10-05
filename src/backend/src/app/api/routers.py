@@ -6,7 +6,11 @@ Aqui são definidos os caminhos e associações entre URLs e suas respectivas fu
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from model.model_analise_credito import predict_default_probability, score_from_probability
+from app.services.score import calcular_score_final
+from app.services.api_score import montar_analise_usuario
+from app.services.serasa import get_serasa_score
 from app.database.database import get_db
+from sqlalchemy import text
 
 # Imports para Negociação
 from app.services.negociacao import NegociacaoService
@@ -41,8 +45,35 @@ def listar_propostas_endpoint(
 ):
     return PropostaService.get_propostas(db, id_negociacoes=id_negociacoes)
     
-@router.post("/score")
-async def calcular_score(features: dict, db: Session = Depends(get_db)):
-    prob_default = predict_default_probability(features)
-    score = score_from_probability(prob_default)
-    return {"score": score, "prob_default": prob_default}
+
+# Novo endpoint: Score final (modelo + Serasa)
+
+@router.post("/score/{user_id}")
+def calcular_score_final_usuario(user_id: int, db: Session = Depends(get_db)):
+    # 1. Monta análise do usuário (via queries)
+    analise = montar_analise_usuario(user_id, db)
+
+    # 2. Calcula score do modelo
+    prob_default = predict_default_probability(analise)
+    score_modelo = score_from_probability(prob_default)
+
+    # 3. Mocka score do Serasa
+    # Busca CPF se existir, senão usa mock
+    cpf = analise.get("cpf", "00000000000")
+    score_serasa = get_serasa_score(cpf)
+
+    # 4. Calcula score final (média ponderada, usando user_id e db)
+    score = calcular_score_final(score_modelo, score_serasa, user_id, db)
+
+    # 5. Salva score final na tabela scores_credito
+    db.execute(text("UPDATE scores_credito SET valor_score = :score WHERE id_usuarios = :id"), {"score": score, "id": user_id})
+    db.commit()
+
+    return {
+        "user_id": user_id,
+        "analise": analise,
+        "score_modelo": score_modelo,
+        "score_serasa": score_serasa,
+        "valor_score": score,
+        "prob_default": prob_default
+    }

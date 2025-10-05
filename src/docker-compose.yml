@@ -24,6 +24,8 @@ services:
       - negociaai-net
 
   backend:
+    env_file:
+      - ../.env
     build:
       context: ./backend
       dockerfile: Dockerfile
