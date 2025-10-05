@@ -7,6 +7,7 @@ from app.models.negociacao import Negociacao, NegociacaoCreate
 from datetime import datetime
 from typing import Optional, List
 import hashlib
+from app.services.blockchain import registrar_hash_na_blockchain
 # from app.services.blockchain import registrar_hash_na_blockchain
 
 class NegociacaoService:
@@ -43,6 +44,9 @@ class NegociacaoService:
             hash_bytes = hashlib.sha256(dados_contrato.encode("utf-8")).digest()
             negociacao.contrato_tx_hash = hash_bytes
         negociacao.atualizado_em = datetime.utcnow()
+
+        # Chama a função para registrar o hash na blockchain
+        registrar_hash_na_blockchain(contrato_tx_hash=negociacao.contrato_tx_hash)
         db.commit()
         db.refresh(negociacao)
         return negociacao
