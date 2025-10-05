@@ -1309,48 +1309,48 @@ Este serviço é fundamental para garantir que a plataforma opere dentro das nor
 
 ## Modelo de Negócio
 
-### Custos
+&emsp;Pela solução se tratar de um Whitelabel, ou seja, uma plataforma que será disponibilizada para que terceiros disponibilizem o seu uso para seus clientes, o modelo de negócio é B2B2C (Business-To-Business-To-Client). O aplicativo funcionará como um whitelabel de feature oferecida pela QI Tech a ser acoplado dentro de soluções financeiras de seus clientes.
+
+&emsp;Essa estratégia diminui riscos como a dificuldade de aplicação de penalidades para inadimplentes, visto que, em um aplicativo isolado da solução, durante algum período de inadimplência o cliente final poderia se ausentar e dificultar os canais de comunicação, o que não dificulmente quando a solução é acoplada a outra como um banco digital, o qual já possui seu sistema de segurança, antifraude, rastreabilidade dos seus usuários e os mecanismos para facilitar transferências e registros de penalidades.
+
+&emsp;Segue tabela de custos e oportunidades com a solução, bem como o detalhamento dos atributos de implementação:
+
+<p align="center">
+  <img src="./img/modeloNegocio.png" alt="Imagem com tabela explicando sustentabilidade financeira do negocia.ai" width="100%">
+</p>
 
 #### Motor de Score (embutido no monólito)
 
-&emsp;Considerando uma estimativa mensal de 10.000 novos usuários na solução arquitetada, tem-se as seguintes estimativas. 
+&emsp;Considerando uma estimativa mensal de 10.000 novos usuários na solução arquitetada, tem-se os seguintes cálculos: 
 
 | Item | Descrição | Frequência | Estimativa (R$/mês) |
 |------|-----------|------------|----------------------|
 | **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
-| **Integração Serasa** | Consulta de score de crédito na abertura da conta, com consulta periódica a cada 3 meses | Variável (depende nº de usuários) | 150.000 / a cada 3 meses => 150.000 / 3 = R$ 50.000 |
+| **Integração Serasa** | Consulta de score de crédito na abertura da conta, com consulta periódica a cada 3 meses | Variável (depende nº de usuários) | 150.000 / a cada 3 meses => 150.000 / 3 = R$ 50.000 mensais |
 | **Equipe Dev/Data** | Desenvolvimento inicial (1 Desenvolvedor Full-Stack Sênior + 2 estagiários QI Tech | Investimento único | R$ 29.000 |
 | **Manutenção Modelo** | Re-treino mensal (data scientist) + monitoramento | Recorrente | 8.000 |
 | **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
 
-**Total Operacional Mensal (score)**: ~11.500  
-**Investimento Inicial (score)**: ~90.000  
+&emsp;A solução, já entregue com parte de seu escopo concluído, tem Roadmap total de implementação de 4 semanas, 
 
+- Semana 1:  Serviços de front, backend (com motores de recomendação e score), e banco de dados
+- Semana 2:  Integração interna e externa (serviços QI), integração Blockchain
+- Semana 3:  Deploy na nuvem
+- Semana 4: Últimos refinamentos
 
-#### Motor de Recomendação (embutido no monólito)
+&emsp;Como custo total de implementação para o primeiro mês, sem os custos posteriores (e reduzidos) de manutenção anual, estima-se o investimento inicial de **R$ 90.500**.
 
-| Item | Descrição | Frequência | Estimativa (R$/mês) |
-|------|-----------|------------|----------------------|
-| **Infraestrutura** | Uso do mesmo container monolítico + Redis | Contínuo | incluso na infra (~1.800) |
-| **Desenvolvimento** | 2 devs backend por 2 meses (lógica de regras e API) | Investimento único | 60.000 (único) |
-| **Manutenção** | Ajuste das regras de recomendação, melhorias de UX | Recorrente | 2.500 |
-| **Batch diário** | Cálculo das faixas de mercado e estatísticas | Recorrente | incluso na infra |
-| **Analytics/Auditoria** | Armazenamento de taxas sugeridas para análise | Recorrente | 500 |
-
-**Total Operacional Mensal (recomendação)**: ~2.500  
-**Investimento Inicial (recomendação)**: ~60.000  
-
-
-#### Backend Consolidado (Infraestrutura)
+&emsp;Somando-se apenas os seguintes custos de manutenção posteriores mensais, tem-se:
 
 | Item | Descrição | Frequência | Estimativa (R$/mês) |
 |------|-----------|------------|----------------------|
-| **Container Monolítico** | Execução do backend completo (incluindo os motores) | Contínuo | 1.800 |
-| **Banco de Dados (RDS)** | Postgres relacional | Contínuo | incluso no valor acima |
-| **Redis (ElastiCache)** | Fila/eventos | Contínuo | incluso no valor acima |
+| **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
+| **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
+| **Equipe Dev/Data** | Manutenção (2 estagiários QI Tech | Investimento único | R$ 7.000 |
 
-**Total Infra Consolidada**: ~1.800/mês   
+&emsp;Portanto, como custo total de manutenção, tem-se o total mensal de **R$ 10.500**.
 
+&emsp;Para se entender a perspectiva anual de custos x receitas no primeiro ano de implementação, segundo a QI Tech, um ticket mínimo acaba por ser um plano básico + configuração de um Whitelabel, totalizando R$ 20.000 em uma venda. Num cenário anual de vendas do *negocia.ai*, teria-se R$ 90.000 no primeiro mês, somados a cerca de R$ 10.000 nos próximos 11 meses. Portanto, totalizaria um custo anual de R$ 200.000 apenas com essa solução. Entretanto, seu Break-even a partir da implementação inicial acontece após 4.5 vendas e, com apenas uma venda, abate-se o custo mensal de manutenções com sobra.
 
 #### Considerações Importantes
 
@@ -1363,18 +1363,20 @@ Este serviço é fundamental para garantir que a plataforma opere dentro das nor
 - Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
 - Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
 
-### 💵 **Fontes de Receita Pensadas**
+### 💵 **Fontes de Receita do Negocia.ai**
 
-#### 1) Taxa sobre cada empréstimo
-- **Descrição**: cobrança de uma taxa de intermediação em cada contrato fechado.  
-- **Modelo possível**: percentual sobre o valor do empréstimo (ex.: 1%–3%).  
-- **Observação**: precisa de validação jurídica para garantir conformidade com o Banco Central (SEP – Sociedade de Empréstimo entre Pessoas).
+#### 1) Cobrança por implementação:
+- Através da compra por parte de clientes dos planos de negócio da QI Tech, os quais disponibilizam a personalização de um Whitelabel, o negocia.ai, sendo um plano com preço inicial de R$ 20.000. 
 
-#### 2) Cobrança por inadimplência
+#### 2) Taxa sobre cada empréstimo
+- **Descrição**: cobrança de uma taxa de intermediação em cada parcela de empréstimo fechado. Através de requisições na API de Consumo da QI Tech, será emitida uma fatura mensal com os valores e encargos combinados.  
+- **Modelo possível**: percentual sobre o valor do empréstimo (ex.: 1%–3%, conforme acordado entre QI Tech x Cliente e conforme formalidades regulatórias).
+
+#### 3) Cobrança por inadimplência
 - **Descrição**: taxa administrativa aplicada em casos de atraso, para cobrir custos de cobrança e eventual registro em bureaus de crédito (ex.: Serasa).  
 - **Objetivo**: compensar o risco operacional e desestimular o atraso.
 
-#### 3) Parcerias com empresas/serviços
+#### 4) Parcerias com empresas/serviços
 - **Descrição**: acordos com terceiros para geração de receita indireta, como:  
   - Seguradoras (proteção contra inadimplência).  
   - Bureaus de crédito (consultas adicionais).  
