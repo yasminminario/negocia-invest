@@ -1,1 +1,0 @@
-// Exibe os detalhes completos de uma oferta de empréstimo feita por um investidor.
