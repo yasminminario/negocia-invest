@@ -103,10 +103,6 @@ def recomendar_taxa_endpoint(
 def get_recomendacoes_endpoint(
     user_id: int,
     perfil: str,
-    valor: float = None,
-    prazo: int = None,
-    taxa: str = None,
-    score: int = None,
     db: Session = Depends(get_db)
 ):
     """
@@ -115,10 +111,6 @@ def get_recomendacoes_endpoint(
     propostas = PropostaService.get_propostas_recomendadas(
         db=db,
         user_id=user_id,
-        perfil=perfil,
-        valor=valor,
-        prazo=prazo,
-        taxa=taxa,
-        score=score
+        perfil=perfil
     )
     return propostas
