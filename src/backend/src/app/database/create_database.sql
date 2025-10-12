@@ -4,13 +4,14 @@ CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     nome varchar(160) NOT NULL,
     email varchar(160) NOT NULL UNIQUE,
-    cpf varchar(20) NOT NULL,
-    saldo_cc numeric NOT NULL DEFAULT 0,
+    cpf varchar(20),
+    saldo_cc numeric DEFAULT 0,
     endereco varchar(255),
     renda_mensal numeric,
-    celular varchar(40) NOT NULL,
+    senha varchar(255) NOT NULL,
+    celular varchar(40),
     wallet_adress varchar NOT NULL UNIQUE,
-    facial numeric NOT NULL,
+    facial numeric,
     criado_em timestamp NOT NULL DEFAULT now()
 );
 

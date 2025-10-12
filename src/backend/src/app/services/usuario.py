@@ -2,14 +2,171 @@
 
 from decimal import Decimal
 from typing import List, Optional
+import secrets
 
 from sqlalchemy.orm import Session
 
 from app.models.usuario import Usuario, UsuarioResponse
+import random
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
 
 class UsuarioService:
     """Camada de acesso a dados dos usuários."""
+
+    @staticmethod
+    def login(db: Session, email: str, senha: str) -> UsuarioResponse:
+        """Autentica usuário por email e senha. Retorna UsuarioResponse ou lança ValueError."""
+
+        email = (email or "").strip().lower()
+        senha = (senha or "")
+
+        if not email or not senha:
+            raise ValueError("Email e senha são obrigatórios.")
+
+        usuario = db.query(Usuario).filter(Usuario.email == email).first()
+        if not usuario or not check_password_hash(usuario.senha, senha):
+            raise ValueError("Email ou senha inválidos.")
+
+        return UsuarioService.to_response(usuario)
+
+    @staticmethod
+    def criar(
+        db: Session,
+        nome: str,
+        email: str,
+        senha: str,
+        confirmar_senha: str,
+        cpf: Optional[str] = None,
+        endereco: Optional[str] = None,
+        renda_mensal: float = 0,
+        celular: Optional[str] = None,
+        wallet_adress: Optional[str] = None,
+        facial: float = 0,
+    ) -> UsuarioResponse:
+        """Cria um usuário aceitando campos opcionais adicionais.
+
+        Campos opcionais: cpf, endereco, renda_mensal, celular, wallet_adress, facial
+        """
+
+        nome = (nome or "").strip()
+        email = (email or "").strip().lower()
+        senha = (senha or "")
+        confirmar_senha = (confirmar_senha or "")
+
+        if not nome or not email or not senha or not confirmar_senha:
+            raise ValueError("Nome, email, senha e confirmação de senha são obrigatórios.")
+
+        if senha != confirmar_senha:
+            raise ValueError("Senha e confirmação de senha não coincidem.")
+
+        if len(senha) < 6:
+            raise ValueError("A senha deve ter pelo menos 6 caracteres.")
+
+        # Verifica unicidade de email
+        if db.query(Usuario).filter(Usuario.email == email).first():
+            raise ValueError("Email já cadastrado.")
+
+        # Normaliza CPF (armazena só dígitos) se fornecido
+        cpf_db = None
+        if cpf is not None:
+            somente_digitos = ''.join(filter(str.isdigit, cpf or ""))
+            if somente_digitos == "":
+                cpf_db = None
+            else:
+                if len(somente_digitos) != 11:
+                    raise ValueError("CPF inválido. Deve conter 11 dígitos.")
+                # Verifica unicidade de CPF
+                existente_cpf = db.query(Usuario).filter(Usuario.cpf == somente_digitos).first()
+                if existente_cpf:
+                    raise ValueError("CPF já cadastrado.")
+                cpf_db = somente_digitos
+
+        # Normaliza celular
+        celular_db = None
+        if celular is not None:
+            somente_digitos = ''.join(filter(str.isdigit, celular or ""))
+            if somente_digitos == "":
+                celular_db = None
+            else:
+                if len(somente_digitos) < 8:
+                    raise ValueError("Celular inválido.")
+                celular_db = somente_digitos
+
+        # Wallet: gere se não fornecida
+        if not wallet_adress:
+            wallet_adress = "0x" + secrets.token_hex(20)
+
+        saldo_inicial = float(round(random.uniform(1000.0, 60000.0), 2))
+        usuario = Usuario(
+            nome=nome,
+            email=email,
+            senha=generate_password_hash(senha),
+            saldo_cc=saldo_inicial,
+            cpf=cpf_db,
+            endereco=endereco,
+            renda_mensal=renda_mensal,
+            celular=celular_db,
+            wallet_adress=wallet_adress,
+            facial=float(facial) if facial is not None else None,
+        )
+
+        db.add(usuario)
+        db.flush()  # garante que id e timestamps sejam populados
+        return UsuarioService.to_response(usuario)
+
+    @staticmethod
+    def atualizar(db: Session, usuario_id: int,
+                  nome: Optional[str] = None,
+                  email: Optional[str] = None,
+                  cpf: Optional[str] = None,
+                  celular: Optional[str] = None) -> UsuarioResponse:
+        """Atualiza campos opcionais do usuário (nome, email, cpf, celular)."""
+
+        usuario = db.query(Usuario).filter(Usuario.id == usuario_id).with_for_update().first()
+        if not usuario:
+            raise ValueError(f"Usuário {usuario_id} não encontrado.")
+
+        # Nome
+        if nome is not None:
+            nome = (nome or "").strip()
+            if not nome:
+                raise ValueError("Nome não pode ser vazio.")
+            usuario.nome = nome
+
+        # Email (verifica unicidade)
+        if email is not None:
+            email = (email or "").strip().lower()
+            if not email:
+                raise ValueError("Email não pode ser vazio.")
+            existente = db.query(Usuario).filter(Usuario.email == email, Usuario.id != usuario_id).first()
+            if existente:
+                raise ValueError("Email já cadastrado.")
+            usuario.email = email
+
+        # CPF (aceita limpar com string vazia)
+        if cpf is not None:
+            somente_digitos = ''.join(filter(str.isdigit, cpf or ""))
+            if somente_digitos == "":
+                usuario.cpf = None
+            else:
+                if len(somente_digitos) != 11:
+                    raise ValueError("CPF inválido. Deve conter 11 dígitos.")
+                usuario.cpf = somente_digitos  # armazena somente dígitos
+
+        # Celular (aceita limpar com string vazia)
+        if celular is not None:
+            somente_digitos = ''.join(filter(str.isdigit, celular or ""))
+            if somente_digitos == "":
+                usuario.celular = None
+            else:
+                if len(somente_digitos) < 8:
+                    raise ValueError("Celular inválido.")
+                usuario.celular = somente_digitos  # armazena somente dígitos
+
+        db.flush()
+        return UsuarioService.to_response(usuario)
 
     @staticmethod
     def listar(db: Session) -> List[UsuarioResponse]:

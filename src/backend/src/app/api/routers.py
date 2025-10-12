@@ -34,10 +34,76 @@ from app.services.calculo_taxas_juros import taxa_analisada
 from fastapi import HTTPException
 from app.services.emprestimo import EmprestimoService
 from app.models.emprestimo import EmprestimoResponse
+import random
+import secrets
 
 
 # -- ROTEADOR GERAL --
 router = APIRouter()
+
+@router.post("/usuarios/login", response_model=UsuarioResponse, tags=["Usuários"])
+def login_usuario_endpoint(payload: dict, db: Session = Depends(get_db)):
+    """
+    Autentica usuário por email e senha.
+    Corpo esperado: { "email": "...", "senha": "..." }
+    """
+    try:
+        email = payload.get("email")
+        senha = payload.get("senha")
+        usuario = UsuarioService.login(db, email, senha)
+        return usuario
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+def _mock_cpf() -> str:
+    return "".join(str(random.randint(0, 9)) for _ in range(11))
+
+
+def _mock_wallet() -> str:
+    # Gera endereço estilo Ethereum (0x + 40 hex chars)
+    return "0x" + secrets.token_hex(20)
+
+
+@router.post("/usuarios", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED, tags=["Usuários"])
+def criar_usuario_endpoint(payload: dict, db: Session = Depends(get_db)):
+    """
+    Cria novo usuário.
+    Corpo esperado mínimo: { "nome": "...", "email": "...", "senha": "...", "confirmar_senha": "..." }
+    Campos adicionais (opcionales; serão mockados se ausentes): cpf, endereco, renda_mensal, celular, wallet_adress, facial
+    """
+    try:
+        nome = payload.get("nome")
+        email = payload.get("email")
+        senha = payload.get("senha")
+        confirmar_senha = payload.get("confirmar_senha")
+
+        # Campos adicionais — se não fornecidos, serão preenchidos com mocks/valores padrão
+        cpf = payload.get("cpf") or _mock_cpf()
+        endereco = payload.get("endereco") or "Rua Exemplo, 123"
+        renda_mensal = payload.get("renda_mensal") if payload.get("renda_mensal") is not None else 0
+        celular = payload.get("celular") or "+5511999999999"
+        wallet_adress = payload.get("wallet_adress") or _mock_wallet()
+        facial = payload.get("facial") if payload.get("facial") is not None else 0
+
+        usuario_payload = {
+            "nome": nome,
+            "email": email,
+            "senha": senha,
+            "confirmar_senha": confirmar_senha,
+            "cpf": cpf,
+            "endereco": endereco,
+            "renda_mensal": renda_mensal,
+            "celular": celular,
+            "wallet_adress": wallet_adress,
+            "facial": facial,
+        }
+
+        # Chama serviço de criação. Assumimos que UsuarioService.criar aceita kwargs correspondentes.
+        usuario = UsuarioService.criar(db, **usuario_payload)
+        return usuario
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.put("/negociacoes/{negociacao_id}", response_model=NegociacaoResponse, tags=["Negociações"])
 def atualizar_negociacao_endpoint(

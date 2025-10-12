@@ -12,3 +12,4 @@ web3==6.11.0
 psycopg2-binary
 python-dotenv
 requests
+werkzeug
