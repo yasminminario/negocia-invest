@@ -1,0 +1,1 @@
+// Hook customizado para interagir com o AuthContext, provendo funções como signIn, signOut e signUp.

@@ -1,0 +1,1 @@
+// Hook customizado que encapsula a lógica para buscar as listas de empréstimos ativos, concedidos ou solicitados.

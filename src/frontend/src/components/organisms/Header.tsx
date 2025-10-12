@@ -1,0 +1,1 @@
+// Componente de cabeçalho reutilizável da aplicação, incluindo o logo, título e ícones de ação.

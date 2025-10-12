@@ -1,0 +1,1 @@
+// Contexto para gerenciar o estado de autenticação do usuário (token, dados do usuário) em toda a aplicação.

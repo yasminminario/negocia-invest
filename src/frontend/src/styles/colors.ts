@@ -1,0 +1,1 @@
+// Define e exporta a paleta de cores da aplicação como tokens (ex: colors.primaryBlue).

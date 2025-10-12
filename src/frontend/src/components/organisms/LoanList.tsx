@@ -1,0 +1,1 @@
+// Componente que renderiza uma lista vertical de LoanCard, incluindo o estado de "lista vazia".

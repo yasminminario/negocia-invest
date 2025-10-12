@@ -1,0 +1,1 @@
+// Define o navegador do tipo Stack para o fluxo de autenticação (Login, Cadastro, Seleção de Perfil).

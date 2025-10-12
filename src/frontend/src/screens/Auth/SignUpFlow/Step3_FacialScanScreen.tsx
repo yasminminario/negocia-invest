@@ -1,0 +1,1 @@
+// Implementa a terceira etapa do cadastro: verificação facial para segurança.

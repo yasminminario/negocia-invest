@@ -1,0 +1,1 @@
+// Tela principal do Tomador, exibindo o score, produtos ativos e ofertas disponíveis.

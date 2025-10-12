@@ -1,0 +1,1 @@
+// Tela principal do Investidor, exibindo métricas de rentabilidade e solicitações de empréstimo.
