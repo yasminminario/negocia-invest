@@ -56,6 +56,9 @@ class NegociacaoUpdate(BaseModel):
     """Modelo específico para atualização - todos os campos opcionais."""
     id_tomador: Optional[int] = None
     id_investidor: Optional[int] = None
+    prazo: Optional[int] = None
+    valor: Optional[float] = None
+    parcela: Optional[float] = None
     status: Optional[str] = None
     taxa: Optional[float] = None
     quant_propostas: Optional[int] = None

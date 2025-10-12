@@ -4,13 +4,45 @@ Este arquivo é responsável pelas lógicas de salvamento dos dados de negociaç
 
 from sqlalchemy.orm import Session
 from app.models.negociacao import Negociacao, NegociacaoCreate
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List
 import hashlib
 from app.services.blockchain import registrar_hash_na_blockchain
+from app.services.usuario import UsuarioService
 # from app.services.blockchain import registrar_hash_na_blockchain
 
 class NegociacaoService:
+
+    EXPIRATION_WINDOW = timedelta(hours=48)
+    EXPIRABLE_STATUSES = {"em_negociacao", "pendente", "em_andamento"}
+
+    @staticmethod
+    def _aplicar_regra_expiracao(db: Session, negociacoes: List[Negociacao]) -> List[Negociacao]:
+        """Atualiza o status das negociações expiradas (>=48h sem conclusão)."""
+
+        if not negociacoes:
+            return negociacoes
+
+        agora = datetime.utcnow()
+        houve_atualizacao = False
+
+        for negociacao in negociacoes:
+            if (
+                negociacao.status in NegociacaoService.EXPIRABLE_STATUSES
+                and negociacao.criado_em
+                and agora - negociacao.criado_em >= NegociacaoService.EXPIRATION_WINDOW
+            ):
+                if negociacao.status != "expirada":
+                    negociacao.status = "expirada"
+                    negociacao.atualizado_em = agora
+                    houve_atualizacao = True
+
+        if houve_atualizacao:
+            db.commit()
+            for negociacao in negociacoes:
+                db.refresh(negociacao)
+
+        return negociacoes
 
     @staticmethod
     def atualizar_negociacao(db: Session, negociacao_id: int, negociacao_update: dict) -> Optional[Negociacao]:
@@ -21,6 +53,8 @@ class NegociacaoService:
         negociacao = db.query(Negociacao).filter(Negociacao.id == negociacao_id).first()
         if not negociacao:
             return None
+
+        status_anterior = negociacao.status
 
         for key, value in negociacao_update.items():
             if hasattr(negociacao, key):
@@ -41,8 +75,26 @@ class NegociacaoService:
             )
 
             # Gera o hash SHA256 e converte para bytes32
-            hash_bytes = hashlib.sha256(dados_contrato.encode("utf-8")).digest()
+            hash_bytes = hashlib.sha256(dados_contrato.encode("utf-8")).hexdigest()
             negociacao.contrato_tx_hash = hash_bytes
+
+        status_atual = negociacao.status
+
+        # Caso a negociação tenha sido concluída agora, transfere o valor ofertado
+        if (
+            status_atual in {"aceita", "finalizada"}
+            and status_anterior not in {"aceita", "finalizada"}
+            and negociacao.valor
+            and negociacao.id_investidor
+            and negociacao.id_tomador
+        ):
+            UsuarioService.transferir_valor(
+                db=db,
+                investidor_id=negociacao.id_investidor,
+                tomador_id=negociacao.id_tomador,
+                valor=negociacao.valor,
+            )
+
         negociacao.atualizado_em = datetime.utcnow()
 
         # Chama a função para registrar o hash na blockchain
@@ -60,12 +112,42 @@ class NegociacaoService:
         if status:
             query = query.filter(Negociacao.status == status)
             
-        return query.all()
+        negociacoes = query.all()
+        return NegociacaoService._aplicar_regra_expiracao(db, negociacoes)
     
+    @staticmethod
+    def listar_por_tomador(db: Session, tomador_id: int, status: Optional[str] = None) -> List[Negociacao]:
+        """Lista negociações associadas a um tomador específico."""
+
+        query = db.query(Negociacao).filter(Negociacao.id_tomador == tomador_id)
+
+        if status:
+            query = query.filter(Negociacao.status == status)
+
+        negociacoes = query.order_by(Negociacao.atualizado_em.desc()).all()
+        return NegociacaoService._aplicar_regra_expiracao(db, negociacoes)
+
+    @staticmethod
+    def listar_por_investidor(db: Session, investidor_id: int, status: Optional[str] = None) -> List[Negociacao]:
+        """Lista negociações associadas a um investidor específico."""
+
+        query = db.query(Negociacao).filter(Negociacao.id_investidor == investidor_id)
+
+        if status:
+            query = query.filter(Negociacao.status == status)
+
+        negociacoes = query.order_by(Negociacao.atualizado_em.desc()).all()
+        return NegociacaoService._aplicar_regra_expiracao(db, negociacoes)
+
     @staticmethod
     def obter_negociacao_por_id(db: Session, negociacao_id: int) -> Optional[Negociacao]:
         """Obtém uma negociação pelo ID."""
-        return db.query(Negociacao).filter(Negociacao.id == negociacao_id).first()
+        negociacao = db.query(Negociacao).filter(Negociacao.id == negociacao_id).first()
+        if not negociacao:
+            return None
+
+        negociacoes = NegociacaoService._aplicar_regra_expiracao(db, [negociacao])
+        return negociacoes[0]
 
     # @staticmethod
     # def registrar_negociacao_na_blockchain(db: Session, negociacao_id: int):

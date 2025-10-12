@@ -21,9 +21,18 @@ from app.models.negociacao import NegociacaoCreate, NegociacaoResponse, Negociac
 from app.services.proposta import PropostaService
 from app.models.proposta import PropostaCreate, PropostaResponse 
 
+# Imports para Usuários, Scores e Métricas
+from app.services.usuario import UsuarioService
+from app.services.score_credito import ScoreCreditoService
+from app.services.metricas import MetricasInvestidorService
+from app.models.usuario import UsuarioResponse
+from app.models.score import ScoreCreditoResponse
+from app.models.metricas_investidor import MetricasInvestidorResponse
+
 # Imports para Recomendação de Taxa
 from app.services.calculo_taxas_juros import taxa_analisada
 from fastapi import HTTPException
+from datetime import datetime
 
 
 # -- ROTEADOR GERAL --
@@ -64,6 +73,24 @@ def listar_negociacoes_endpoint(
 ):
     return NegociacaoService.listar_negociacoes(db, status=status)
 
+
+@router.get("/negociacoes/tomador/{tomador_id}", response_model=list[NegociacaoResponse], tags=["Negociações"])
+def listar_negociacoes_tomador_endpoint(
+    tomador_id: int,
+    status: str | None = None,
+    db: Session = Depends(get_db)
+):
+    return NegociacaoService.listar_por_tomador(db, tomador_id, status=status)
+
+
+@router.get("/negociacoes/investidor/{investidor_id}", response_model=list[NegociacaoResponse], tags=["Negociações"])
+def listar_negociacoes_investidor_endpoint(
+    investidor_id: int,
+    status: str | None = None,
+    db: Session = Depends(get_db)
+):
+    return NegociacaoService.listar_por_investidor(db, investidor_id, status=status)
+
 # --- ENDPOINTS DE PROPOSTA ---
 @router.post("/propostas", response_model=PropostaResponse, status_code=status.HTTP_201_CREATED, tags=["Propostas"])
 def criar_proposta_endpoint(
@@ -78,6 +105,17 @@ def listar_propostas_endpoint(
     db: Session = Depends(get_db)
 ):
     return PropostaService.get_propostas(db, id_negociacoes=id_negociacoes)
+
+
+@router.get("/propostas/{proposta_id}", response_model=PropostaResponse, tags=["Propostas"])
+def obter_proposta_por_id_endpoint(
+    proposta_id: int,
+    db: Session = Depends(get_db)
+):
+    proposta = PropostaService.get_proposta_por_id(db, proposta_id)
+    if not proposta:
+        raise HTTPException(status_code=404, detail="Proposta não encontrada")
+    return proposta
     
 
 # Novo endpoint: Score final (modelo + Serasa)
@@ -143,3 +181,52 @@ def get_recomendacoes_endpoint(
         perfil=perfil
     )
     return propostas
+
+
+# --- ENDPOINTS DE USUÁRIO, SCORE E MÉTRICAS ---
+
+
+@router.get("/usuarios", response_model=list[UsuarioResponse], tags=["Usuários"])
+def listar_usuarios_endpoint(db: Session = Depends(get_db)):
+    return UsuarioService.listar(db)
+
+
+@router.get("/usuarios/{usuario_id}", response_model=UsuarioResponse, tags=["Usuários"])
+def obter_usuario_por_id_endpoint(usuario_id: int, db: Session = Depends(get_db)):
+    usuario = UsuarioService.obter_por_id(db, usuario_id)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    return usuario
+
+
+@router.get(
+    "/scores_credito/usuario/{usuario_id}",
+    response_model=ScoreCreditoResponse,
+    tags=["Scores"]
+)
+def obter_score_por_usuario_endpoint(usuario_id: int, db: Session = Depends(get_db)):
+    score = ScoreCreditoService.obter_por_usuario(db, usuario_id)
+    if not score:
+        raise HTTPException(status_code=404, detail="Score não encontrado")
+    return score
+
+
+@router.get(
+    "/metricas_investidor/usuario/{usuario_id}",
+    response_model=MetricasInvestidorResponse,
+    tags=["Métricas"]
+)
+def obter_metricas_investidor_usuario_endpoint(usuario_id: int, db: Session = Depends(get_db)):
+    metricas = MetricasInvestidorService.obter_por_usuario(db, usuario_id)
+    if not metricas:
+        return MetricasInvestidorResponse(
+            id=0,
+            id_usuarios=usuario_id,
+            valor_total_investido=0.0,
+            rentabilidade_media_am=0.0,
+            patrimonio=0.0,
+            risco_medio=0.0,
+            analise_taxa={},
+            atualizado_em=datetime.utcnow(),
+        )
+    return metricas

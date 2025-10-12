@@ -1,0 +1,4 @@
+- [ ] Substituir ProfileContext para usuário mock e remover Supabase
+- [ ] Simplificar Login/SignUp para fluxo sem autenticação real
+- [ ] Criar serviços para consumir /negociacoes e /propostas
+- [ ] Atualizar hooks e páginas de negociações para usar serviços da API
