@@ -1,118 +1,95 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Notification } from '@/components/notifications/NotificationBell';
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react"
 
-interface NotificationContextType {
-  notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => void;
-  markAsRead: (id: string) => void;
-  markAllAsRead: () => void;
-  clearNotifications: () => void;
+import {
+    Toast,
+    ToastDescription,
+    ToastProvider,
+    ToastTitle,
+    ToastViewport,
+    ToastClose,
+} from "@/components/ui/toast"
+
+interface ToastMessage {
+    id: string
+    title?: string
+    description?: string
+    variant?: "default" | "success" | "warning" | "destructive" | "info"
+    action?: ReactNode
+    duration?: number
 }
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+interface NotificationContextValue {
+    notify: (toast: Omit<ToastMessage, "id">) => void
+    dismiss: (toastId: string) => void
+}
 
-// Mock notifications for development
-const mockNotifications: Notification[] = [
-  {
-    id: 'notif-1',
-    type: 'negotiation',
-    title: 'Nova proposta recebida',
-    message: 'Sofia Mendes enviou uma contraproposta de 1.38% a.m.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 min ago
-    actionUrl: '/borrower/negotiation/neg-1',
-    profileType: 'borrower',
-  },
-  {
-    id: 'notif-2',
-    type: 'payment',
-    title: 'Pagamento em 3 dias',
-    message: 'Sua próxima parcela de R$ 5.642,50 vence em 3 dias.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2h ago
-    actionUrl: '/borrower/loan/loan-1',
-    profileType: 'borrower',
-  },
-  {
-    id: 'notif-3',
-    type: 'loan',
-    title: 'Empréstimo aprovado',
-    message: 'Seu empréstimo de R$ 192.000,00 foi aprovado e está ativo.',
-    read: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    actionUrl: '/borrower/loans',
-    profileType: 'borrower',
-  },
-  {
-    id: 'notif-4',
-    type: 'negotiation',
-    title: 'Contraproposta do tomador',
-    message: 'Carlos Silva enviou uma contraproposta de 1.45% a.m.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 90), // 1.5h ago
-    actionUrl: '/investor/negotiation/neg-1',
-    profileType: 'investor',
-  },
-  {
-    id: 'notif-5',
-    type: 'loan',
-    title: 'Novo empréstimo ativo',
-    message: 'Um tomador aceitou sua oferta de R$ 50.000,00.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5h ago
-    actionUrl: '/investor/loans',
-    profileType: 'investor',
-  },
-];
+const NotificationContext = createContext<NotificationContextValue | undefined>(undefined)
 
-export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+export function NotificationProvider({ children }: { children: ReactNode }) {
+    const [toasts, setToasts] = useState<ToastMessage[]>([])
+    const timers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
 
-  const addNotification = (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: `notif-${Date.now()}`,
-      createdAt: new Date(),
-      read: false,
-    };
-    setNotifications((prev) => [newNotification, ...prev]);
-  };
+    const dismiss = useCallback((toastId: string) => {
+        const timeoutId = timers.current.get(toastId)
+        if (timeoutId) {
+            clearTimeout(timeoutId)
+            timers.current.delete(toastId)
+        }
+        setToasts((current) => current.filter((toast) => toast.id !== toastId))
+    }, [])
 
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
-    );
-  };
+    const scheduleRemoval = useCallback((toastId: string, duration: number) => {
+        const timeoutId = setTimeout(() => {
+            dismiss(toastId)
+            timers.current.delete(toastId)
+        }, duration)
+        timers.current.set(toastId, timeoutId)
+    }, [dismiss])
 
-  const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notif) => ({ ...notif, read: true }))
-    );
-  };
+    const notify = useCallback(
+        (toast: Omit<ToastMessage, "id">) => {
+            const id = typeof crypto !== "undefined" && "randomUUID" in crypto
+                ? crypto.randomUUID()
+                : Math.random().toString(36).slice(2, 10)
+            const duration = toast.duration ?? 5_000
+            const message: ToastMessage = { ...toast, id, duration }
+            setToasts((current) => [message, ...current].slice(0, 5))
+            scheduleRemoval(id, duration)
+        },
+        [scheduleRemoval]
+    )
 
-  const clearNotifications = () => {
-    setNotifications([]);
-  };
+    const value = useMemo(() => ({ notify, dismiss }), [notify, dismiss])
 
-  return (
-    <NotificationContext.Provider
-      value={{
-        notifications,
-        addNotification,
-        markAsRead,
-        markAllAsRead,
-        clearNotifications,
-      }}
-    >
-      {children}
-    </NotificationContext.Provider>
-  );
-};
+    return (
+        <NotificationContext.Provider value={value}>
+            <ToastProvider>
+                {children}
+                <ToastViewport />
+                {toasts.map((toast) => (
+                    <Toast
+                        key={toast.id}
+                        open
+                        onOpenChange={(open) => {
+                            if (!open) dismiss(toast.id)
+                        }}
+                        className={toast.variant === "destructive" ? "border-red-500/40" : undefined}
+                    >
+                        {toast.title && <ToastTitle>{toast.title}</ToastTitle>}
+                        {toast.description && <ToastDescription>{toast.description}</ToastDescription>}
+                        {toast.action}
+                        <ToastClose />
+                    </Toast>
+                ))}
+            </ToastProvider>
+        </NotificationContext.Provider>
+    )
+}
 
-export const useNotifications = () => {
-  const context = useContext(NotificationContext);
-  if (!context) {
-    throw new Error('useNotifications must be used within NotificationProvider');
-  }
-  return context;
-};
+export function useNotifications() {
+    const context = useContext(NotificationContext)
+    if (!context) {
+        throw new Error("useNotifications must be used within NotificationProvider")
+    }
+    return context
+}

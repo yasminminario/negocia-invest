@@ -1,1 +1,0 @@
-// Define e exporta os estilos de fonte (H1, Body, etc.) para uso em toda a aplicação.

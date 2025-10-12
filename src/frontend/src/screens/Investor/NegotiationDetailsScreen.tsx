@@ -1,1 +1,0 @@
-// Tela onde o Investidor inicia ou continua uma negociação para uma solicitação específica.

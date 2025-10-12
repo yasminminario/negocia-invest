@@ -1,1 +1,0 @@
-// Hook customizado que encapsula a lógica para buscar, criar e atualizar o estado das negociações do usuário.

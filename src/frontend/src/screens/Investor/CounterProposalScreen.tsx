@@ -1,1 +1,0 @@
-// Tela onde o Investidor pode fazer uma contraproposta para a negociação de um tomador.
