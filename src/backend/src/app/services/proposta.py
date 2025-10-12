@@ -17,73 +17,73 @@ class PropostaService:
     def criar_proposta(db: Session, proposta_data: PropostaCreate) -> Proposta:
         """Cria uma proposta no banco de dados e automaticamente cria uma negociação relacionada."""
 
-        # Se não há id_negociacoes, cria uma nova negociação
+        proposta_dict = proposta_data.model_dump()
+
+        # Se id_negociacoes não foi informado ou referencia uma negociação inexistente,
+        # cria uma nova negociação (mesma lógica do fluxo sem id).
         if not proposta_data.id_negociacoes:
-            
+            negociacao_existente = None
+        else:
+            negociacao_existente = db.query(Negociacao).filter(
+                Negociacao.id == proposta_data.id_negociacoes
+            ).first()
+
+        if not negociacao_existente:
             # Determina quem é tomador e quem é investidor
             if proposta_data.autor_tipo == "tomador":
                 id_tomador = proposta_data.id_autor
-                # Para desenvolvimento, usa um investidor padrão ou deixa o mesmo ID
-                id_investidor = proposta_data.id_autor + 1  # Assumindo que o próximo ID é um investidor
-            else:  # autor_tipo == "investidor"
+                id_investidor = proposta_data.id_autor + 1
+            else:
                 id_investidor = proposta_data.id_autor
-                # Para desenvolvimento, usa um tomador padrão ou deixa o mesmo ID
-                id_tomador = proposta_data.id_autor + 1  # Assumindo que o próximo ID é um tomador
-            
-            # Converte taxa de string para float (remove o % e divide por 100)
-            taxa_numerica = float(proposta_data.taxa_sugerida.replace('%', '')) / 100
-            
-            # Cria dados da negociação
+                id_tomador = proposta_data.id_autor + 1
+
+            # Converte taxa (se disponível) para float seguro
+            try:
+                taxa_numerica = float(proposta_data.taxa_sugerida.replace('%', '')) / 100 if proposta_data.taxa_sugerida else 0.0
+            except Exception:
+                taxa_numerica = 0.0
+
             negociacao_data = NegociacaoCreate(
                 id_tomador=id_tomador,
                 id_investidor=id_investidor,
                 status="em_negociacao",
                 taxa=taxa_numerica,
-                quant_propostas=1  # Primeira proposta
+                quant_propostas=1
             )
-            
-            # Cria a negociação
+
             db_negociacao = Negociacao(**negociacao_data.model_dump())
             db.add(db_negociacao)
-            db.flush()  # Para obter o ID sem fazer commit ainda
-            
-            # Atualiza a proposta com o ID da negociação criada
-            proposta_dict = proposta_data.model_dump()
+            db.flush()
             proposta_dict['id_negociacoes'] = db_negociacao.id
-
         else:
-            # Se já existe uma negociação, prepara os dados para atualização
-            proposta_dict = proposta_data.model_dump()
+            # Atualiza a negociação existente (mantendo tipos numéricos)
+            proposta_dict['id_negociacoes'] = negociacao_existente.id
 
-            negociacao_existente = db.query(Negociacao).filter(
-                Negociacao.id == proposta_data.id_negociacoes
-            ).first()
+            quant = (negociacao_existente.quant_propostas or 0) + 1
+            nova_taxa = None
+            if proposta_data.taxa_sugerida:
+                try:
+                    nova_taxa = float(proposta_data.taxa_sugerida.replace('%', '')) / 100
+                except Exception:
+                    nova_taxa = negociacao_existente.taxa
 
-            if negociacao_existente:
-                # Prepara todos os dados relevantes para atualizar a negociação
-                negociacao_update = {
-                    "quant_propostas": str(negociacao_existente.quant_propostas + 1),
-                    "taxa": str(float(proposta_data.taxa_sugerida.replace('%', '')) / 100) if proposta_data.taxa_sugerida else str(negociacao_existente.taxa),
-                    "prazo": str(proposta_data.prazo_meses) if hasattr(proposta_data, "prazo_meses") else str(negociacao_existente.prazo),
-                    "valor": str(proposta_data.valor) if hasattr(proposta_data, "valor") else str(negociacao_existente.valor),
-                    "status": str(negociacao_existente.status),
-                    "id_tomador": str(negociacao_existente.id_tomador),
-                    "id_investidor": str(negociacao_existente.id_investidor),
-                    "criado_em": str(negociacao_existente.criado_em),
-                    "atualizado_em": str(datetime.utcnow())
-                }
-                NegociacaoService.atualizar_negociacao(db, negociacao_existente.id, negociacao_update)
-
-        # Atualiza a proposta com o ID da negociação existente
-
-        # Cria a proposta
+            negociacao_update = {
+                "quant_propostas": quant,
+                "taxa": nova_taxa if nova_taxa is not None else negociacao_existente.taxa,
+                "prazo": proposta_data.prazo_meses if getattr(proposta_data, "prazo_meses", None) is not None else negociacao_existente.prazo,
+                "valor": proposta_data.valor if getattr(proposta_data, "valor", None) is not None else negociacao_existente.valor,
+                "status": negociacao_existente.status,
+                "id_tomador": negociacao_existente.id_tomador,
+                "id_investidor": negociacao_existente.id_investidor,
+                "criado_em": negociacao_existente.criado_em,
+                "atualizado_em": datetime.utcnow()
+            }
+            NegociacaoService.atualizar_negociacao(db, negociacao_existente.id, negociacao_update)
+ 
         db_proposta = Proposta(**proposta_dict)
         db.add(db_proposta)
-        
-        # Commit de tudo junto
         db.commit()
         db.refresh(db_proposta)
-        
         return db_proposta
 
     @staticmethod
