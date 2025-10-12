@@ -78,9 +78,11 @@ export const useFilters = <T extends LoanOffer | LoanRequest>(items: T[]) => {
           comparison = a.installments - b.installments;
           break;
         case 'score':
-          const scoreA = 'investor' in a ? a.investor.scoreValue : a.borrower.scoreValue;
-          const scoreB = 'investor' in b ? b.investor.scoreValue : b.borrower.scoreValue;
-          comparison = scoreA - scoreB;
+          {
+            const scoreA = 'investor' in a ? a.investor.scoreValue : a.borrower.scoreValue;
+            const scoreB = 'investor' in b ? b.investor.scoreValue : b.borrower.scoreValue;
+            comparison = scoreA - scoreB;
+          }
           break;
         case 'recent':
           comparison = b.createdAt.getTime() - a.createdAt.getTime();

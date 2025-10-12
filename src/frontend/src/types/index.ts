@@ -1,5 +1,13 @@
 // ============= CORE TYPES =============
 
+export interface AccessibilitySettings {
+  fontSize: 'normal' | 'large' | 'x-large';
+  fontWeight: 'normal' | 'bold';
+  colorBlindMode: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
+  highContrast: boolean;
+  reducedMotion: boolean;
+}
+
 export type ProfileType = 'borrower' | 'investor';
 
 export type CreditScore = 'good' | 'excellent';
@@ -8,7 +16,7 @@ export type CreditScore = 'good' | 'excellent';
 export type OfferStatus = 'negotiable' | 'fixed';
 
 // Status para negociações (mapeado do banco)
-export type NegotiationStatus = 'em_negociacao' | 'em_andamento' | 'finalizada' | 'cancelada' | 'pendente';
+export type NegotiationStatus = 'em_negociacao' | 'em_andamento' | 'finalizada' | 'cancelada' | 'pendente' | 'expirada';
 
 // Status para empréstimos já aceitos/ativos
 export type LoanStatus = 'active' | 'concluded' | 'cancelled';
@@ -29,14 +37,11 @@ export interface Usuario {
   id: number;
   nome: string;
   email: string;
-  cpf: string;
-  endereco: string;
-  renda_mensal: number;
-  celular: string;
-  wallet_adress: string;
-  facial: number; // 0-1 (biometria)
-  saldo_cc: number; // Saldo em conta corrente
-  criado_em: Date;
+  saldo_cc: number;
+  cpf_mascarado?: string;
+  celular_mascarado?: string;
+  iniciais?: string;
+  criado_em: string;
 }
 
 // Tabela: scores_credito
@@ -98,6 +103,61 @@ export interface Proposta {
   negociavel: boolean;
 }
 
+// ============= BACKEND API RESPONSES =============
+
+export interface NegociacaoResponse {
+  id: number;
+  id_tomador: number;
+  id_investidor: number;
+  prazo: number | null;
+  valor: number | null;
+  parcela: number | null;
+  status: string;
+  taxa: number | null;
+  quant_propostas: number | null;
+  hash_onchain: string | null;
+  contrato_tx_hash: string | null;
+  assinado_em: string | null;
+  criado_em: string;
+  atualizado_em: string;
+}
+
+export interface NegociacaoUpdatePayload {
+  id_tomador?: number | null;
+  id_investidor?: number | null;
+  prazo?: number | null;
+  valor?: number | null;
+  parcela?: number | null;
+  status?: string | null;
+  taxa?: number | null;
+  quant_propostas?: number | null;
+  hash_onchain?: string | null;
+  contrato_tx_hash?: string | null;
+  assinado_em?: string | null;
+}
+
+export interface PropostaCreatePayload {
+  id_negociacoes?: number | null;
+  id_autor: number;
+  autor_tipo: 'tomador' | 'investidor';
+  taxa_analisada: string;
+  taxa_sugerida: string;
+  prazo_meses: number;
+  tipo?: string | null;
+  status: string;
+  parcela?: number | null;
+  valor?: number | null;
+  negociavel: boolean;
+  justificativa?: string | null;
+  id_tomador_destino?: number | null;
+  id_investidor_destino?: number | null;
+}
+
+export interface PropostaResponsePayload extends PropostaCreatePayload {
+  id: number;
+  criado_em: string;
+}
+
 // Tabela: metricas_investidor
 export interface MetricasInvestidor {
   id: number;
@@ -124,6 +184,7 @@ export interface User {
   activeProfile: ProfileType;
   avatarUrl?: string;
   balance?: number; // Saldo em conta corrente
+  accessibilitySettings?: AccessibilitySettings;
 }
 
 // ============= LOAN REQUEST (Solicitação) =============
@@ -198,14 +259,14 @@ export interface Negotiation {
   investorScore: number;
   amount: number;
   installments: number;
-  
+
   // Proposta atual
   currentRate: number;
   currentProposer: ProfileType;
-  
+
   // Histórico de propostas
   proposals: NegotiationProposal[];
-  
+
   status: NegotiationStatus;
   createdAt: Date;
   expiresAt: Date;

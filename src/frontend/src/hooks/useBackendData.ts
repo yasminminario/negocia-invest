@@ -3,10 +3,28 @@
  * Quando ativado, substitui os mockData por dados reais da API
  */
 
-import { useState, useEffect } from 'react';
-import { negociacoesService, usuariosService, scoresService } from '@/services/api.service';
+import { useState, useEffect, useCallback } from 'react';
 import { mapNegociacaoToNegotiation } from '@/utils/dataMappers';
-import type { Negotiation, NegociacaoCompleta } from '@/types';
+import type { Negotiation, NegociacaoCompleta, Usuario, ScoreCredito } from '@/types';
+
+const backendNotConfigured = async <T>(): Promise<T> => {
+  throw new Error('Serviço de backend não configurado.');
+};
+
+const negociacoesService = {
+  getByTomador: (_id: number) => backendNotConfigured<NegociacaoCompleta[]>(),
+  getByInvestidor: (_id: number) => backendNotConfigured<NegociacaoCompleta[]>(),
+  getAll: () => backendNotConfigured<NegociacaoCompleta[]>(),
+  getById: (_id: number) => backendNotConfigured<NegociacaoCompleta>(),
+};
+
+const usuariosService = {
+  getById: (_id: number) => backendNotConfigured<Usuario>(),
+};
+
+const scoresService = {
+  getByUserId: (_id: number) => backendNotConfigured<ScoreCredito | null>(),
+};
 
 // Flag para alternar entre mock e backend real
 const USE_BACKEND = false; // Alterar para true quando o backend estiver rodando
@@ -19,12 +37,12 @@ interface UseBackendDataOptions {
 
 export const useBackendNegotiations = (options: UseBackendDataOptions = {}) => {
   const { autoFetch = false, userId, userType } = options;
-  
+
   const [negotiations, setNegotiations] = useState<Negotiation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNegotiations = async () => {
+  const fetchNegotiations = useCallback(async () => {
     if (!USE_BACKEND) {
       console.info('Backend integration disabled. Using mock data.');
       return;
@@ -64,13 +82,13 @@ export const useBackendNegotiations = (options: UseBackendDataOptions = {}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, userType]);
 
   useEffect(() => {
     if (autoFetch) {
       fetchNegotiations();
     }
-  }, [autoFetch, userId, userType]);
+  }, [autoFetch, fetchNegotiations]);
 
   return {
     negotiations,
@@ -82,11 +100,11 @@ export const useBackendNegotiations = (options: UseBackendDataOptions = {}) => {
 };
 
 export const useBackendUser = (userId: number) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ usuario: Usuario; score: ScoreCredito | null } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     if (!USE_BACKEND) return;
 
     try {
@@ -98,17 +116,18 @@ export const useBackendUser = (userId: number) => {
 
       setUser({ usuario, score });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao buscar usuário');
+      const message = err instanceof Error ? err.message : 'Erro ao buscar usuário';
+      setError(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     if (userId) {
       fetchUser();
     }
-  }, [userId]);
+  }, [userId, fetchUser]);
 
   return { user, loading, error, refetch: fetchUser };
 };

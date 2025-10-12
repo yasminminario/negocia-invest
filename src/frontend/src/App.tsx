@@ -8,6 +8,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
+import SignUp from "./pages/auth/SignUp";
 import SelectProfile from "./pages/auth/SelectProfile";
 import BorrowerDashboard from "./pages/borrower/BorrowerDashboard";
 import InvestorDashboard from "./pages/investor/InvestorDashboard";
@@ -42,6 +43,8 @@ const App = () => (
             <Routes>
               {/* Auth Routes */}
               <Route path="/" element={<Login />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/signup" element={<SignUp />} />
               <Route path="/select-profile" element={<SelectProfile />} />
               
               {/* Profile Route */}

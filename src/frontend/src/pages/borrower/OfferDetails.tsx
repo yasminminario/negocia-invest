@@ -1,57 +1,214 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { Button } from '@/components/ui/button';
-import { mockLoanOffers } from '@/data/mockData';
-import { formatCurrency, formatInterestRate, calculateMonthlyPayment, calculateTotalAmount, calculateInterestAmount, calculateIntermediationFee } from '@/utils/calculations';
+import {
+  formatCurrency,
+  formatInterestRate,
+  calculateMonthlyPayment,
+  calculateTotalAmount,
+  calculateInterestAmount,
+  calculateIntermediationFee,
+} from '@/utils/calculations';
 import { Check } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { LoanOffer, PropostaResponsePayload } from '@/types';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { negociacoesApi, propostasApi, scoresCreditoApi, usuariosApi } from '@/services/api.service';
+
+const parseRate = (taxa: string): { min: number; max: number; average: number } => {
+  const cleaned = taxa.replace('%', '').trim();
+  if (cleaned.includes('-')) {
+    const [min, max] = cleaned.split('-').map(Number);
+    const minValue = Number.isFinite(min) ? min : 0;
+    const maxValue = Number.isFinite(max) ? max : minValue;
+    return {
+      min: minValue,
+      max: maxValue,
+      average: (minValue + maxValue) / 2,
+    };
+  }
+
+  const value = Number(cleaned) || 0;
+  return { min: value, max: value, average: value };
+};
 
 export const OfferDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const offer = mockLoanOffers.find(o => o.id === id);
+  const [offer, setOffer] = useState<LoanOffer | null>(null);
+  const [proposal, setProposal] = useState<PropostaResponsePayload | null>(null);
+  const [fetching, setFetching] = useState(true);
   const [confirmAccept, setConfirmAccept] = useState(false);
+  const [accepting, setAccepting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { addNotification } = useNotifications();
 
-  const handleAcceptOffer = () => {
-    toast({
-      title: "Oferta aceita com sucesso!",
-      description: "O investidor será notificado. Você pode acompanhar o progresso em Empréstimos Ativos.",
-      className: "bg-positive-light border-positive/20",
-    });
-    setTimeout(() => navigate('/borrower/loans'), 1500);
+  useEffect(() => {
+    const fetchOffer = async () => {
+      if (!id) return;
+
+      try {
+        setFetching(true);
+        setError(null);
+        const proposalId = Number(id);
+        const response = await propostasApi.obterPorId(proposalId);
+
+        if (response.autor_tipo !== 'investidor') {
+          throw new Error('Oferta inválida para este fluxo.');
+        }
+
+        const investorData = await usuariosApi.obterPorId(response.id_autor).catch(() => null);
+        if (!investorData) {
+          throw new Error('Investidor não encontrado.');
+        }
+        setProposal(response);
+
+        const ranges = parseRate(response.taxa_sugerida);
+        const amount = Number(response.valor ?? 0);
+        const installments = Number(response.prazo_meses ?? 0);
+        const monthlyPayment = installments ? calculateMonthlyPayment(amount, ranges.average, installments) : 0;
+        const totalAmount = installments ? calculateTotalAmount(monthlyPayment, installments) : amount;
+        const score = await scoresCreditoApi.obterPorUsuario(response.id_autor).catch(() => null);
+
+        const mappedOffer: LoanOffer = {
+          id: String(response.id),
+          investorId: String(response.id_autor),
+          investor: {
+            id: String(response.id_autor),
+            name: investorData.nome,
+            email: investorData.email,
+            creditScore: (score?.valor_score ?? 0) >= 800 ? 'excellent' : 'good',
+            scoreValue: score?.valor_score ?? 0,
+            activeProfile: 'investor',
+          },
+          amount,
+          interestRate: ranges.average,
+          installments,
+          monthlyPayment,
+          totalAmount,
+          status: response.negociavel ? 'negotiable' : 'fixed',
+          createdAt: new Date(response.criado_em),
+          acceptsNegotiation: Boolean(response.negociavel),
+          suggestedRateMin: ranges.min,
+          suggestedRateMax: ranges.max,
+        };
+
+        setOffer(mappedOffer);
+      } catch (err) {
+        console.error('Erro ao carregar oferta:', err);
+        const message = err instanceof Error ? err.message : 'Erro ao carregar oferta.';
+        setError(message);
+        toast({
+          title: 'Erro',
+          description: message,
+          variant: 'destructive',
+        });
+        navigate('/borrower/find-offers');
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchOffer();
+  }, [id, navigate]);
+
+  const handleAcceptOffer = async () => {
+    if (!offer) return;
+    setAccepting(true);
+
+    try {
+      if (proposal?.id_negociacoes) {
+        await negociacoesApi.atualizar(Number(proposal.id_negociacoes), {
+          status: 'finalizada',
+          valor: proposal?.valor ?? offer.amount,
+          prazo: proposal?.prazo_meses ?? offer.installments,
+          parcela: proposal?.parcela ?? Number(monthlyPayment.toFixed(2)),
+        });
+      }
+
+      addNotification({
+        type: 'payment',
+        title: 'Oferta aceita',
+        message: `O empréstimo de ${formatCurrency(offer.amount)} foi ativado e o valor estará disponível em sua conta.`,
+        actionUrl: '/borrower/loans',
+      });
+
+      toast({
+        title: "Oferta aceita com sucesso!",
+        description: "O empréstimo foi ativado e o valor foi transferido.",
+        className: "bg-positive-light border-positive/20",
+      });
+      navigate('/borrower/loans');
+    } catch (error) {
+      console.error('Error accepting offer:', error);
+      const message = error instanceof Error ? error.message : "Ocorreu um erro ao processar sua solicitação.";
+      toast({
+        title: "Erro ao aceitar oferta",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setAccepting(false);
+      setConfirmAccept(false);
+    }
   };
 
-  if (!offer) {
-    return <div>Oferta não encontrada</div>;
+  const monthlyPayment = useMemo(() => {
+    if (!offer) return 0;
+    return calculateMonthlyPayment(offer.amount, offer.interestRate, offer.installments);
+  }, [offer]);
+
+  const totalAmount = useMemo(() => {
+    if (!offer) return 0;
+    return calculateTotalAmount(monthlyPayment, offer.installments);
+  }, [monthlyPayment, offer]);
+
+  const interestAmount = useMemo(() => {
+    if (!offer) return 0;
+    return calculateInterestAmount(totalAmount, offer.amount);
+  }, [offer, totalAmount]);
+
+  const intermediationFee = useMemo(() => {
+    if (!offer) return 0;
+    return calculateIntermediationFee(offer.amount);
+  }, [offer]);
+
+  if (fetching) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header showBackButton onBack={() => navigate(-1)} />
+        <main className="container mx-auto px-4 py-6 max-w-md">
+          <p>Carregando oferta...</p>
+        </main>
+      </div>
+    );
   }
 
-  const monthlyPayment = calculateMonthlyPayment(offer.amount, offer.interestRate, offer.installments);
-  const totalAmount = calculateTotalAmount(monthlyPayment, offer.installments);
-  const interestAmount = calculateInterestAmount(totalAmount, offer.amount);
-  const intermediationFee = calculateIntermediationFee(offer.amount);
+  if (!offer) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header showBackButton onBack={() => navigate(-1)} />
+        <main className="container mx-auto px-4 py-6 max-w-md space-y-4">
+          <p className="text-destructive">{error ?? 'Oferta não encontrada'}</p>
+          <Button onClick={() => navigate('/borrower/find-offers')}>Voltar</Button>
+        </main>
+      </div>
+    );
+  }
 
   // O gráfico deve mostrar a composição do total pago pelo tomador
   // Total pago = Valor principal + Juros + Taxa de intermediação
   const totalPaid = offer.amount + interestAmount + intermediationFee;
-  
+
   const chartData = [
     { label: 'Valor principal', value: offer.amount, color: 'hsl(var(--chart-principal))' },
     { label: 'Juros totais', value: interestAmount, color: 'hsl(var(--chart-interest))' },
     { label: 'Taxa de intermediação', value: intermediationFee, color: 'hsl(var(--chart-fee))' },
   ];
-
-  const handleAccept = () => {
-    toast({
-      title: 'Oferta aceita!',
-      description: 'O empréstimo foi ativado com sucesso.',
-      variant: 'borrower',
-    });
-    navigate('/borrower/loans');
-  };
 
   const handleNegotiate = () => {
     navigate(`/borrower/negotiate/${id}`);
@@ -59,8 +216,8 @@ export const OfferDetails: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onBack={() => navigate(-1)} />
-      
+      <Header showBackButton onBack={() => navigate(-1)} />
+
       <main className="container mx-auto px-4 py-6 max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-primary">Detalhes da oferta</h1>
 
@@ -179,15 +336,16 @@ export const OfferDetails: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="space-y-3 pb-8">
-          <Button 
+          <Button
             className="w-full h-14 text-base rounded-full transition-all duration-200 hover-scale"
             onClick={() => setConfirmAccept(true)}
+            disabled={accepting}
           >
             <Check className="mr-2 h-5 w-5" />
-            Aceitar esta oferta
+            {accepting ? 'Processando...' : 'Aceitar esta oferta'}
           </Button>
           {offer.status === 'negotiable' && (
-            <Button 
+            <Button
               variant="outline"
               className="w-full h-14 text-base rounded-full border-primary text-primary hover:bg-primary/10 transition-all duration-200"
               onClick={handleNegotiate}

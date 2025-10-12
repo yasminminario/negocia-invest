@@ -1,289 +1,290 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
-import { ProposalHistoryCard } from '@/components/negotiation/ProposalHistoryCard';
-import { NegotiationTimer } from '@/components/negotiation/NegotiationTimer';
-import { NegotiationSlider } from '@/components/negotiation/NegotiationSlider';
-import { ImpactDisplay } from '@/components/negotiation/ImpactDisplay';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { mockNegotiations } from '@/data/mockData';
-import { calculateMonthlyPayment, calculateTotalAmount, calculateSavings, formatCurrency } from '@/utils/calculations';
-import { Handshake, MessageSquare, Check, X } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { Handshake, ArrowLeft, FileText } from 'lucide-react';
+import { negociacoesApi, propostasApi, usuariosApi } from '@/services/api.service';
+import type { NegociacaoResponse, PropostaResponsePayload, Usuario } from '@/types';
+import { formatCurrency, formatInterestRate } from '@/utils/calculations';
+import { parseRateRange } from '@/utils/dataMappers';
+import { calculateRemainingTime, formatTimeRemaining, NEGOTIATION_EXPIRATION_MS } from '@/utils/time';
+
+const STATUS_LABELS: Record<string, string> = {
+  aguardando_investidor: 'Aguardando investidor',
+  em_negociacao: 'Em negociação',
+  pendente: 'Pendente',
+  aceito: 'Aceito',
+  finalizada: 'Finalizada',
+  cancelada: 'Cancelada',
+  expirada: 'Expirada',
+};
 
 const NegotiationDetails = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const negotiation = mockNegotiations.find((n) => n.id === id);
+  const { id } = useParams();
+  const negociacaoId = Number(id);
+  const [negociacao, setNegociacao] = useState<NegociacaoResponse | null>(null);
+  const [propostas, setPropostas] = useState<PropostaResponsePayload[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [participants, setParticipants] = useState<Record<number, Usuario | null>>({});
 
-  const [counterRate, setCounterRate] = useState(negotiation?.currentRate || 1.5);
-  const [message, setMessage] = useState('');
-  const [showAcceptDialog, setShowAcceptDialog] = useState(false);
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const [showCounterForm, setShowCounterForm] = useState(false);
+  useEffect(() => {
+    if (!negociacaoId) {
+      setError('Identificador de negociação inválido.');
+      setLoading(false);
+      return;
+    }
 
-  if (!negotiation) {
-    return <div>Negociação não encontrada</div>;
-  }
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const [negociacaoResponse, propostasResponse] = await Promise.all([
+          negociacoesApi.obterPorId(negociacaoId),
+          propostasApi.listar(negociacaoId),
+        ]);
 
-  const currentProposal = negotiation.proposals[negotiation.proposals.length - 1];
-  const isMyTurn = negotiation.currentProposer === 'investor';
+        setNegociacao(negociacaoResponse);
+        setPropostas(propostasResponse);
 
-  const currentMonthly = calculateMonthlyPayment(
-    negotiation.amount,
-    negotiation.currentRate,
-    negotiation.installments
+        const participantIds = new Set<number>();
+        if (negociacaoResponse) {
+          participantIds.add(negociacaoResponse.id_tomador);
+          participantIds.add(negociacaoResponse.id_investidor);
+        }
+        propostasResponse.forEach((proposta) => participantIds.add(proposta.id_autor));
+
+        const profiles = await Promise.all(
+          Array.from(participantIds).map(async (userId) => {
+            try {
+              const profile = await usuariosApi.obterPorId(userId);
+              return { id: userId, profile } as const;
+            } catch (fetchError) {
+              console.error(`Erro ao carregar usuário ${userId}:`, fetchError);
+              return { id: userId, profile: null } as const;
+            }
+          })
+        );
+
+        const map = profiles.reduce<Record<number, Usuario | null>>((acc, entry) => {
+          acc[entry.id] = entry.profile;
+          return acc;
+        }, {});
+        setParticipants(map);
+      } catch (err) {
+        console.error(err);
+        const message = err instanceof Error ? err.message : 'Não foi possível carregar a negociação.';
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [negociacaoId]);
+
+  const handleBack = () => navigate('/borrower/negotiations');
+
+  const investorHasResponded = useMemo(
+    () => propostas.some((item) => item.autor_tipo === 'investidor'),
+    [propostas],
   );
-  const currentTotal = calculateTotalAmount(currentMonthly, negotiation.installments);
 
-  const counterMonthly = calculateMonthlyPayment(
-    negotiation.amount,
-    counterRate,
-    negotiation.installments
-  );
-  const counterTotal = calculateTotalAmount(counterMonthly, negotiation.installments);
-
-  const savings = calculateSavings(
-    negotiation.amount,
-    negotiation.currentRate,
-    counterRate,
-    negotiation.installments
+  const latestInvestorProposal = useMemo(
+    () => propostas.find((item) => item.autor_tipo === 'investidor') ?? null,
+    [propostas],
   );
 
-  const handleAccept = () => {
-    toast({
-      title: 'Proposta aceita!',
-      description: 'O empréstimo foi ativado com sucesso.',
-      variant: 'borrower',
-    });
-    navigate('/borrower/loans');
-  };
+  const latestBorrowerProposal = useMemo(
+    () => propostas.find((item) => item.autor_tipo === 'tomador') ?? null,
+    [propostas],
+  );
 
-  const handleReject = () => {
-    toast({
-      title: 'Proposta rejeitada',
-      description: 'A negociação foi encerrada.',
-      variant: 'destructive',
-    });
-    navigate('/borrower/negotiations');
-  };
+  const derivedNegotiation = useMemo(() => {
+    const referenceProposal = latestInvestorProposal ?? latestBorrowerProposal ?? null;
+    const parsedRate = referenceProposal?.taxa_sugerida ? parseRateRange(referenceProposal.taxa_sugerida) : null;
+    return {
+      taxa: negociacao?.taxa ?? parsedRate?.average ?? null,
+      prazo: negociacao?.prazo ?? referenceProposal?.prazo_meses ?? null,
+      valor: negociacao?.valor ?? referenceProposal?.valor ?? null,
+      parcela: negociacao?.parcela ?? referenceProposal?.parcela ?? null,
+    };
+  }, [negociacao, latestInvestorProposal, latestBorrowerProposal]);
 
-  const handleCounter = () => {
-    toast({
-      title: 'Contraproposta enviada!',
-      description: 'Aguardando resposta do investidor.',
-      variant: 'borrower',
-    });
-    navigate('/borrower/negotiations');
-  };
+  const investorDisplayName = negociacao && investorHasResponded
+    ? participants[negociacao.id_investidor]?.nome ?? `Usuário #${negociacao.id_investidor}`
+    : 'Aguardando investidor';
+
+  const statusKey = investorHasResponded ? negociacao?.status ?? 'em_negociacao' : 'aguardando_investidor';
+  const statusLabel = STATUS_LABELS[statusKey] ?? statusKey;
+
+  const remainingMs = useMemo(
+    () => (negociacao ? calculateRemainingTime(negociacao.criado_em) : null),
+    [negociacao?.criado_em],
+  );
+
+  const countdownExpired = negociacao
+    ? negociacao.status === 'expirada' || (remainingMs != null && remainingMs <= 0)
+    : false;
+
+  const countdownLabel = remainingMs == null
+    ? '--'
+    : countdownExpired
+      ? 'Prazo encerrado'
+      : `Restam ${formatTimeRemaining(remainingMs)}`;
+
+  const deadline = useMemo(() => {
+    if (!negociacao) return null;
+    const createdTime = new Date(negociacao.criado_em).getTime();
+    if (Number.isNaN(createdTime)) return null;
+    return new Date(createdTime + NEGOTIATION_EXPIRATION_MS);
+  }, [negociacao]);
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showBackButton onBack={() => navigate('/borrower/negotiations')} />
+      <Header showBackButton onBack={handleBack} />
 
       <main className="container max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Title */}
         <div className="flex items-center gap-2">
           <Handshake className="w-6 h-6 text-primary" />
           <h1 className="text-2xl font-bold text-primary">Detalhes da negociação</h1>
         </div>
 
-        {/* Timer */}
-        <NegotiationTimer expiresAt={negotiation.expiresAt} />
+        {loading && <div className="p-4 rounded-lg border border-border">Carregando...</div>}
 
-        {/* Negotiation Info */}
-        <div className="p-4 rounded-lg bg-card border-2 border-border">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="text-sm text-muted-foreground">Investidor</div>
-              <div className="text-lg font-bold text-foreground">{negotiation.investorName}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Score</div>
-              <div className="text-lg font-bold text-primary">{negotiation.investorScore}</div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <div className="text-sm text-muted-foreground">Valor</div>
-              <div className="font-semibold text-foreground">{formatCurrency(negotiation.amount)}</div>
-            </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Parcelas</div>
-              <div className="font-semibold text-foreground">{negotiation.installments}x</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Status */}
-        {isMyTurn ? (
-          <div className="p-4 rounded-lg bg-primary/10 border-2 border-primary">
-            <p className="text-sm font-medium text-primary text-center">
-              É a sua vez! Você pode aceitar, rejeitar ou fazer uma contraproposta.
-            </p>
-          </div>
-        ) : (
-          <div className="p-4 rounded-lg bg-muted border-2 border-border">
-            <p className="text-sm font-medium text-muted-foreground text-center">
-              Aguardando resposta do investidor...
-            </p>
+        {!loading && error && (
+          <div className="p-4 rounded-lg border border-destructive text-destructive text-sm">
+            {error}
           </div>
         )}
 
-        {/* Proposal History */}
-        <div>
-          <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-primary" />
-            Histórico de propostas
-          </h2>
-          <div className="space-y-3">
-            {negotiation.proposals.map((proposal, index) => (
-              <ProposalHistoryCard
-                key={proposal.id}
-                proposal={proposal}
-                proposerName={
-                  proposal.proposerType === 'borrower'
-                    ? negotiation.borrowerName
-                    : negotiation.investorName
-                }
-                isCurrentUser={proposal.proposerType === 'borrower'}
-                isLatest={index === negotiation.proposals.length - 1}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Actions */}
-        {isMyTurn && !showCounterForm && (
-          <div className="space-y-3">
-            <Button
-              className="w-full h-14 text-base rounded-full"
-              onClick={() => setShowAcceptDialog(true)}
-            >
-              <Check className="mr-2 h-5 w-5" />
-              Aceitar proposta
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full h-14 text-base rounded-full"
-              onClick={() => setShowCounterForm(true)}
-            >
-              <MessageSquare className="mr-2 h-5 w-5" />
-              Fazer contraproposta
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full h-14 text-base rounded-full border-status-cancelled text-status-cancelled hover:bg-status-cancelled/10"
-              onClick={() => setShowRejectDialog(true)}
-            >
-              <X className="mr-2 h-5 w-5" />
-              Rejeitar proposta
-            </Button>
-          </div>
-        )}
-
-        {/* Counter Proposal Form */}
-        {showCounterForm && (
-          <div className="space-y-6 p-6 rounded-lg bg-card border-2 border-primary">
-            <h3 className="text-lg font-bold text-primary">Fazer contraproposta</h3>
-
-            <ImpactDisplay
-              type="savings"
-              value={savings}
-            />
-
-            <NegotiationSlider
-              value={counterRate}
-              onChange={setCounterRate}
-              min={1.25}
-              max={10}
-              suggestedMin={1.30}
-              suggestedMax={3.0}
-            />
-
-            <div className="grid grid-cols-2 gap-4 p-4 rounded-lg bg-muted">
+        {!loading && negociacao && (
+          <Card className="p-4 space-y-4 border border-border">
+            <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-muted-foreground">Parcela mensal</div>
-                <div className="font-bold text-foreground">{formatCurrency(counterMonthly)}</div>
+                <p className="text-sm text-muted-foreground">Negociação #{negociacao.id}</p>
+                <p className="text-lg font-semibold text-foreground">Status: {statusLabel}</p>
               </div>
-              <div>
-                <div className="text-sm text-muted-foreground">Total</div>
-                <div className="font-bold text-foreground">{formatCurrency(counterTotal)}</div>
+              <div className="text-right text-sm text-muted-foreground">
+                <p>
+                  Tomador: {participants[negociacao.id_tomador]?.nome ?? `Usuário #${negociacao.id_tomador}`}
+                </p>
+                <p>
+                  Investidor: {investorDisplayName}
+                </p>
               </div>
             </div>
 
-            <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">
-                Mensagem (opcional)
-              </label>
-              <Textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value.slice(0, 300))}
-                placeholder="Explique o motivo da sua contraproposta..."
-                className="min-h-[100px] resize-none"
-                maxLength={300}
-              />
-              <div className="text-xs text-muted-foreground text-right mt-1">
-                {message.length}/300
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setShowCounterForm(false)}
+            <div className="p-3 rounded-lg bg-muted/50 border border-border/60">
+              <p className="text-xs text-muted-foreground">Prazo para finalizar</p>
+              <p
+                className={`text-sm font-semibold ${countdownExpired ? 'text-status-cancelled' : 'text-status-pending'
+                  }`}
               >
-                Cancelar
-              </Button>
-              <Button className="flex-1" onClick={handleCounter}>
-                Enviar contraproposta
-              </Button>
+                {countdownLabel}
+              </p>
+              {deadline && (
+                <p className="text-xs text-muted-foreground">
+                  {countdownExpired ? `Encerrado em ${deadline.toLocaleString()}` : `Limite: ${deadline.toLocaleString()}`}
+                </p>
+              )}
             </div>
-          </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-xs text-muted-foreground">Taxa</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {derivedNegotiation.taxa != null ? formatInterestRate(derivedNegotiation.taxa) : '--'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Prazo</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {derivedNegotiation.prazo != null ? `${derivedNegotiation.prazo} meses` : '--'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Valor</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {derivedNegotiation.valor != null ? formatCurrency(derivedNegotiation.valor) : '--'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Parcela</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {derivedNegotiation.parcela != null ? formatCurrency(derivedNegotiation.parcela) : '--'}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+              <div>
+                <span>Última atualização</span>
+                <p className="font-medium text-foreground">{new Date(negociacao.atualizado_em).toLocaleString()}</p>
+              </div>
+              <div>
+                <span>Criado em</span>
+                <p className="font-medium text-foreground">{new Date(negociacao.criado_em).toLocaleString()}</p>
+              </div>
+            </div>
+
+            <Button variant="outline" className="w-full" onClick={handleBack}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
+            </Button>
+          </Card>
+        )}
+
+        {!loading && propostas.length > 0 && (
+          <Card className="p-4 space-y-3 border border-border">
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
+              <h2 className="text-base font-semibold text-foreground">Propostas</h2>
+            </div>
+
+            <ul className="space-y-2 text-sm">
+              {propostas.map((proposta) => (
+                <li
+                  key={proposta.id}
+                  className="rounded-lg border border-border p-3 flex flex-col gap-1"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">
+                      {participants[proposta.id_autor]?.nome ?? `Usuário #${proposta.id_autor}`}{' '}
+                      <span className="text-xs text-muted-foreground">({proposta.autor_tipo})</span>
+                    </span>
+                    <span className="text-muted-foreground">{new Date(proposta.criado_em).toLocaleString()}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                    <span>Taxa sugerida: {proposta.taxa_sugerida}</span>
+                    <span>Taxa analisada: {proposta.taxa_analisada}</span>
+                    <span>Prazo: {proposta.prazo_meses} meses</span>
+                    <span>Status: {proposta.status}</span>
+                  </div>
+                  {proposta.valor != null && (
+                    <span className="text-xs text-muted-foreground">Valor: {formatCurrency(proposta.valor)}</span>
+                  )}
+                  {proposta.negociavel ? (
+                    <span className="text-xs text-primary">Negociável</span>
+                  ) : (
+                    <span className="text-xs">Não negociável</span>
+                  )}
+                  {proposta.justificativa && (
+                    <p className="text-xs text-muted-foreground">Justificativa: {proposta.justificativa}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
+        {!loading && negociacao && propostas.length === 0 && (
+          <Card className="p-4 border border-dashed border-border text-sm text-muted-foreground">
+            Nenhuma proposta cadastrada para esta negociação.
+          </Card>
         )}
       </main>
-
-      {/* Accept Dialog */}
-      <AlertDialog open={showAcceptDialog} onOpenChange={setShowAcceptDialog}>
-        <AlertDialogContent className="border-borrower/20">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-borrower">Aceitar proposta?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Você está aceitando a taxa de {negotiation.currentRate.toFixed(2)}% a.m. com
-              parcelas de {formatCurrency(currentMonthly)} por {negotiation.installments} meses.
-              Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleAccept} className="bg-borrower hover:bg-borrower/90 text-borrower-foreground">
-              Confirmar aceitação
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Reject Dialog */}
-      <AlertDialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-        <AlertDialogContent className="border-destructive/20">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive">Rejeitar proposta?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Você está rejeitando a negociação. Isso encerrará permanentemente esta negociação
-              e você não poderá reativá-la. Tem certeza?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleReject} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
-              Confirmar rejeição
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };

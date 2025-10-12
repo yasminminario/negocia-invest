@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
 import { NegotiationSlider } from '@/components/negotiation/NegotiationSlider';
@@ -6,117 +6,208 @@ import { ComparisonCard } from '@/components/negotiation/ComparisonCard';
 import { ImpactDisplay } from '@/components/negotiation/ImpactDisplay';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { mockLoanRequests, mockActiveLoansInvestor, mockNegotiations } from '@/data/mockData';
-import { calculateMonthlyPayment, calculateTotalAmount, calculateEstimatedProfit } from '@/utils/calculations';
-import { Send, CheckCircle2, MessageSquare, Handshake } from 'lucide-react';
+import { calculateEstimatedProfit, calculateMonthlyPayment, calculateTotalAmount } from '@/utils/calculations';
+import { Send } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+import { propostasApi, negociacoesApi, usuariosApi } from '@/services/api.service';
+import type { NegociacaoResponse, PropostaResponsePayload, Usuario } from '@/types';
+import { parseRateRange } from '@/utils/dataMappers';
+import { useProfile } from '@/contexts/ProfileContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export const NegotiateRequest: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const request = mockLoanRequests.find(r => r.id === id);
-  
-  // Check if there's an existing negotiation for this request
-  const existingNegotiation = mockNegotiations.find(n => n.loanRequestId === id);
-  const isCounterProposal = !!existingNegotiation;
-
-  const [proposedRate, setProposedRate] = useState(request?.interestRate || 1.5);
+  const { user } = useProfile();
+  const { addNotification } = useNotifications();
+  const [proposal, setProposal] = useState<PropostaResponsePayload | null>(null);
+  const [negotiation, setNegotiation] = useState<NegociacaoResponse | null>(null);
+  const [borrower, setBorrower] = useState<Usuario | null>(null);
+  const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [proposedRate, setProposedRate] = useState(1.5);
   const [message, setMessage] = useState('');
-  const [showSuccess, setShowSuccess] = useState(false);
 
-  if (!request) {
-    return <div>Solicitação não encontrada</div>;
-  }
-
-  const currentMonthly = calculateMonthlyPayment(request.amount, request.interestRate, request.installments);
-  const currentTotal = calculateTotalAmount(currentMonthly, request.installments);
-
-  const proposedMonthly = calculateMonthlyPayment(request.amount, proposedRate, request.installments);
-  const proposedTotal = calculateTotalAmount(proposedMonthly, request.installments);
-
-  const currentProfit = calculateEstimatedProfit(request.amount, request.interestRate, request.installments);
-  const proposedProfit = calculateEstimatedProfit(request.amount, proposedRate, request.installments);
-  const profitDiff = proposedProfit - currentProfit;
-
-  const handleSubmit = () => {
-    setShowSuccess(true);
+  const negotiationResponseRate = (
+    baseProposal: PropostaResponsePayload | null,
+    baseNegotiation: NegociacaoResponse | null
+  ): number => {
+    if (baseNegotiation?.taxa != null) {
+      return baseNegotiation.taxa;
+    }
+    const range = parseRateRange(baseProposal?.taxa_sugerida);
+    return range.average || 1.5;
   };
 
-  if (showSuccess) {
+  useEffect(() => {
+    const loadData = async () => {
+      if (!id) return;
+
+      const proposalId = Number(id);
+      if (Number.isNaN(proposalId)) {
+        setError('Identificador inválido.');
+        setFetching(false);
+        return;
+      }
+
+      try {
+        setFetching(true);
+        setError(null);
+        const proposalResponse = await propostasApi.obterPorId(proposalId);
+        setProposal(proposalResponse);
+
+        let negotiationResponse: NegociacaoResponse | null = null;
+        if (proposalResponse.id_negociacoes) {
+          negotiationResponse = await negociacoesApi
+            .obterPorId(proposalResponse.id_negociacoes)
+            .catch(() => null);
+          if (negotiationResponse) {
+            setNegotiation(negotiationResponse);
+          }
+        }
+
+        const borrowerData = await usuariosApi
+          .obterPorId(proposalResponse.id_autor)
+          .catch(() => null);
+        setBorrower(borrowerData);
+
+        const initialRate = negotiationResponseRate(
+          proposalResponse,
+          negotiationResponse
+        );
+        setProposedRate(initialRate);
+      } catch (err) {
+        console.error('Erro ao carregar solicitação:', err);
+        const messageText = err instanceof Error ? err.message : 'Erro ao carregar solicitação.';
+        setError(messageText);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const derived = useMemo(() => {
+    const range = parseRateRange(proposal?.taxa_sugerida);
+    const amount = Number(proposal?.valor ?? negotiation?.valor ?? 0);
+    const installments = Number(proposal?.prazo_meses ?? negotiation?.prazo ?? 0) || 1;
+    const currentRate = negotiation?.taxa ?? range.average;
+    const currentMonthly = calculateMonthlyPayment(amount, currentRate, installments);
+    const currentTotal = calculateTotalAmount(currentMonthly, installments);
+    const proposedMonthly = calculateMonthlyPayment(amount, proposedRate, installments);
+    const proposedTotal = calculateTotalAmount(proposedMonthly, installments);
+    const currentProfit = calculateEstimatedProfit(amount, currentRate, installments);
+    const proposedProfit = calculateEstimatedProfit(amount, proposedRate, installments);
+
+    return {
+      amount,
+      installments,
+      currentRate,
+      currentMonthly,
+      currentTotal,
+      proposedMonthly,
+      proposedTotal,
+      profitDiff: proposedProfit - currentProfit,
+      suggestion: range,
+    };
+  }, [negotiation, proposal, proposedRate]);
+
+  const handleSubmit = async () => {
+    if (!user?.id || !proposal) {
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível enviar a proposta. Realize login novamente.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const delta = 0.25;
+      const minRange = Math.max(proposedRate - delta, 0.1);
+      const maxRange = proposedRate + delta;
+
+      await propostasApi.criar({
+        id_negociacoes: negotiation?.id ?? proposal.id_negociacoes ?? null,
+        id_autor: user.id,
+        autor_tipo: 'investidor',
+        taxa_analisada: `${minRange.toFixed(2)}-${maxRange.toFixed(2)}`,
+        taxa_sugerida: proposedRate.toFixed(2),
+        prazo_meses: proposal.prazo_meses ?? negotiation?.prazo ?? derived.installments,
+        tipo: negotiation ? 'contraproposta' : 'inicial',
+        status: 'pendente',
+        parcela: Number(derived.proposedMonthly.toFixed(2)),
+        valor: derived.amount,
+        negociavel: true,
+        justificativa: message ? message.trim() : null,
+        id_tomador_destino: negotiation ? null : proposal.id_autor,
+        id_investidor_destino: negotiation ? null : user.id,
+      });
+
+      addNotification({
+        type: 'negotiation',
+        title: 'Proposta enviada',
+        message: `Você fez uma oferta para ${borrowerName}. Acompanhe a negociação pelo painel.`,
+        actionUrl: '/investor/negotiations',
+      });
+
+      toast({
+        title: 'Proposta enviada',
+        description: 'O tomador receberá sua proposta em instantes.',
+      });
+
+      navigate('/investor/negotiations');
+    } catch (err) {
+      console.error('Erro ao enviar proposta:', err);
+      const description = err instanceof Error ? err.message : 'Não foi possível enviar a proposta.';
+      toast({
+        title: 'Erro',
+        description,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (fetching) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        
-        <main className="container mx-auto px-4 py-6 max-w-md flex-1 flex flex-col">
-          <h1 className="text-2xl font-bold mb-6 text-primary flex items-center gap-2">
-            <Handshake className="w-6 h-6" />
-            Iniciar negociação
-          </h1>
-
-          {/* Success Message */}
-          <div className="bg-success/10 border-2 border-success/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
-            <CheckCircle2 className="w-6 h-6 text-success flex-shrink-0" />
-            <p className="font-semibold text-success">Negociação criada com sucesso!</p>
-          </div>
-
-          <p className="text-center text-muted-foreground mb-8">
-            Fique atento a suas <span className="font-semibold">notificações</span> e nas suas caixas de produtos ativos para acompanhar o andamento da sua negociação.
-          </p>
-
-          {/* Reminder Section */}
-          <div className="flex-1 flex flex-col justify-center">
-            <div className="bg-muted/50 rounded-2xl p-6 mb-6">
-              <div className="flex items-center gap-2 mb-4">
-                <MessageSquare className="w-5 h-5 text-primary" />
-                <h3 className="font-bold text-lg">Lembre-se</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Você pode <span className="font-semibold text-foreground">acompanhar seus empréstimos, ou negociações</span> clicando em um dos seus produtos ativos.
-              </p>
-            </div>
-
-            {/* Products Count */}
-            <div className="mb-4">
-              <p className="text-center text-sm text-muted-foreground mb-4">
-                Produtos <span className="text-primary font-semibold">ofertados</span> ativos
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-card rounded-2xl p-6 border-2 border-border text-center">
-                  <div className="text-4xl font-bold text-primary mb-2">{mockActiveLoansInvestor.length}</div>
-                  <div className="text-sm text-muted-foreground">Empréstimos</div>
-                </div>
-                <div className="bg-card rounded-2xl p-6 border-2 border-border text-center">
-                  <div className="text-4xl font-bold text-primary mb-2">{mockNegotiations.length}</div>
-                  <div className="text-sm text-muted-foreground">Negociações</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            onClick={() => navigate('/investor/dashboard')}
-            className="w-full rounded-full py-6 text-lg"
-          >
-            Voltar para tela inicial
-          </Button>
+      <div className="min-h-screen bg-background">
+        <Header showBackButton onBack={() => navigate('/investor/find-requests')} />
+        <main className="container mx-auto px-4 py-6 max-w-md">
+          <p>Carregando solicitação...</p>
         </main>
       </div>
     );
   }
 
-  // Suggested zone for investor (higher rates)
-  const suggestedMin = 1.30;
-  const suggestedMax = 3.0;
+  if (error || !proposal) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header showBackButton onBack={() => navigate('/investor/find-requests')} />
+        <main className="container mx-auto px-4 py-6 max-w-md space-y-4">
+          <p className="text-destructive">{error ?? 'Solicitação não encontrada.'}</p>
+          <Button onClick={() => navigate('/investor/find-requests')}>Voltar</Button>
+        </main>
+      </div>
+    );
+  }
+
+  const borrowerName = borrower?.nome ?? `Usuário #${proposal.id_autor}`;
+  const isCounterProposal = Boolean(negotiation);
+  const suggestedMin = derived.suggestion.min || 1.3;
+  const suggestedMax = derived.suggestion.max || 3;
 
   return (
     <div className="min-h-screen bg-background">
       <Header showBackButton onBack={() => navigate(isCounterProposal ? '/investor/negotiations' : '/investor/find-requests')} />
-      
+
       <main className="container mx-auto px-4 py-6 max-w-md">
         <h1 className="text-2xl font-bold mb-2 text-primary">
           {isCounterProposal ? 'Detalhes da negociação' : 'Iniciar negociação'}
         </h1>
         <p className="text-sm text-muted-foreground mb-6">
-          {isCounterProposal ? 'Envie uma contraproposta para' : 'Proponha uma taxa de juros para'} {request.borrower.name}
+          {isCounterProposal ? 'Envie uma contraproposta para' : 'Proponha uma taxa de juros para'} {borrowerName}
         </p>
 
         {/* Current vs Proposed */}
@@ -124,23 +215,23 @@ export const NegotiateRequest: React.FC = () => {
           <ComparisonCard
             type="current"
             label="Solicitação atual"
-            interestRate={request.interestRate}
-            monthlyPayment={currentMonthly}
-            totalAmount={currentTotal}
+            interestRate={derived.currentRate}
+            monthlyPayment={derived.currentMonthly}
+            totalAmount={derived.currentTotal}
           />
           <ComparisonCard
             type="proposed"
             label="Sua proposta"
             interestRate={proposedRate}
-            monthlyPayment={proposedMonthly}
-            totalAmount={proposedTotal}
+            monthlyPayment={derived.proposedMonthly}
+            totalAmount={derived.proposedTotal}
           />
         </div>
 
         {/* Impact Display */}
         <ImpactDisplay
           type="profit"
-          value={profitDiff}
+          value={derived.profitDiff}
           className="mb-6"
         />
 
@@ -183,13 +274,13 @@ export const NegotiateRequest: React.FC = () => {
         {/* Info Box */}
         <div className="bg-muted/50 rounded-xl p-4 mb-6 border border-border">
           <p className="text-xs text-muted-foreground">
-            💡 <span className="font-medium">Dica:</span> Propostas dentro da zona verde têm maior taxa de aceitação. 
+            💡 <span className="font-medium">Dica:</span> Propostas dentro da zona verde têm maior taxa de aceitação.
             A negociação expira em 48 horas se não houver resposta.
           </p>
         </div>
 
         {/* Submit Button */}
-        <Button 
+        <Button
           className="w-full h-14 text-base rounded-full"
           onClick={handleSubmit}
         >

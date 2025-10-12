@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FilterDialog } from '@/components/filters/FilterDialog';
 import { useFilters } from '@/hooks/useFilters';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
-import { mockLoanRequests } from '@/data/mockData';
+import { Search, SlidersHorizontal, X, EyeOff, Eye } from 'lucide-react';
+import { useLoanRequests } from '@/hooks/useLoanRequests';
 
 const FindRequests = () => {
   const navigate = useNavigate();
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
-  
+  const { requests, loading: isLoading, hideRequest, hiddenRequestIds, restoreHiddenRequests } = useLoanRequests();
+
   const {
     filters,
     setFilters,
@@ -21,9 +22,9 @@ const FindRequests = () => {
     setSearchQuery,
     filteredAndSortedItems,
     resetFilters,
-  } = useFilters(mockLoanRequests);
+  } = useFilters(requests);
 
-  const hasActiveFilters = 
+  const hasActiveFilters =
     filters.minAmount !== 1000 ||
     filters.maxAmount !== 500000 ||
     filters.minRate !== 0.5 ||
@@ -35,7 +36,7 @@ const FindRequests = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header showBackButton onBack={() => navigate('/investor/dashboard')} />
-      
+
       <main className="container mx-auto px-4 py-6 max-w-7xl space-y-6">
         {/* Title */}
         <div className="flex items-center gap-2">
@@ -65,19 +66,35 @@ const FindRequests = () => {
         </div>
 
         {/* Active Filters Badge */}
-        {hasActiveFilters && (
+        {(hasActiveFilters || hiddenRequestIds.length > 0) && (
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="flex items-center gap-2">
-              Filtros ativos
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={resetFilters}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            {hasActiveFilters && (
+              <Badge variant="secondary" className="flex items-center gap-2">
+                Filtros ativos
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={resetFilters}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
+            {hiddenRequestIds.length > 0 && (
+              <Badge variant="outline" className="flex items-center gap-2">
+                {hiddenRequestIds.length} solicitaç{hiddenRequestIds.length > 1 ? 'ões' : 'ão'} ocultada{hiddenRequestIds.length > 1 ? 's' : ''}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={restoreHiddenRequests}
+                  aria-label="Mostrar solicitações ocultas"
+                >
+                  <Eye className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
           </div>
         )}
 
@@ -88,7 +105,12 @@ const FindRequests = () => {
 
         {/* Requests Grid (Responsive) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredAndSortedItems.length === 0 ? (
+          {isLoading ? (
+            <div className="col-span-full text-center py-12">
+              <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground animate-pulse" />
+              <p className="text-muted-foreground">Carregando solicitações...</p>
+            </div>
+          ) : filteredAndSortedItems.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <Search className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
               <p className="text-muted-foreground">Nenhuma solicitação encontrada</p>
@@ -103,21 +125,34 @@ const FindRequests = () => {
           ) : (
             <>
               {filteredAndSortedItems.map((request) => (
-                <LoanCard
-                  key={request.id}
-                  id={request.id}
-                  name={request.borrower.name}
-                  score={request.borrower.scoreValue}
-                  interestRate={request.interestRate}
-                  installments={request.installments}
-                  monthlyPayment={request.monthlyPayment}
-                  total={request.totalAmount}
-                  amount={request.amount}
-                  status={request.acceptsNegotiation ? 'negotiable' : 'fixed'}
-                  onClick={() => navigate(`/investor/request/${request.id}`)}
-                />
+                <div key={request.id} className="relative group">
+                  <LoanCard
+                    id={request.id}
+                    name={request.borrower.name}
+                    score={request.borrower.scoreValue}
+                    interestRate={request.interestRate}
+                    installments={request.installments}
+                    monthlyPayment={request.monthlyPayment}
+                    total={request.totalAmount}
+                    amount={request.amount}
+                    status={request.acceptsNegotiation ? 'negotiable' : 'fixed'}
+                    onClick={() => navigate(`/investor/request/${request.id}`)}
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-3 right-3 h-8 w-8 rounded-full bg-background/90 opacity-0 group-hover:opacity-100 transition-opacity"
+                    aria-label="Ocultar solicitação"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      hideRequest(request.id);
+                    }}
+                  >
+                    <EyeOff className="h-4 w-4" />
+                  </Button>
+                </div>
               ))}
-              
+
               {/* End indicator */}
               <div className="col-span-full text-center text-sm text-muted-foreground py-4">
                 😊 Acaba aqui

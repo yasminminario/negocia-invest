@@ -1,1 +1,0 @@
-// Componente que exibe a comparação lado a lado entre duas propostas em uma negociação.

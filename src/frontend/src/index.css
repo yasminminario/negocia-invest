@@ -33,8 +33,8 @@
     --success-light: 142 76% 95%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 45 100% 51%; /* Amarelo - aviso */
-    --warning-light: 45 100% 95%;
+  --warning: 28 92% 45%; /* Laranja - aviso */
+  --warning-light: 28 96% 92%;
     --warning-foreground: 0 0% 20%;
     
     --info: 198 100% 55%; /* Azul - informação */
@@ -44,8 +44,8 @@
     /* ===== STATUS COLORS - Estados de empréstimo ===== */
     --status-active: 142 76% 40%; /* Verde - ativo */
     --status-active-light: 142 76% 95%;
-    --status-pending: 45 100% 51%; /* Amarelo - pendente */
-    --status-pending-light: 45 100% 95%;
+  --status-pending: 28 92% 45%; /* Laranja - pendente */
+  --status-pending-light: 28 96% 92%;
     --status-cancelled: 0 84% 60%; /* Vermelho - cancelado */
     --status-cancelled-light: 0 84% 95%;
     --status-completed: 198 100% 55%; /* Azul - concluído */
@@ -152,6 +152,63 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+  }
+
+  /* Accessibility Settings */
+  .text-normal {
+    font-size: 16px;
+  }
+
+  .text-large {
+    font-size: 18px;
+  }
+
+  .text-x-large {
+    font-size: 20px;
+  }
+
+  .font-normal {
+    font-weight: 400;
+  }
+
+  /* Estratégia de negrito que preserva pesos existentes */
+  .font-bold * {
+    font-weight: bolder !important;
+  }
+  
+  /* Garante que elementos sem peso definido recebam pelo menos 600 */
+  .font-bold *:not([class*="font-"]) {
+    font-weight: 600 !important;
+  }
+
+  /* Color Blind Modes */
+  .colorblind-protanopia {
+    filter: url('#protanopia-filter');
+  }
+
+  .colorblind-deuteranopia {
+    filter: url('#deuteranopia-filter');
+  }
+
+  .colorblind-tritanopia {
+    filter: url('#tritanopia-filter');
+  }
+
+  /* High Contrast Mode */
+  .high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 100%;
+    --primary: 210 100% 60%;
+    --primary-foreground: 0 0% 0%;
+  }
+
+  /* Reduced Motion */
+  .reduce-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

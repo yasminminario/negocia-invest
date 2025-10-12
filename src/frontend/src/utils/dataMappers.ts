@@ -15,6 +15,12 @@ import type {
   ProfileType,
 } from '@/types';
 
+export interface RateRange {
+  min: number;
+  max: number;
+  average: number;
+}
+
 // ============= USUÁRIO =============
 
 /**
@@ -117,7 +123,7 @@ const calculateExpirationDate = (createdAt: Date | string): Date => {
  */
 const extractSuggestedRateMin = (propostas: Proposta[]): number => {
   if (!propostas.length) return 1.5;
-  
+
   const rates = propostas.map((p) => parseRateFromString(p.taxa_analisada, 'min'));
   return Math.min(...rates);
 };
@@ -127,7 +133,7 @@ const extractSuggestedRateMin = (propostas: Proposta[]): number => {
  */
 const extractSuggestedRateMax = (propostas: Proposta[]): number => {
   if (!propostas.length) return 2.5;
-  
+
   const rates = propostas.map((p) => parseRateFromString(p.taxa_analisada, 'max'));
   return Math.max(...rates);
 };
@@ -135,20 +141,51 @@ const extractSuggestedRateMax = (propostas: Proposta[]): number => {
 /**
  * Parse de string de taxa (ex: "1.5-2.0") para número
  */
-const parseRateFromString = (
+export const parseRateRange = (value?: string | null): RateRange => {
+  if (!value) {
+    return { min: 0, max: 0, average: 0 };
+  }
+
+  const sanitized = value.replace('%', '').trim();
+
+  if (!sanitized) {
+    return { min: 0, max: 0, average: 0 };
+  }
+
+  const toNumber = (raw: string): number => {
+    const parsed = parseFloat(raw.replace('%', '').trim());
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+
+  let min = 0;
+  let max = 0;
+
+  if (sanitized.includes('-')) {
+    const [rawMin, rawMax] = sanitized.split('-');
+    min = toNumber(rawMin);
+    max = toNumber(rawMax);
+    if (!Number.isFinite(max)) {
+      max = min;
+    }
+  } else {
+    min = toNumber(sanitized);
+    max = min;
+  }
+
+  const average = Number(((min + max) / 2).toFixed(4));
+
+  return { min, max, average };
+};
+
+export const parseRateFromString = (
   rateString: string,
   part: 'min' | 'max' | 'avg' = 'avg'
 ): number => {
-  const parts = rateString.split('-').map((s) => parseFloat(s.trim()));
-  
-  if (parts.length === 1) return parts[0];
-  if (parts.length === 2) {
-    if (part === 'min') return parts[0];
-    if (part === 'max') return parts[1];
-    return (parts[0] + parts[1]) / 2; // avg
-  }
-  
-  return 2.0; // default
+  const { min, max, average } = parseRateRange(rateString);
+
+  if (part === 'min') return min;
+  if (part === 'max') return max;
+  return average;
 };
 
 /**

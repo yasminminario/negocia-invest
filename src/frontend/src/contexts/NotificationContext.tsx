@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useProfile } from './ProfileContext';
 import { Notification } from '@/components/notifications/NotificationBell';
 
 interface NotificationContextType {
@@ -11,87 +12,101 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-// Mock notifications for development
-const mockNotifications: Notification[] = [
-  {
-    id: 'notif-1',
-    type: 'negotiation',
-    title: 'Nova proposta recebida',
-    message: 'Sofia Mendes enviou uma contraproposta de 1.38% a.m.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 min ago
-    actionUrl: '/borrower/negotiation/neg-1',
-    profileType: 'borrower',
-  },
-  {
-    id: 'notif-2',
-    type: 'payment',
-    title: 'Pagamento em 3 dias',
-    message: 'Sua próxima parcela de R$ 5.642,50 vence em 3 dias.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2h ago
-    actionUrl: '/borrower/loan/loan-1',
-    profileType: 'borrower',
-  },
-  {
-    id: 'notif-3',
-    type: 'loan',
-    title: 'Empréstimo aprovado',
-    message: 'Seu empréstimo de R$ 192.000,00 foi aprovado e está ativo.',
-    read: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    actionUrl: '/borrower/loans',
-    profileType: 'borrower',
-  },
-  {
-    id: 'notif-4',
-    type: 'negotiation',
-    title: 'Contraproposta do tomador',
-    message: 'Carlos Silva enviou uma contraproposta de 1.45% a.m.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 90), // 1.5h ago
-    actionUrl: '/investor/negotiation/neg-1',
-    profileType: 'investor',
-  },
-  {
-    id: 'notif-5',
-    type: 'loan',
-    title: 'Novo empréstimo ativo',
-    message: 'Um tomador aceitou sua oferta de R$ 50.000,00.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5h ago
-    actionUrl: '/investor/loans',
-    profileType: 'investor',
-  },
-];
-
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const { user, activeProfile } = useProfile();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const storageKey = user?.id ? `notifications-${user.id}` : null;
+
+  const persist = useCallback((items: Notification[]) => {
+    if (!storageKey || typeof window === 'undefined') return;
+
+    try {
+      const serializable = items.map((notif) => ({
+        ...notif,
+        createdAt: notif.createdAt.toISOString(),
+      }));
+      window.localStorage.setItem(storageKey, JSON.stringify(serializable));
+    } catch (err) {
+      console.error('Error persisting notifications:', err);
+    }
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (!storageKey || typeof window === 'undefined') {
+      setNotifications([]);
+      return;
+    }
+
+    try {
+      const stored = window.localStorage.getItem(storageKey);
+      if (!stored) {
+        setNotifications([]);
+        return;
+      }
+
+      type StoredNotification = Omit<Notification, 'createdAt'> & { createdAt: string };
+      const parsed = JSON.parse(stored) as StoredNotification[];
+      const normalized = parsed.map((notif) => ({
+        ...notif,
+        createdAt: new Date(notif.createdAt),
+      }));
+
+      setNotifications(normalized);
+    } catch (err) {
+      console.error('Error loading notifications from storage:', err);
+      setNotifications([]);
+    }
+  }, [storageKey]);
+
+  useEffect(() => {
+    // keep profile up to date on each notification without refetch
+    setNotifications((prev) =>
+      prev.map((notif) => ({ ...notif, profileType: activeProfile }))
+    );
+  }, [activeProfile]);
 
   const addNotification = (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
     const newNotification: Notification = {
-      ...notification,
-      id: `notif-${Date.now()}`,
-      createdAt: new Date(),
+      id: typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      actionUrl: notification.actionUrl,
       read: false,
+      createdAt: new Date(),
+      profileType: activeProfile,
     };
-    setNotifications((prev) => [newNotification, ...prev]);
+
+    setNotifications((prev) => {
+      const next = [newNotification, ...prev].slice(0, 50);
+      persist(next);
+      return next;
+    });
   };
 
   const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
-    );
+    setNotifications((prev) => {
+      const next = prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif));
+      persist(next);
+      return next;
+    });
   };
 
   const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notif) => ({ ...notif, read: true }))
-    );
+    setNotifications((prev) => {
+      const next = prev.map((notif) => ({ ...notif, read: true }));
+      persist(next);
+      return next;
+    });
   };
 
   const clearNotifications = () => {
     setNotifications([]);
+    if (storageKey && typeof window !== 'undefined') {
+      window.localStorage.removeItem(storageKey);
+    }
   };
 
   return (

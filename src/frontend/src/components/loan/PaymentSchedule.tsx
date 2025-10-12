@@ -7,7 +7,7 @@ export interface PaymentInstallment {
   number: number;
   dueDate: Date;
   amount: number;
-  status: 'paid' | 'pending';
+  status: 'paid' | 'pending' | 'overdue';
   paidDate?: Date;
 }
 
@@ -37,6 +37,14 @@ export const PaymentSchedule: React.FC<PaymentScheduleProps> = ({
           iconColor: 'text-status-concluded',
           bgColor: 'bg-status-concluded/10',
           borderColor: 'border-status-concluded/20',
+        };
+      case 'overdue':
+        return {
+          icon: Circle,
+          label: 'Atrasado',
+          iconColor: 'text-status-cancelled',
+          bgColor: 'bg-status-cancelled/10',
+          borderColor: 'border-status-cancelled/20',
         };
       default:
         return {
