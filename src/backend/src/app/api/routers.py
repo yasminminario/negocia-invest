@@ -24,6 +24,8 @@ from app.models.proposta import PropostaCreate, PropostaResponse
 # Imports para Recomendação de Taxa
 from app.services.calculo_taxas_juros import taxa_analisada
 from fastapi import HTTPException
+from app.services.emprestimo import EmprestimoService
+from app.models.emprestimo import EmprestimoResponse
 
 
 # -- ROTEADOR GERAL --
@@ -143,3 +145,14 @@ def get_recomendacoes_endpoint(
         perfil=perfil
     )
     return propostas
+
+
+@router.get("/emprestimos", response_model=EmprestimoResponse | list[EmprestimoResponse], tags=["Empréstimos"])
+def obter_emprestimo_por_id_endpoint(
+    emprestimo_id: int | None = None,
+    db: Session = Depends(get_db)
+):
+    emprestimo = EmprestimoService.obter_emprestimo_por_id(db, emprestimo_id)
+    if not emprestimo:
+        raise HTTPException(status_code=404, detail="Empréstimo não encontrado")
+    return emprestimo
