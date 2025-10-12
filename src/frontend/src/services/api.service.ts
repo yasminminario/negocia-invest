@@ -84,7 +84,7 @@ export const recomendacaoApi = {
 
 export const usuariosApi = {
   listar: () => apiClient.get<Usuario[]>('/usuarios'),
-  obterPorId: (id: number) => apiClient.get<Usuario>(`/usuarios/${id}`),
+  obterPorId: (id: number) => apiClient.get<Usuario>(`/usuarios?usuario_id=${id}`),
 };
 
 export const scoresCreditoApi = {

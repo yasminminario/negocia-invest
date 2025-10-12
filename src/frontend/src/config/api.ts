@@ -13,7 +13,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:80
 export const API_ENDPOINTS = {
   // Usuários
   usuarios: '/usuarios',
-  usuario: (id: number) => `/usuarios/${id}`,
+  usuario: (id: number) => `/usuarios?usuario_id=${id}`,
 
   // Scores de crédito (consulta individual e recálculo)
   scoreByUserId: (userId: number) => `/scores_credito/usuario/${userId}`,
