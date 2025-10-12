@@ -32,7 +32,8 @@ from app.models.metricas_investidor import MetricasInvestidorResponse
 # Imports para Recomendação de Taxa
 from app.services.calculo_taxas_juros import taxa_analisada
 from fastapi import HTTPException
-from datetime import datetime
+from app.services.emprestimo import EmprestimoService
+from app.models.emprestimo import EmprestimoResponse
 
 
 # -- ROTEADOR GERAL --
@@ -183,50 +184,12 @@ def get_recomendacoes_endpoint(
     return propostas
 
 
-# --- ENDPOINTS DE USUÁRIO, SCORE E MÉTRICAS ---
-
-
-@router.get("/usuarios", response_model=list[UsuarioResponse], tags=["Usuários"])
-def listar_usuarios_endpoint(db: Session = Depends(get_db)):
-    return UsuarioService.listar(db)
-
-
-@router.get("/usuarios/{usuario_id}", response_model=UsuarioResponse, tags=["Usuários"])
-def obter_usuario_por_id_endpoint(usuario_id: int, db: Session = Depends(get_db)):
-    usuario = UsuarioService.obter_por_id(db, usuario_id)
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")
-    return usuario
-
-
-@router.get(
-    "/scores_credito/usuario/{usuario_id}",
-    response_model=ScoreCreditoResponse,
-    tags=["Scores"]
-)
-def obter_score_por_usuario_endpoint(usuario_id: int, db: Session = Depends(get_db)):
-    score = ScoreCreditoService.obter_por_usuario(db, usuario_id)
-    if not score:
-        raise HTTPException(status_code=404, detail="Score não encontrado")
-    return score
-
-
-@router.get(
-    "/metricas_investidor/usuario/{usuario_id}",
-    response_model=MetricasInvestidorResponse,
-    tags=["Métricas"]
-)
-def obter_metricas_investidor_usuario_endpoint(usuario_id: int, db: Session = Depends(get_db)):
-    metricas = MetricasInvestidorService.obter_por_usuario(db, usuario_id)
-    if not metricas:
-        return MetricasInvestidorResponse(
-            id=0,
-            id_usuarios=usuario_id,
-            valor_total_investido=0.0,
-            rentabilidade_media_am=0.0,
-            patrimonio=0.0,
-            risco_medio=0.0,
-            analise_taxa={},
-            atualizado_em=datetime.utcnow(),
-        )
-    return metricas
+@router.get("/emprestimos", response_model=EmprestimoResponse | list[EmprestimoResponse], tags=["Empréstimos"])
+def obter_emprestimo_por_id_endpoint(
+    emprestimo_id: int | None = None,
+    db: Session = Depends(get_db)
+):
+    emprestimo = EmprestimoService.obter_emprestimo_por_id(db, emprestimo_id)
+    if not emprestimo:
+        raise HTTPException(status_code=404, detail="Empréstimo não encontrado")
+    return emprestimo

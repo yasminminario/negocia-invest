@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "docs:dev": "npm --prefix docs-site run start",
+    "docs:build": "npm --prefix docs-site run build",
+    "docs:serve": "npm --prefix docs-site run serve"
+  }
+}
