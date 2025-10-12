@@ -43,7 +43,8 @@ class PropostaBase(BaseModel):
     justificativa: Optional[str] = None
 
 class PropostaCreate(PropostaBase):
-    pass
+    id_tomador_destino: Optional[int] = None
+    id_investidor_destino: Optional[int] = None
 
 class PropostaResponse(PropostaBase):
     id: int

@@ -11,70 +11,99 @@ from app.models.negociacao import Negociacao, NegociacaoCreate
 from app.services.negociacao import NegociacaoService
 from datetime import datetime
 
+
+def _parse_taxa_media(taxa_sugerida: Optional[str]) -> Optional[float]:
+    """Normaliza a taxa sugerida para uso na negociação (em pontos percentuais)."""
+    if not taxa_sugerida:
+        return None
+
+    taxa_limpa = taxa_sugerida.replace('%', '').strip()
+
+    if not taxa_limpa:
+        return None
+
+    if '-' in taxa_limpa:
+        try:
+            minimo, maximo = parse_taxa_range(taxa_limpa)
+            return round((minimo + maximo) / 2, 4)
+        except Exception:
+            return None
+
+    try:
+        return float(taxa_limpa)
+    except ValueError:
+        return None
+
 class PropostaService:
     
     @staticmethod
     def criar_proposta(db: Session, proposta_data: PropostaCreate) -> Proposta:
         """Cria uma proposta no banco de dados e automaticamente cria uma negociação relacionada."""
 
-        # Se não há id_negociacoes, cria uma nova negociação
+        proposta_dict = proposta_data.model_dump()
+
+        # Decide se uma nova negociação deve ser criada
+        negociacao_criada = False
+
         if not proposta_data.id_negociacoes:
-            
-            # Determina quem é tomador e quem é investidor
             if proposta_data.autor_tipo == "tomador":
                 id_tomador = proposta_data.id_autor
-                # Para desenvolvimento, usa um investidor padrão ou deixa o mesmo ID
-                id_investidor = proposta_data.id_autor + 1  # Assumindo que o próximo ID é um investidor
-            else:  # autor_tipo == "investidor"
+                id_investidor = proposta_data.id_investidor_destino
+            else:
                 id_investidor = proposta_data.id_autor
-                # Para desenvolvimento, usa um tomador padrão ou deixa o mesmo ID
-                id_tomador = proposta_data.id_autor + 1  # Assumindo que o próximo ID é um tomador
-            
-            # Converte taxa de string para float (remove o % e divide por 100)
-            taxa_numerica = float(proposta_data.taxa_sugerida.replace('%', '')) / 100
-            
-            # Cria dados da negociação
-            negociacao_data = NegociacaoCreate(
-                id_tomador=id_tomador,
-                id_investidor=id_investidor,
-                status="em_negociacao",
-                taxa=taxa_numerica,
-                quant_propostas=1  # Primeira proposta
-            )
-            
-            # Cria a negociação
-            db_negociacao = Negociacao(**negociacao_data.model_dump())
-            db.add(db_negociacao)
-            db.flush()  # Para obter o ID sem fazer commit ainda
-            
-            # Atualiza a proposta com o ID da negociação criada
-            proposta_dict = proposta_data.model_dump()
-            proposta_dict['id_negociacoes'] = db_negociacao.id
+                id_tomador = proposta_data.id_tomador_destino
 
-        else:
-            # Se já existe uma negociação, prepara os dados para atualização
-            proposta_dict = proposta_data.model_dump()
+            if id_tomador is not None and id_investidor is not None:
+                taxa_media = _parse_taxa_media(proposta_data.taxa_sugerida)
 
+                negociacao_data = NegociacaoCreate(
+                    id_tomador=id_tomador,
+                    id_investidor=id_investidor,
+                    status="em_negociacao",
+                    taxa=taxa_media if taxa_media is not None else 0.0,
+                    quant_propostas=1,
+                    prazo=proposta_data.prazo_meses if hasattr(proposta_data, "prazo_meses") else None,
+                    valor=proposta_data.valor,
+                    parcela=proposta_data.parcela
+                )
+
+                db_negociacao = Negociacao(**negociacao_data.model_dump())
+                db.add(db_negociacao)
+                db.flush()
+
+                proposta_dict["id_negociacoes"] = db_negociacao.id
+                negociacao_criada = True
+
+        if proposta_data.id_negociacoes or negociacao_criada:
+            negociacao_id = proposta_dict.get("id_negociacoes")
             negociacao_existente = db.query(Negociacao).filter(
-                Negociacao.id == proposta_data.id_negociacoes
+                Negociacao.id == negociacao_id
             ).first()
 
             if negociacao_existente:
-                # Prepara todos os dados relevantes para atualizar a negociação
-                negociacao_update = {
-                    "quant_propostas": str(negociacao_existente.quant_propostas + 1),
-                    "taxa": str(float(proposta_data.taxa_sugerida.replace('%', '')) / 100) if proposta_data.taxa_sugerida else str(negociacao_existente.taxa),
-                    "prazo": str(proposta_data.prazo_meses) if hasattr(proposta_data, "prazo_meses") else str(negociacao_existente.prazo),
-                    "valor": str(proposta_data.valor) if hasattr(proposta_data, "valor") else str(negociacao_existente.valor),
-                    "status": str(negociacao_existente.status),
-                    "id_tomador": str(negociacao_existente.id_tomador),
-                    "id_investidor": str(negociacao_existente.id_investidor),
-                    "criado_em": str(negociacao_existente.criado_em),
-                    "atualizado_em": str(datetime.utcnow())
+                taxa_media = _parse_taxa_media(proposta_data.taxa_sugerida)
+                atualizacoes = {
+                    "quant_propostas": (negociacao_existente.quant_propostas or 0) + 1,
+                    "atualizado_em": datetime.utcnow(),
                 }
-                NegociacaoService.atualizar_negociacao(db, negociacao_existente.id, negociacao_update)
 
-        # Atualiza a proposta com o ID da negociação existente
+                if taxa_media is not None:
+                    atualizacoes["taxa"] = taxa_media
+
+                if proposta_data.prazo_meses is not None:
+                    atualizacoes["prazo"] = proposta_data.prazo_meses
+
+                if proposta_data.valor is not None:
+                    atualizacoes["valor"] = proposta_data.valor
+
+                if proposta_data.parcela is not None:
+                    atualizacoes["parcela"] = proposta_data.parcela
+
+                NegociacaoService.atualizar_negociacao(db, negociacao_existente.id, atualizacoes)
+
+        # Remove campos auxiliares não persistidos
+        proposta_dict.pop("id_tomador_destino", None)
+        proposta_dict.pop("id_investidor_destino", None)
 
         # Cria a proposta
         db_proposta = Proposta(**proposta_dict)
@@ -145,3 +174,9 @@ class PropostaService:
             query = query.filter(Proposta.id_negociacoes == id_negociacoes)
 
         return query.order_by(Proposta.criado_em.desc()).all()
+
+    @staticmethod
+    def get_proposta_por_id(db: Session, proposta_id: int) -> Optional[Proposta]:
+        """Obtém uma proposta específica."""
+
+        return db.query(Proposta).filter(Proposta.id == proposta_id).first()
