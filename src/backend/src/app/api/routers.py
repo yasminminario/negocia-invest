@@ -21,6 +21,14 @@ from app.models.negociacao import NegociacaoCreate, NegociacaoResponse, Negociac
 from app.services.proposta import PropostaService
 from app.models.proposta import PropostaCreate, PropostaResponse 
 
+# Imports para Usuários, Scores e Métricas
+from app.services.usuario import UsuarioService
+from app.services.score_credito import ScoreCreditoService
+from app.services.metricas import MetricasInvestidorService
+from app.models.usuario import UsuarioResponse
+from app.models.score import ScoreCreditoResponse
+from app.models.metricas_investidor import MetricasInvestidorResponse
+
 # Imports para Recomendação de Taxa
 from app.services.calculo_taxas_juros import taxa_analisada
 from fastapi import HTTPException
@@ -66,6 +74,24 @@ def listar_negociacoes_endpoint(
 ):
     return NegociacaoService.listar_negociacoes(db, status=status)
 
+
+@router.get("/negociacoes/tomador/{tomador_id}", response_model=list[NegociacaoResponse], tags=["Negociações"])
+def listar_negociacoes_tomador_endpoint(
+    tomador_id: int,
+    status: str | None = None,
+    db: Session = Depends(get_db)
+):
+    return NegociacaoService.listar_por_tomador(db, tomador_id, status=status)
+
+
+@router.get("/negociacoes/investidor/{investidor_id}", response_model=list[NegociacaoResponse], tags=["Negociações"])
+def listar_negociacoes_investidor_endpoint(
+    investidor_id: int,
+    status: str | None = None,
+    db: Session = Depends(get_db)
+):
+    return NegociacaoService.listar_por_investidor(db, investidor_id, status=status)
+
 # --- ENDPOINTS DE PROPOSTA ---
 @router.post("/propostas", response_model=PropostaResponse, status_code=status.HTTP_201_CREATED, tags=["Propostas"])
 def criar_proposta_endpoint(
@@ -80,6 +106,17 @@ def listar_propostas_endpoint(
     db: Session = Depends(get_db)
 ):
     return PropostaService.get_propostas(db, id_negociacoes=id_negociacoes)
+
+
+@router.get("/propostas/{proposta_id}", response_model=PropostaResponse, tags=["Propostas"])
+def obter_proposta_por_id_endpoint(
+    proposta_id: int,
+    db: Session = Depends(get_db)
+):
+    proposta = PropostaService.get_proposta_por_id(db, proposta_id)
+    if not proposta:
+        raise HTTPException(status_code=404, detail="Proposta não encontrada")
+    return proposta
     
 
 # Novo endpoint: Score final (modelo + Serasa)
