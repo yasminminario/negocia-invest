@@ -4,6 +4,7 @@ from decimal import Decimal
 from typing import List, Optional
 import secrets
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.usuario import Usuario, UsuarioResponse
@@ -24,8 +25,8 @@ class UsuarioService:
 
         if not email or not senha:
             raise ValueError("Email e senha são obrigatórios.")
+        usuario = db.query(Usuario).filter(func.lower(Usuario.email) == email).first()
 
-        usuario = db.query(Usuario).filter(Usuario.email == email).first()
         if not usuario or not check_password_hash(usuario.senha, senha):
             raise ValueError("Email ou senha inválidos.")
 
@@ -64,8 +65,7 @@ class UsuarioService:
         if len(senha) < 6:
             raise ValueError("A senha deve ter pelo menos 6 caracteres.")
 
-        # Verifica unicidade de email
-        if db.query(Usuario).filter(Usuario.email == email).first():
+        if db.query(Usuario).filter(func.lower(Usuario.email) == email).first():
             raise ValueError("Email já cadastrado.")
 
         # Normaliza CPF (armazena só dígitos) se fornecido
@@ -114,6 +114,8 @@ class UsuarioService:
 
         db.add(usuario)
         db.flush()  # garante que id e timestamps sejam populados
+        db.commit()
+        db.refresh(usuario)
         return UsuarioService.to_response(usuario)
 
     @staticmethod
@@ -139,8 +141,8 @@ class UsuarioService:
         if email is not None:
             email = (email or "").strip().lower()
             if not email:
-                raise ValueError("Email não pode ser vazio.")
-            existente = db.query(Usuario).filter(Usuario.email == email, Usuario.id != usuario_id).first()
+                existente = db.query(Usuario).filter(func.lower(Usuario.email) == email, Usuario.id != usuario_id).first()
+                existente = db.query(Usuario).filter(Usuario.email == email, Usuario.id != usuario_id).first()
             if existente:
                 raise ValueError("Email já cadastrado.")
             usuario.email = email
@@ -228,6 +230,8 @@ class UsuarioService:
             cpf_mascarado=UsuarioService._mascarar_cpf(usuario.cpf),
             celular_mascarado=UsuarioService._mascarar_celular(usuario.celular),
             iniciais=UsuarioService._iniciais(usuario.nome),
+            wallet_adress=usuario.wallet_adress,
+            senha=usuario.senha,
             criado_em=usuario.criado_em,
         )
 
