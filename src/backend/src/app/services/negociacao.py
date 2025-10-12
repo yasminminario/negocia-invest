@@ -10,6 +10,7 @@ import hashlib
 from app.services.blockchain import registrar_hash_na_blockchain
 from app.services.usuario import UsuarioService
 # from app.services.blockchain import registrar_hash_na_blockchain
+from app.models.emprestimo import EmprestimoCreate, Emprestimo
 
 class NegociacaoService:
 
@@ -95,6 +96,24 @@ class NegociacaoService:
                 valor=negociacao.valor,
             )
 
+  
+            emprestimo = Emprestimo(
+            id_negociacoes=negociacao.id,
+            id_tomador=negociacao.id_tomador,
+            id_investidor=negociacao.id_investidor,
+            valor=negociacao.valor or 0.0,
+            taxa=negociacao.taxa or 0.0,
+            prazo=negociacao.prazo if negociacao.prazo is not None else 0,
+            parcela=negociacao.parcela or 0.0,
+            contrato_tx_hash=negociacao.contrato_tx_hash,
+            hash_onchain=negociacao.hash_onchain, 
+            status="ativo",
+            liquidado=False
+            )
+
+            db.add(emprestimo)
+            db.commit()
+            db.refresh(emprestimo)
         negociacao.atualizado_em = datetime.utcnow()
 
         # Chama a função para registrar o hash na blockchain
@@ -181,4 +200,3 @@ class NegociacaoService:
     #     db.commit()
     #     db.refresh(negociacao)
     #     return tx_hash
-    
