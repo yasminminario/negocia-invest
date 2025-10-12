@@ -1,1 +1,0 @@
-// Componente que exibe as informações resumidas de uma oferta ou solicitação de empréstimo em formato de card.

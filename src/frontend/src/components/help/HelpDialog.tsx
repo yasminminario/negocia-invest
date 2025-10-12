@@ -1,59 +1,59 @@
-import { HelpCircle, ArrowRight, CheckCircle, TrendingUp, Handshake, DollarSign, FileText, Bell, User } from 'lucide-react';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
+  HelpCircle,
+  ArrowRight,
+  CheckCircle,
+  TrendingUp,
+  Handshake,
+  DollarSign,
+  FileText,
+  Bell,
+  User,
+} from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 
 interface HelpDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  profile: 'borrower' | 'investor';
+  profile: "borrower" | "investor";
 }
 
 export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, profile }) => {
-  const isBorrower = profile === 'borrower';
+  const isBorrower = profile === "borrower";
 
   const borrowerContent = {
-    title: 'Guia do Tomador',
-    description: 'Aprenda a conseguir o empréstimo ideal para você',
+    title: "Guia do Tomador",
+    description: "Aprenda a conseguir o empréstimo ideal para você",
     sections: [
       {
-        id: 'what-is',
+        id: "what-is",
         icon: HelpCircle,
-        title: 'O que é a negoci.ai?',
+        title: "O que é a negoci.ai?",
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              A negoci.ai conecta você diretamente com investidores que oferecem empréstimos. 
-              Sem bancos, sem burocracia - apenas negociações diretas e transparentes.
+              A negoci.ai conecta você diretamente com investidores que oferecem empréstimos. Sem bancos, sem burocracia
+              - apenas negociações diretas e transparentes.
             </p>
-            <Card className="p-3 bg-borrower-light border-borrower/20">
+            <Card className="p-3 bg-borrower border-borrower/20">
               <p className="text-sm font-medium text-borrower-foreground">
-                💡 Você tem o controle: negocie taxas, escolha prazos e aceite apenas ofertas que fazem sentido para você!
+                💡 Você tem o controle: negocie taxas, escolha prazos e aceite apenas ofertas que fazem sentido para
+                você!
               </p>
             </Card>
           </div>
         ),
       },
       {
-        id: 'how-to-start',
+        id: "how-to-start",
         icon: ArrowRight,
-        title: 'Como começar?',
+        title: "Como começar?",
         content: (
           <div className="space-y-4">
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower/20 flex items-center justify-center text-borrower-foreground font-bold">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
                 1
               </div>
               <div>
@@ -64,7 +64,7 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower/20 flex items-center justify-center text-borrower-foreground font-bold">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
                 2
               </div>
               <div>
@@ -75,7 +75,7 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower/20 flex items-center justify-center text-borrower-foreground font-bold">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
                 3
               </div>
               <div>
@@ -89,9 +89,9 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         ),
       },
       {
-        id: 'negotiation',
+        id: "negotiation",
         icon: Handshake,
-        title: 'Como funciona a negociação?',
+        title: "Como funciona a negociação?",
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
@@ -111,8 +111,8 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
                 <span>Veja histórico completo de todas as propostas trocadas</span>
               </li>
             </ul>
-            <Card className="p-3 bg-info-light border-info/20 mt-3">
-              <p className="text-sm text-info-foreground">
+            <Card className="p-3 bg-info-light border-info mt-3">
+              <p className="text-sm text-info">
                 <Bell className="h-4 w-4 inline mr-1" />
                 Você recebe notificações a cada nova contraproposta!
               </p>
@@ -121,9 +121,9 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         ),
       },
       {
-        id: 'score',
+        id: "score",
         icon: TrendingUp,
-        title: 'Como funciona o Score?',
+        title: "Como funciona o Score?",
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
@@ -131,19 +131,21 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
             </p>
             <div className="grid grid-cols-2 gap-2">
               <Card className="p-3 text-center">
-                <div className="text-2xl font-bold text-negative-foreground">0-400</div>
-                <Badge variant="destructive" className="mt-1">Ruim</Badge>
+                <div className="text-2xl font-bold text-negative">0-400</div>
+                <Badge variant="destructive" className="mt-1">
+                  Ruim
+                </Badge>
               </Card>
               <Card className="p-3 text-center">
-                <div className="text-2xl font-bold text-warning-foreground">401-650</div>
+                <div className="text-2xl font-bold text-warning">401-650</div>
                 <Badge className="mt-1 bg-warning text-warning-foreground">Regular</Badge>
               </Card>
               <Card className="p-3 text-center">
-                <div className="text-2xl font-bold text-info-foreground">651-850</div>
+                <div className="text-2xl font-bold text-info">651-850</div>
                 <Badge className="mt-1 bg-info text-info-foreground">Bom</Badge>
               </Card>
               <Card className="p-3 text-center">
-                <div className="text-2xl font-bold text-positive-foreground">851-1000</div>
+                <div className="text-2xl font-bold text-positive">851-1000</div>
                 <Badge className="mt-1 bg-positive text-positive-foreground">Excelente</Badge>
               </Card>
             </div>
@@ -154,9 +156,9 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         ),
       },
       {
-        id: 'tips',
+        id: "tips",
         icon: FileText,
-        title: 'Dicas importantes',
+        title: "Dicas importantes",
         content: (
           <div className="space-y-2">
             <Card className="p-3 border-l-4 border-l-positive">
@@ -178,20 +180,20 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
   };
 
   const investorContent = {
-    title: 'Guia do Investidor',
-    description: 'Aprenda a investir e gerar retorno com empréstimos',
+    title: "Guia do Investidor",
+    description: "Aprenda a investir e gerar retorno com empréstimos",
     sections: [
       {
-        id: 'what-is',
+        id: "what-is",
         icon: HelpCircle,
-        title: 'O que é a negoci.ai?',
+        title: "O que é a negoci.ai?",
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              A negoci.ai é um marketplace de empréstimos peer-to-peer (P2P). Você empresta dinheiro 
-              diretamente para pessoas e recebe juros pelo período acordado.
+              A negoci.ai é um marketplace de empréstimos peer-to-peer (P2P). Você empresta dinheiro diretamente para
+              pessoas e recebe juros pelo período acordado.
             </p>
-            <Card className="p-3 bg-investor-light border-investor/20">
+            <Card className="p-3 bg-investor border-investor/20">
               <p className="text-sm font-medium text-investor-foreground">
                 💰 Rentabilidade: Taxas de retorno geralmente superiores a investimentos tradicionais!
               </p>
@@ -200,13 +202,13 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         ),
       },
       {
-        id: 'how-to-start',
+        id: "how-to-start",
         icon: ArrowRight,
-        title: 'Como começar a investir?',
+        title: "Como começar a investir?",
         content: (
           <div className="space-y-4">
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor/20 flex items-center justify-center text-investor-foreground font-bold">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
                 1
               </div>
               <div>
@@ -217,7 +219,7 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor/20 flex items-center justify-center text-investor-foreground font-bold">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
                 2
               </div>
               <div>
@@ -228,7 +230,7 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
               </div>
             </div>
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor/20 flex items-center justify-center text-investor-foreground font-bold">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
                 3
               </div>
               <div>
@@ -242,14 +244,12 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         ),
       },
       {
-        id: 'risk',
+        id: "risk",
         icon: TrendingUp,
-        title: 'Como avaliar o risco?',
+        title: "Como avaliar o risco?",
         content: (
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Use o score do tomador como principal indicador de risco:
-            </p>
+            <p className="text-sm text-muted-foreground">Use o score do tomador como principal indicador de risco:</p>
             <div className="grid grid-cols-2 gap-2">
               <Card className="p-3">
                 <div className="flex items-center gap-2 mb-2">
@@ -289,39 +289,45 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         ),
       },
       {
-        id: 'portfolio',
+        id: "portfolio",
         icon: DollarSign,
-        title: 'Gerenciando seu portfólio',
+        title: "Gerenciando seu portfólio",
         content: (
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Seu dashboard mostra métricas importantes em tempo real:
-            </p>
+            <p className="text-sm text-muted-foreground">Seu dashboard mostra métricas importantes em tempo real:</p>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span><strong>Total Investido:</strong> Quanto você tem aplicado atualmente</span>
+                <span>
+                  <strong>Total Investido:</strong> Quanto você tem aplicado atualmente
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span><strong>Retorno Total:</strong> Juros acumulados de todos os empréstimos</span>
+                <span>
+                  <strong>Retorno Total:</strong> Juros acumulados de todos os empréstimos
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span><strong>Diversificação:</strong> Distribuição por score dos tomadores</span>
+                <span>
+                  <strong>Diversificação:</strong> Distribuição por score dos tomadores
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span><strong>Taxa Média:</strong> Rentabilidade média de sua carteira</span>
+                <span>
+                  <strong>Taxa Média:</strong> Rentabilidade média de sua carteira
+                </span>
               </li>
             </ul>
           </div>
         ),
       },
       {
-        id: 'tips',
+        id: "tips",
         icon: FileText,
-        title: 'Estratégias de sucesso',
+        title: "Estratégias de sucesso",
         content: (
           <div className="space-y-2">
             <Card className="p-3 border-l-4 border-l-positive">
@@ -349,12 +355,14 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              isBorrower ? 'bg-borrower/20' : 'bg-investor/20'
-            }`}>
-              <HelpCircle className={`h-5 w-5 ${
-                isBorrower ? 'text-borrower-foreground' : 'text-investor-foreground'
-              }`} />
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                isBorrower ? "bg-borrower" : "bg-investor"
+              }`}
+            >
+              <HelpCircle
+                className={`h-5 w-5 ${isBorrower ? "text-borrower-foreground" : "text-investor-foreground"}`}
+              />
             </div>
             <div>
               <DialogTitle className="text-2xl">{content.title}</DialogTitle>
@@ -368,31 +376,29 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
             <AccordionItem key={section.id} value={section.id}>
               <AccordionTrigger className="text-left">
                 <div className="flex items-center gap-2">
-                  <section.icon className={`h-4 w-4 ${
-                    isBorrower ? 'text-borrower-foreground' : 'text-investor-foreground'
-                  }`} />
+                  <section.icon
+                    className={`h-4 w-4 ${isBorrower ? "text-borrower-foreground" : "text-investor-foreground"}`}
+                  />
                   <span>{section.title}</span>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="pt-4">
-                {section.content}
-              </AccordionContent>
+              <AccordionContent className="pt-4">{section.content}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
-        <Card className={`p-4 mt-4 ${
-          isBorrower ? 'bg-borrower-light border-borrower/20' : 'bg-investor-light border-investor/20'
-        }`}>
+        <Card
+          className={`p-4 mt-4 ${
+            isBorrower ? "bg-borrower-ligth border-borrower/20" : "bg-investor-light border-investor/20"
+          }`}
+        >
           <div className="flex items-start gap-3">
-            <User className={`h-5 w-5 mt-0.5 ${
-              isBorrower ? 'text-borrower-foreground' : 'text-investor-foreground'
-            }`} />
+            <User className={`h-5 w-5 mt-0.5 ${isBorrower ? "text-borrower" : "text-investor"}`} />
             <div>
               <h4 className="font-semibold mb-1">Precisa de mais ajuda?</h4>
               <p className="text-sm text-muted-foreground">
-                Explore a plataforma e use as notificações para acompanhar todas as atualizações. 
-                Qualquer dúvida, revise este guia a qualquer momento!
+                Explore a plataforma e use as notificações para acompanhar todas as atualizações. Qualquer dúvida,
+                revise este guia a qualquer momento!
               </p>
             </div>
           </div>

@@ -1,119 +1,96 @@
-/**
- * Serviço de integração com a API Backend
- * Mapeia os dados do PostgreSQL para os tipos do frontend
- */
-
-import { apiClient, API_ENDPOINTS } from '@/config/api';
+import { apiClient } from '@/config/api';
 import type {
+  NegociacaoResponse,
+  NegociacaoUpdatePayload,
+  PropostaCreatePayload,
+  PropostaResponsePayload,
   Usuario,
   ScoreCredito,
-  Negociacao,
-  Proposta,
   MetricasInvestidor,
-  NegociacaoCompleta,
-  PropostaCompleta,
 } from '@/types';
-
-// ============= USUÁRIOS =============
-
-export const usuariosService = {
-  getAll: () => apiClient.get<Usuario[]>(API_ENDPOINTS.usuarios),
-  
-  getById: (id: number) => apiClient.get<Usuario>(API_ENDPOINTS.usuario(id)),
-  
-  create: (data: Omit<Usuario, 'id' | 'criado_em'>) =>
-    apiClient.post<Usuario>(API_ENDPOINTS.usuarios, data),
-  
-  update: (id: number, data: Partial<Usuario>) =>
-    apiClient.put<Usuario>(API_ENDPOINTS.usuario(id), data),
-};
-
-// ============= SCORES DE CRÉDITO =============
-
-export const scoresService = {
-  getAll: () => apiClient.get<ScoreCredito[]>(API_ENDPOINTS.scores),
-  
-  getByUserId: (userId: number) =>
-    apiClient.get<ScoreCredito>(API_ENDPOINTS.scoreByUserId(userId)),
-  
-  update: (userId: number, data: Partial<ScoreCredito>) =>
-    apiClient.put<ScoreCredito>(API_ENDPOINTS.scoreByUserId(userId), data),
-};
 
 // ============= NEGOCIAÇÕES =============
 
-export const negociacoesService = {
-  getAll: () => apiClient.get<Negociacao[]>(API_ENDPOINTS.negociacoes),
-  
-  getById: (id: number) => apiClient.get<NegociacaoCompleta>(API_ENDPOINTS.negociacao(id)),
-  
-  getByTomador: (tomadorId: number) =>
-    apiClient.get<Negociacao[]>(API_ENDPOINTS.negociacoesByTomador(tomadorId)),
-  
-  getByInvestidor: (investidorId: number) =>
-    apiClient.get<Negociacao[]>(API_ENDPOINTS.negociacoesByInvestidor(investidorId)),
-  
-  create: (data: {
-    id_tomador: number;
-    id_investidor: number;
-    prazo: number;
-    valor: number;
-    parcela: number;
-  }) => apiClient.post<Negociacao>(API_ENDPOINTS.negociacoes, {
-    ...data,
-    status: 'pendente',
-    quant_propostas: 0,
-  }),
-  
-  update: (id: number, data: Partial<Negociacao>) =>
-    apiClient.put<Negociacao>(API_ENDPOINTS.negociacao(id), data),
+export const negociacoesApi = {
+  listar: (status?: string) => {
+    const query = status ? `?status=${encodeURIComponent(status)}` : '';
+    return apiClient.get<NegociacaoResponse[]>(`/negociacoes${query}`);
+  },
+
+  obterPorId: (id: number) => apiClient.get<NegociacaoResponse>(`/negociacoes/${id}`),
+
+  listarPorTomador: (tomadorId: number, status?: string) => {
+    const query = status ? `?status=${encodeURIComponent(status)}` : '';
+    return apiClient.get<NegociacaoResponse[]>(`/negociacoes/tomador/${tomadorId}${query}`);
+  },
+
+  listarPorInvestidor: (investidorId: number, status?: string) => {
+    const query = status ? `?status=${encodeURIComponent(status)}` : '';
+    return apiClient.get<NegociacaoResponse[]>(`/negociacoes/investidor/${investidorId}${query}`);
+  },
+
+  atualizar: (id: number, payload: NegociacaoUpdatePayload) =>
+    apiClient.put<NegociacaoResponse>(`/negociacoes/${id}`, payload),
 };
 
 // ============= PROPOSTAS =============
 
-export const propostasService = {
-  getAll: () => apiClient.get<Proposta[]>(API_ENDPOINTS.propostas),
-  
-  getById: (id: number) => apiClient.get<PropostaCompleta>(API_ENDPOINTS.proposta(id)),
-  
-  getByNegociacao: (negociacaoId: number) =>
-    apiClient.get<Proposta[]>(API_ENDPOINTS.propostasByNegociacao(negociacaoId)),
-  
-  create: (data: {
-    id_negociacoes: number;
-    id_autor: number;
-    autor_tipo: 'tomador' | 'investidor';
-    taxa_analisada: string;
-    taxa_sugerida: string;
-    prazo_meses: number;
-    tipo: 'inicial' | 'contraproposta' | 'final';
-    parcela: number;
-    valor: number;
-    justificativa: string;
-    negociavel: boolean;
-  }) => apiClient.post<Proposta>(API_ENDPOINTS.propostas, {
-    ...data,
-    status: 'pendente',
-  }),
-  
-  update: (id: number, data: Partial<Proposta>) =>
-    apiClient.put<Proposta>(API_ENDPOINTS.proposta(id), data),
-  
-  accept: (id: number) =>
-    apiClient.put<Proposta>(API_ENDPOINTS.proposta(id), { status: 'aceita' }),
-  
-  reject: (id: number) =>
-    apiClient.put<Proposta>(API_ENDPOINTS.proposta(id), { status: 'rejeitada' }),
+export const propostasApi = {
+  listar: (idNegociacoes?: number) => {
+    const query = idNegociacoes ? `?id_negociacoes=${idNegociacoes}` : '';
+    return apiClient.get<PropostaResponsePayload[]>(`/propostas${query}`);
+  },
+
+  criar: (payload: PropostaCreatePayload) =>
+    apiClient.post<PropostaResponsePayload>('/propostas', payload),
+
+  obterPorId: (id: number) => apiClient.get<PropostaResponsePayload>(`/propostas/${id}`),
 };
 
-// ============= MÉTRICAS DE INVESTIDOR =============
+// ============= SCORE & RECOMENDAÇÕES =============
 
-export const metricasService = {
-  getAll: () => apiClient.get<MetricasInvestidor[]>(API_ENDPOINTS.metricas),
-  
-  getByUsuario: (usuarioId: number) =>
-    apiClient.get<MetricasInvestidor>(API_ENDPOINTS.metricasByUsuario(usuarioId)),
-  
-  update: (usuarioId: number, data: Partial<MetricasInvestidor>) =>
-    apiClient.put<MetricasInvestidor>(API_ENDPOINTS.metricasByUsuario(usuarioId), data),
+export const scoreApi = {
+  calcularScoreFinal: (userId: number) =>
+    apiClient.post(`/score/${userId}`, {}),
+};
+
+export const recomendacaoApi = {
+  recomendarTaxa: (params: {
+    user_id: number;
+    valor: number;
+    prazo: number;
+    score: number;
+    tipo?: string;
+  }) => {
+    const search = new URLSearchParams({
+      user_id: String(params.user_id),
+      valor: String(params.valor),
+      prazo: String(params.prazo),
+      score: String(params.score),
+    });
+
+    if (params.tipo) {
+      search.set('tipo', params.tipo);
+    }
+
+    return apiClient.get(`/recomendacao/taxa?${search.toString()}`);
+  },
+
+  listarRecomendacoesInternas: (userId: number, perfil: string) =>
+    apiClient.get(`/internal/recommendations/solicitacoes/${userId}?perfil=${encodeURIComponent(perfil)}`),
+};
+
+// ============= USUÁRIOS, SCORE E MÉTRICAS =============
+
+export const usuariosApi = {
+  listar: () => apiClient.get<Usuario[]>('/usuarios'),
+  obterPorId: (id: number) => apiClient.get<Usuario>(`/usuarios/${id}`),
+};
+
+export const scoresCreditoApi = {
+  obterPorUsuario: (userId: number) => apiClient.get<ScoreCredito>(`/scores_credito/usuario/${userId}`),
+};
+
+export const metricasInvestidorApi = {
+  obterPorUsuario: (userId: number) => apiClient.get<MetricasInvestidor>(`/metricas_investidor/usuario/${userId}`),
 };

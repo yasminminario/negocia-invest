@@ -2,10 +2,17 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useProfile } from '@/contexts/ProfileContext';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { useEffect } from 'react';
 
 const SelectProfile = () => {
-  const { setActiveProfile } = useProfile();
+  const { setActiveProfile, isAuthenticated } = useProfile();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/auth/login');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSelectBorrower = () => {
     setActiveProfile('borrower');

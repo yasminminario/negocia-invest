@@ -1,1 +1,0 @@
-// Tela de lista que exibe todas as negociações em andamento para o Investidor.

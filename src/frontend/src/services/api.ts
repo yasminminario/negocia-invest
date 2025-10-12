@@ -1,1 +1,0 @@
-// Configura a instância do cliente HTTP (ex: Axios) e define todas as funções de chamada à API do backend.

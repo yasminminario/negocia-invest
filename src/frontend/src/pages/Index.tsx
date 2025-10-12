@@ -7,10 +7,12 @@ import { ImpactDisplay } from '@/components/negotiation/ImpactDisplay';
 import { NegotiationTimer } from '@/components/negotiation/NegotiationTimer';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { calculateMonthlyPayment, calculateTotalAmount, calculateSavings } from '@/utils/calculations';
 
 const Index = () => {
-  const { activeProfile, setActiveProfile, setUser } = useProfile();
+  const { activeProfile, setActiveProfile } = useProfile();
+  const navigate = useNavigate();
   const [interestRate, setInterestRate] = useState(1.5);
   const [message, setMessage] = useState('');
 
@@ -29,17 +31,7 @@ const Index = () => {
   const proposedTotal = calculateTotalAmount(proposedMonthly, installments);
   const savings = calculateSavings(amount, currentRate, interestRate, installments);
 
-  // Simular login
-  const handleLogin = () => {
-    setUser({
-      id: 'user-1',
-      name: 'Carlos Silva',
-      email: 'carlos@example.com',
-      creditScore: 'excellent',
-      scoreValue: 850,
-      activeProfile: 'borrower',
-    });
-  };
+  // Simular login (removed - now using real auth)
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,8 +49,8 @@ const Index = () => {
               Investidor
             </Button>
           </div>
-          <Button onClick={handleLogin} variant="secondary" className="w-full">
-            Simular Login
+          <Button onClick={() => navigate('/auth/login')} variant="secondary" className="w-full">
+            Ir para Login
           </Button>
         </div>
 

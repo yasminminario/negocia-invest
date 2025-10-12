@@ -6,29 +6,87 @@ import { NegotiationSlider } from '@/components/negotiation/NegotiationSlider';
 import { Slider } from '@/components/ui/slider';
 import { formatCurrency, calculateMonthlyPayment, calculateTotalAmount } from '@/utils/calculations';
 import { useToast } from '@/hooks/use-toast';
+import { useProfile } from '@/contexts/ProfileContext';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { propostasApi } from '@/services/api.service';
 
 const CreateRequest = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useProfile();
+  const { addNotification } = useNotifications();
   const [step, setStep] = useState(1);
   const [amount, setAmount] = useState(8000);
   const [installments, setInstallments] = useState(25);
   const [interestRate, setInterestRate] = useState(2);
   const [acceptsNegotiation, setAcceptsNegotiation] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const monthlyPayment = calculateMonthlyPayment(amount, interestRate, installments);
   const totalAmount = calculateTotalAmount(monthlyPayment, installments);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < 4) {
       setStep(step + 1);
     } else {
-      toast({
-        title: "Solicitação criada com sucesso!",
-        description: "Investidores interessados entrarão em contato em breve.",
-        className: "bg-positive-light border-positive/20",
-      });
-      setTimeout(() => navigate('/borrower/find-offers'), 1500);
+      if (!user?.id) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar logado para criar uma solicitação.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const faixaDelta = 0.25;
+        const minFaixa = Math.max(interestRate - faixaDelta, 0.1);
+        const maxFaixa = interestRate + faixaDelta;
+
+        await propostasApi.criar({
+          id_negociacoes: null,
+          id_autor: user.id,
+          autor_tipo: 'tomador',
+          taxa_analisada: `${minFaixa.toFixed(2)}-${maxFaixa.toFixed(2)}`,
+          taxa_sugerida: interestRate.toFixed(2),
+          prazo_meses: installments,
+          tipo: 'inicial',
+          status: 'pendente',
+          parcela: Number(monthlyPayment.toFixed(2)),
+          valor: amount,
+          negociavel: acceptsNegotiation,
+          justificativa: null,
+          id_tomador_destino: null,
+          id_investidor_destino: null,
+        });
+
+        addNotification({
+          type: 'loan',
+          title: 'Solicitação publicada',
+          message: `Seu pedido de ${formatCurrency(amount)} está visível para investidores qualificados.`,
+          actionUrl: '/borrower/negotiations',
+        });
+
+        toast({
+          title: "Solicitação criada com sucesso!",
+          description: "Investidores qualificados já podem visualizar o seu pedido.",
+          className: "bg-positive-light border-positive/20",
+        });
+
+        setTimeout(() => navigate('/borrower/negotiations'), 800);
+      } catch (error) {
+        console.error('Error creating request:', error);
+        const message = error instanceof Error ? error.message : "Ocorreu um erro ao processar sua solicitação.";
+        toast({
+          title: "Erro ao criar solicitação",
+          description: message,
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -43,7 +101,7 @@ const CreateRequest = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header showBackButton onBack={handleBack} />
-      
+
       <main className="container max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Progress */}
         <div className="space-y-2">
@@ -127,6 +185,9 @@ const CreateRequest = () => {
 
             <div className="p-4 rounded-lg bg-muted space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                </svg>
                 <span>Parcela mensal estimada:</span>
               </div>
               <div className="text-2xl font-bold text-primary">
@@ -143,26 +204,24 @@ const CreateRequest = () => {
               <label className="text-sm font-medium mb-4 block">
                 Sua oferta estará aberta a negociações?
               </label>
-              
+
               <div className="flex gap-4 my-6">
                 <button
                   onClick={() => setAcceptsNegotiation(true)}
-                  className={`flex-1 p-6 rounded-2xl border-2 transition-all ${
-                    acceptsNegotiation
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border hover:border-primary/50'
-                  }`}
+                  className={`flex-1 p-6 rounded-2xl border-2 transition-all ${acceptsNegotiation
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border hover:border-primary/50'
+                    }`}
                 >
                   <div className="text-2xl mb-2">👍</div>
                   <div className="font-bold">Sim</div>
                 </button>
                 <button
                   onClick={() => setAcceptsNegotiation(false)}
-                  className={`flex-1 p-6 rounded-2xl border-2 transition-all ${
-                    !acceptsNegotiation
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border hover:border-primary/50'
-                  }`}
+                  className={`flex-1 p-6 rounded-2xl border-2 transition-all ${!acceptsNegotiation
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border hover:border-primary/50'
+                    }`}
                 >
                   <div className="text-2xl mb-2">👎</div>
                   <div className="font-bold">Não</div>
@@ -214,9 +273,10 @@ const CreateRequest = () => {
         {/* Action Button */}
         <Button
           onClick={handleNext}
+          disabled={loading}
           className="w-full rounded-full py-6 text-lg font-semibold transition-all duration-200 hover-scale"
         >
-          {step === 4 ? 'Criar solicitação →' : 'Continuar →'}
+          {loading ? 'Criando...' : step === 4 ? 'Criar solicitação →' : 'Continuar →'}
         </Button>
       </main>
     </div>

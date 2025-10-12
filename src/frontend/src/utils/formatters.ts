@@ -1,1 +1,0 @@
-// Contém funções utilitárias puras, como formatadores de moeda (BRL) e datas.

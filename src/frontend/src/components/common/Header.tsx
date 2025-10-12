@@ -6,6 +6,14 @@ import { useProfile } from '@/contexts/ProfileContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { HelpDialog } from '@/components/help/HelpDialog';
+import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu';
+import { MobileMenu } from '@/components/common/MobileMenu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface HeaderProps {
   showBackButton?: boolean;
@@ -27,71 +35,125 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b px-6 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-            <svg
-              viewBox="0 0 40 40"
-              className="w-6 h-6 text-primary"
-              fill="currentColor"
-            >
-              <path d="M20 8c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12S26.627 8 20 8zm0 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
-              <circle cx="20" cy="20" r="4" />
-            </svg>
-          </div>
-          <span className="text-xl font-bold">
-            negoci<span className="text-primary">.ai</span>
-          </span>
+    <TooltipProvider>
+      <header className="sticky top-0 z-50 bg-background border-b px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          {/* Logo */}
+          <button
+            className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg p-1 -m-1"
+            onClick={() => navigate(activeProfile === 'borrower' ? '/borrower' : '/investor')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigate(activeProfile === 'borrower' ? '/borrower' : '/investor');
+              }
+            }}
+            aria-label="Voltar para o início - negoci.ai"
+            tabIndex={0}
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <svg
+                viewBox="0 0 40 40"
+                className="w-6 h-6 text-primary"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M20 8c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12S26.627 8 20 8zm0 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z" />
+                <circle cx="20" cy="20" r="4" />
+              </svg>
+            </div>
+            <span className="text-xl font-bold">
+              negoci<span className="text-primary">.ai</span>
+            </span>
+          </button>
         </div>
-      </div>
 
-      <div className="flex items-center gap-2">
-        {/* Help Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setHelpOpen(true)}
-          title="Ajuda"
-        >
-          <HelpCircle className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-2">
+            {/* Help Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setHelpOpen(true)}
+                  aria-label="Abrir central de ajuda"
+                  className="gap-2"
+                >
+                  <HelpCircle className="h-5 w-5" />
+                  <span className="sr-only">Ajuda</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Central de Ajuda</p>
+              </TooltipContent>
+            </Tooltip>
 
-        {/* Notification Bell */}
-        <NotificationBell
-          notifications={notifications}
-          onMarkAsRead={markAsRead}
-          onMarkAllAsRead={markAllAsRead}
-        />
+            {/* Accessibility Menu */}
+            <AccessibilityMenu />
 
-        {/* Profile Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate('/profile')}
-        >
-          <User className="h-5 w-5" />
-        </Button>
+            {/* Notification Bell */}
+            <NotificationBell
+              notifications={notifications}
+              onMarkAsRead={markAsRead}
+              onMarkAllAsRead={markAllAsRead}
+            />
 
-        {/* Back Button */}
+            {/* Profile Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate('/profile')}
+                  aria-label="Acessar meu perfil"
+                  className="gap-2"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">Perfil</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Meu Perfil</p>
+              </TooltipContent>
+            </Tooltip>
+
+          {/* Back Button */}
+          {showBackButton && (
+            <Button
+              onClick={handleBack}
+              className="rounded-full px-6 py-2 ml-2"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar
+            </Button>
+          )}
+        </div>
+
+        {/* Mobile Menu */}
+        <MobileMenu />
+
+        {/* Mobile Back Button */}
         {showBackButton && (
           <Button
             onClick={handleBack}
-            className="rounded-full px-6 py-2 ml-2"
+            className="md:hidden rounded-full px-4 py-2"
+            size="sm"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-1" />
             Voltar
           </Button>
         )}
-      </div>
+        </div>
 
-      {/* Help Dialog */}
-      <HelpDialog
-        open={helpOpen}
-        onOpenChange={setHelpOpen}
-        profile={activeProfile}
-      />
-    </header>
+        {/* Help Dialog */}
+        <HelpDialog
+          open={helpOpen}
+          onOpenChange={setHelpOpen}
+          profile={activeProfile}
+        />
+      </header>
+    </TooltipProvider>
   );
 };

@@ -1,1 +1,0 @@
-// Navegador principal pós-login, controlando a alternância entre os perfis Tomador e Investidor.

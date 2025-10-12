@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
 import { LoanCard } from '@/components/common/LoanCard';
@@ -8,14 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FilterDialog } from '@/components/filters/FilterDialog';
 import { useFilters } from '@/hooks/useFilters';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
-import { mockLoanOffers } from '@/data/mockData';
+import { Search, SlidersHorizontal, X, EyeOff, Eye } from 'lucide-react';
+import { useOffers } from '@/hooks/useOffers';
 
 const FindOffers = () => {
   const navigate = useNavigate();
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  
+  const { offers, loading: isLoading, hideOffer, hiddenOfferIds, restoreHiddenOffers } = useOffers();
+
   const {
     filters,
     setFilters,
@@ -23,14 +23,9 @@ const FindOffers = () => {
     setSearchQuery,
     filteredAndSortedItems,
     resetFilters,
-  } = useFilters(mockLoanOffers);
+  } = useFilters(offers);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const hasActiveFilters = 
+  const hasActiveFilters =
     filters.minAmount !== 1000 ||
     filters.maxAmount !== 500000 ||
     filters.minRate !== 0.5 ||
@@ -42,7 +37,7 @@ const FindOffers = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header showBackButton onBack={() => navigate('/borrower/dashboard')} />
-      
+
       <main className="container mx-auto px-4 py-6 max-w-7xl space-y-6">
         {/* Title */}
         <div className="flex items-center gap-2">
@@ -72,19 +67,35 @@ const FindOffers = () => {
         </div>
 
         {/* Active Filters Badge */}
-        {hasActiveFilters && (
+        {(hasActiveFilters || hiddenOfferIds.length > 0) && (
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="flex items-center gap-2">
-              Filtros ativos
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 p-0 hover:bg-transparent"
-                onClick={resetFilters}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
+            {hasActiveFilters && (
+              <Badge variant="secondary" className="flex items-center gap-2">
+                Filtros ativos
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={resetFilters}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
+            {hiddenOfferIds.length > 0 && (
+              <Badge variant="outline" className="flex items-center gap-2">
+                {hiddenOfferIds.length} oferta{hiddenOfferIds.length > 1 ? 's' : ''} ocultada{hiddenOfferIds.length > 1 ? 's' : ''}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={restoreHiddenOffers}
+                  aria-label="Mostrar ofertas ocultas"
+                >
+                  <Eye className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
           </div>
         )}
 
@@ -116,22 +127,35 @@ const FindOffers = () => {
           ) : (
             <>
               {filteredAndSortedItems.map((offer) => (
-                <LoanCard
-                  key={offer.id}
-                  id={offer.id}
-                  name={offer.investor.name}
-                  score={offer.investor.scoreValue}
-                  interestRate={offer.interestRate}
-                  installments={offer.installments}
-                  monthlyPayment={offer.monthlyPayment}
-                  total={offer.totalAmount}
-                  amount={offer.amount}
-                  status={offer.status}
-                  onClick={() => navigate(`/borrower/offer/${offer.id}`)}
-                  className="transition-all duration-200 hover-scale animate-fade-in"
-                />
+                <div key={offer.id} className="relative group">
+                  <LoanCard
+                    id={offer.id}
+                    name={offer.investor.name}
+                    score={offer.investor.scoreValue}
+                    interestRate={offer.interestRate}
+                    installments={offer.installments}
+                    monthlyPayment={offer.monthlyPayment}
+                    total={offer.totalAmount}
+                    amount={offer.amount}
+                    status={offer.status}
+                    onClick={() => navigate(`/borrower/offer/${offer.id}`)}
+                    className="transition-all duration-200 hover-scale animate-fade-in"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-3 right-3 h-8 w-8 rounded-full bg-background/90 opacity-0 group-hover:opacity-100 transition-opacity"
+                    aria-label="Ocultar oferta"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      hideOffer(offer.id);
+                    }}
+                  >
+                    <EyeOff className="h-4 w-4" />
+                  </Button>
+                </div>
               ))}
-              
+
               {/* End indicator */}
               <div className="col-span-full text-center text-sm text-muted-foreground py-4">
                 😊 Acaba aqui

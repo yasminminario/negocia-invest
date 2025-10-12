@@ -44,7 +44,7 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
           cy="50"
           r="45"
           fill="none"
-          stroke="currentColor"
+          stroke="gray"
           strokeWidth="8"
           className="text-muted opacity-20"
         />

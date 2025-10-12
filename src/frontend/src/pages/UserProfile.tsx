@@ -14,14 +14,25 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 
 const UserProfile = () => {
   const navigate = useNavigate();
-  const { activeProfile } = useProfile();
+  const { activeProfile, user, score, logout, isLoading, error } = useProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: 'Carlos Silva',
-    email: 'carlos@example.com',
-    phone: '(11) 98765-4321',
-    cpf: '123.456.789-00',
+    name: user?.nome || '',
+    email: user?.email || '',
+    phone: user?.celular_mascarado || '',
+    cpf: user?.cpf_mascarado || '',
   });
+
+  React.useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.nome || '',
+        email: user.email || '',
+        phone: user.celular_mascarado || '',
+        cpf: user.cpf_mascarado || '',
+      });
+    }
+  }, [user]);
 
   const handleSave = () => {
     toast({
@@ -32,7 +43,8 @@ const UserProfile = () => {
     setIsEditing(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logout();
     toast({
       title: 'Logout realizado',
       description: 'Você saiu da sua conta.',
@@ -68,12 +80,24 @@ const UserProfile = () => {
             <Shield className="w-5 h-5 text-primary" />
           </div>
           <div className="flex items-center justify-center">
-            <ScoreRing score={850} size="lg" />
+            <ScoreRing score={score?.valor_score || 0} size="lg" />
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">
             Score excelente! Continue mantendo seus pagamentos em dia.
           </p>
         </Card>
+
+        {(isLoading || !user) && (
+          <Card className="p-4 border-border/80 bg-muted/40 text-sm text-muted-foreground">
+            Carregando dados do perfil...
+          </Card>
+        )}
+
+        {!isLoading && error && (
+          <Card className="p-4 border-destructive/40 bg-destructive/10 text-sm text-destructive">
+            {error}
+          </Card>
+        )}
 
         {/* Tabs */}
         <Tabs defaultValue="personal" className="w-full">
@@ -144,12 +168,12 @@ const UserProfile = () => {
                 <Input
                   id="phone"
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  disabled={!isEditing}
+                  disabled
                   className="mt-1"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Por segurança, exibimos apenas os últimos dígitos.
+                </p>
               </div>
 
               <div>
@@ -161,7 +185,7 @@ const UserProfile = () => {
                   className="mt-1 bg-muted"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  CPF não pode ser alterado
+                  CPF não pode ser alterado e permanece oculto.
                 </p>
               </div>
             </div>

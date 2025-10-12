@@ -5,6 +5,12 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { formatCurrency } from '@/utils/calculations';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface FilterValues {
   minAmount: number;
@@ -46,7 +52,8 @@ export const FilterDialog: React.FC<FilterDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <TooltipProvider>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Filtros</DialogTitle>
@@ -194,14 +201,38 @@ export const FilterDialog: React.FC<FilterDialogProps> = ({
         </div>
 
         <DialogFooter className="flex gap-2">
-          <Button variant="outline" onClick={handleReset} className="flex-1">
-            Limpar
-          </Button>
-          <Button onClick={handleApply} className="flex-1">
-            Aplicar filtros
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="outline" 
+                onClick={handleReset} 
+                className="flex-1"
+                aria-label="Limpar todos os filtros aplicados"
+              >
+                Limpar Filtros
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Remover todos os filtros</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                onClick={handleApply} 
+                className="flex-1"
+                aria-label="Aplicar filtros selecionados"
+              >
+                Aplicar Filtros
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Confirmar e aplicar filtros</p>
+            </TooltipContent>
+          </Tooltip>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </TooltipProvider>
   );
 };

@@ -33,8 +33,17 @@ export const LoanCard: React.FC<LoanCardProps> = ({
   return (
     <div
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Oferta de empréstimo de ${name}. Valor: ${formatCurrency(amount)}. Taxa: ${formatInterestRate(interestRate)}. ${installments} parcelas de ${formatCurrency(monthlyPayment)}. Score: ${score}`}
       className={cn(
-        'p-4 rounded-2xl border-2 border-border bg-card hover:border-primary/50 transition-all duration-200 hover-scale cursor-pointer',
+        'p-4 rounded-2xl border-2 border-border bg-card hover:border-primary/50 transition-all duration-200 hover-scale cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         className
       )}
     >
@@ -61,27 +70,37 @@ export const LoanCard: React.FC<LoanCardProps> = ({
       <div className="grid grid-cols-3 gap-2 mb-3">
         <div>
           <div className="text-xs text-muted-foreground">Taxa de juros</div>
-          <div className="font-bold text-primary">{formatInterestRate(interestRate)}</div>
+          <div className="font-bold text-primary" aria-label={`Taxa de juros de ${formatInterestRate(interestRate)}`}>
+            {formatInterestRate(interestRate)}
+          </div>
         </div>
         <div>
           <div className="text-xs text-muted-foreground">Período</div>
-          <div className="font-semibold">{installments} m</div>
+          <div className="font-semibold" aria-label={`${installments} meses`}>
+            {installments} meses
+          </div>
         </div>
         <div>
           <div className="text-xs text-muted-foreground">Parcela mensal</div>
-          <div className="font-semibold">{formatCurrency(monthlyPayment)}</div>
+          <div className="font-semibold" aria-label={`Parcela mensal de ${formatCurrency(monthlyPayment)}`}>
+            {formatCurrency(monthlyPayment)}
+          </div>
         </div>
       </div>
 
       {/* Totals */}
       <div className="flex items-center justify-between pt-3 border-t">
         <div>
-          <span className="text-xs text-muted-foreground">Total: </span>
-          <span className="font-bold">{formatCurrency(total)}</span>
+          <span className="text-xs text-muted-foreground">Valor total a pagar: </span>
+          <span className="font-bold" aria-label={`Total de ${formatCurrency(total)}`}>
+            {formatCurrency(total)}
+          </span>
         </div>
         <div>
           <span className="text-xs text-muted-foreground">Valor {status ? 'solicitado' : 'ofertado'}: </span>
-          <span className="font-bold">{formatCurrency(amount)}</span>
+          <span className="font-bold" aria-label={`Valor ${status ? 'solicitado' : 'ofertado'} de ${formatCurrency(amount)}`}>
+            {formatCurrency(amount)}
+          </span>
         </div>
       </div>
     </div>
