@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, User, HelpCircle, Eye } from 'lucide-react';
+import { Menu, User, HelpCircle, Eye, ArrowLeftRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,18 +18,36 @@ import { Separator } from '@/components/ui/separator';
 
 export const MobileMenu = () => {
   const navigate = useNavigate();
-  const { activeProfile } = useProfile();
+  const { activeProfile, setActiveProfile } = useProfile();
   const { notifications, markAsRead, markAllAsRead } = useNotifications();
   const [open, setOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+
+  const menuButtonClass =
+    'w-full justify-start gap-3 rounded-xl border border-border/60 bg-muted/20 px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:border-primary/60 hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
+
+  const secondaryButtonClass =
+    'w-full justify-start gap-3 rounded-xl border border-primary/50 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
+
+  const sectionCardClass = 'rounded-xl border border-border/60 bg-muted/10 px-4 py-3 text-sm text-muted-foreground';
+
+  const handleProfileSwitch = () => {
+    const isInvestor = activeProfile === 'investor';
+    const targetProfile = isInvestor ? 'borrower' : 'investor';
+    const targetRoute = isInvestor ? '/borrower/dashboard' : '/investor/dashboard';
+
+    setActiveProfile(targetProfile);
+    navigate(targetRoute);
+    setOpen(false);
+  };
 
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             className="md:hidden"
             aria-label="Abrir menu de navegação"
           >
@@ -41,12 +59,12 @@ export const MobileMenu = () => {
           <SheetHeader>
             <SheetTitle>Menu de Navegação</SheetTitle>
           </SheetHeader>
-          
+
           <div className="flex flex-col gap-4 py-6">
             {/* Perfil */}
             <Button
               variant="ghost"
-              className="justify-start gap-3 text-base"
+              className={menuButtonClass}
               onClick={() => {
                 navigate('/profile');
                 setOpen(false);
@@ -66,10 +84,29 @@ export const MobileMenu = () => {
 
             <Separator />
 
+            {/* Troca de Perfil */}
+            <Button
+              variant="ghost"
+              className={secondaryButtonClass}
+              onClick={handleProfileSwitch}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleProfileSwitch();
+                }
+              }}
+              aria-label={`Trocar para perfil ${activeProfile === 'investor' ? 'tomador' : 'investidor'}`}
+            >
+              <ArrowLeftRight className="h-5 w-5" aria-hidden="true" />
+              <span>Trocar para {activeProfile === 'investor' ? 'Tomador' : 'Investidor'}</span>
+            </Button>
+
+            <Separator />
+
             {/* Notificações */}
-            <div className="px-3 py-2">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-medium">Notificações</span>
+            <div className={sectionCardClass}>
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                <span>Notificações</span>
               </div>
               <NotificationBell
                 notifications={notifications}
@@ -81,10 +118,10 @@ export const MobileMenu = () => {
             <Separator />
 
             {/* Acessibilidade */}
-            <div className="px-3 py-2">
-              <div className="flex items-center gap-2 mb-2">
+            <div className={sectionCardClass}>
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
                 <Eye className="h-5 w-5" aria-hidden="true" />
-                <span className="font-medium">Configurações de Acessibilidade</span>
+                <span>Configurações de Acessibilidade</span>
               </div>
               <AccessibilityMenu />
             </div>
@@ -94,7 +131,7 @@ export const MobileMenu = () => {
             {/* Ajuda */}
             <Button
               variant="ghost"
-              className="justify-start gap-3 text-base"
+              className={menuButtonClass}
               onClick={() => {
                 setHelpOpen(true);
                 setOpen(false);
