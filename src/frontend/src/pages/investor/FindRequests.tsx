@@ -13,7 +13,15 @@ import { useLoanRequests } from '@/hooks/useLoanRequests';
 const FindRequests = () => {
   const navigate = useNavigate();
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
-  const { requests, loading: isLoading, hideRequest, hiddenRequestIds, restoreHiddenRequests } = useLoanRequests();
+  const {
+    requests,
+    loading: isLoading,
+    hideRequest,
+    hiddenRequestIds,
+    restoreHiddenRequests,
+    error,
+    refetch,
+  } = useLoanRequests();
 
   const {
     filters,
@@ -98,9 +106,19 @@ const FindRequests = () => {
           </div>
         )}
 
-        {/* Results Count */}
-        <div className="text-sm text-muted-foreground">
-          {filteredAndSortedItems.length} solicitaç{filteredAndSortedItems.length !== 1 ? 'ões' : 'ão'} encontrada{filteredAndSortedItems.length !== 1 ? 's' : ''}
+        {/* Results Count / Error */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="text-sm text-muted-foreground">
+            {filteredAndSortedItems.length} solicitaç{filteredAndSortedItems.length !== 1 ? 'ões' : 'ão'} encontrada{filteredAndSortedItems.length !== 1 ? 's' : ''}
+          </div>
+          {error && (
+            <div className="flex items-center gap-2 text-sm text-destructive">
+              <span>{error}</span>
+              <Button size="sm" variant="outline" className="rounded-full h-8" onClick={refetch}>
+                Tentar novamente
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Requests Grid (Responsive) */}
@@ -137,6 +155,7 @@ const FindRequests = () => {
                     amount={request.amount}
                     status={request.acceptsNegotiation ? 'negotiable' : 'fixed'}
                     onClick={() => navigate(`/investor/request/${request.id}`)}
+                    tone="investor"
                   />
                   <Button
                     variant="ghost"

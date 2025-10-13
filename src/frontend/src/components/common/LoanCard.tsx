@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { formatCurrency, formatInterestRate } from '@/utils/calculations';
 import { StatusBadge } from './StatusBadge';
 import { LoanStatus, OfferStatus } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 interface LoanCardProps {
   id: string;
@@ -16,7 +17,45 @@ interface LoanCardProps {
   status?: LoanStatus | OfferStatus;
   onClick?: () => void;
   className?: string;
+  tone?: 'primary' | 'investor' | 'borrower' | 'success' | 'warning' | 'neutral';
 }
+
+const toneStyles = {
+  primary: {
+    cardGradient: 'from-white via-primary/5 to-primary/10',
+    border: 'border-primary/20',
+    avatar: 'from-primary/20 via-primary/10 to-transparent text-primary',
+  },
+  investor: {
+    cardGradient: 'from-white via-investor/6 to-investor/12',
+    border: 'border-investor/20',
+    avatar: 'from-investor/20 via-investor/10 to-transparent text-investor',
+  },
+  borrower: {
+    cardGradient: 'from-white via-borrower/6 to-borrower/12',
+    border: 'border-borrower/20',
+    avatar: 'from-borrower/20 via-borrower/10 to-transparent text-borrower',
+  },
+  success: {
+    cardGradient: 'from-white via-positive/8 to-positive/5',
+    border: 'border-positive/25',
+    avatar: 'from-positive/20 via-positive/10 to-transparent text-positive',
+  },
+  warning: {
+    cardGradient: 'from-white via-warning/8 to-warning/4',
+    border: 'border-warning/25',
+    avatar: 'from-warning/20 via-warning/10 to-transparent text-warning',
+  },
+  neutral: {
+    cardGradient: 'from-white via-muted/10 to-muted/5',
+    border: 'border-border/50',
+    avatar: 'from-muted/40 via-muted/20 to-transparent text-muted-foreground',
+  },
+} satisfies Record<string, {
+  cardGradient: string;
+  border: string;
+  avatar: string;
+}>;
 
 export const LoanCard: React.FC<LoanCardProps> = ({
   name,
@@ -29,7 +68,17 @@ export const LoanCard: React.FC<LoanCardProps> = ({
   status,
   onClick,
   className,
+  tone = 'primary',
 }) => {
+  const { t } = useTranslation();
+  const palette = toneStyles[tone] ?? toneStyles.primary;
+  const initials = name
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0]?.toUpperCase())
+    .join('')
+    .slice(0, 2);
+
   return (
     <div
       onClick={onClick}
@@ -41,19 +90,27 @@ export const LoanCard: React.FC<LoanCardProps> = ({
       }}
       role="button"
       tabIndex={0}
-      aria-label={`Oferta de empréstimo de ${name}. Valor: ${formatCurrency(amount)}. Taxa: ${formatInterestRate(interestRate)}. ${installments} parcelas de ${formatCurrency(monthlyPayment)}. Score: ${score}`}
+      aria-label={t('common.loanCard.ariaLabel', {
+        name,
+        amount: formatCurrency(amount),
+        rate: formatInterestRate(interestRate),
+        installments,
+        payment: formatCurrency(monthlyPayment),
+        score,
+      })}
       className={cn(
-        'p-4 rounded-2xl border-2 border-border bg-card hover:border-primary/50 transition-all duration-200 hover-scale cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+        'relative overflow-hidden rounded-3xl border bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        palette.border,
         className
       )}
     >
+      <div className={cn('pointer-events-none absolute inset-0 bg-gradient-to-r', palette.cardGradient)} />
+
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
+      <div className="relative mb-5 flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="text-sm font-bold text-primary">
-              {name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-            </span>
+          <div className={cn('flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br text-sm font-bold shadow-sm', palette.avatar)}>
+            <span>{initials}</span>
           </div>
           <div>
             <div className="font-semibold">{name}</div>
@@ -67,38 +124,44 @@ export const LoanCard: React.FC<LoanCardProps> = ({
       </div>
 
       {/* Info Grid */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
-        <div>
-          <div className="text-xs text-muted-foreground">Taxa de juros</div>
-          <div className="font-bold text-primary" aria-label={`Taxa de juros de ${formatInterestRate(interestRate)}`}>
+      <div className="relative grid grid-cols-1 gap-3 border-y border-border/40 py-4 text-sm md:grid-cols-3">
+        <div className="md:border-r md:border-border/30 md:pr-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('common.loanCard.interestRate')}</div>
+          <div className="mt-1 text-lg font-bold text-primary" aria-label={`${t('common.loanCard.interestRate')} ${formatInterestRate(interestRate)}`}>
             {formatInterestRate(interestRate)}
           </div>
         </div>
         <div>
-          <div className="text-xs text-muted-foreground">Período</div>
-          <div className="font-semibold" aria-label={`${installments} meses`}>
-            {installments} meses
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('common.loanCard.period')}</div>
+          <div className="mt-1 text-base font-semibold" aria-label={t('common.months', { count: installments })}>
+            {t('common.months', { count: installments })}
           </div>
         </div>
-        <div>
-          <div className="text-xs text-muted-foreground">Parcela mensal</div>
-          <div className="font-semibold" aria-label={`Parcela mensal de ${formatCurrency(monthlyPayment)}`}>
+        <div className="md:border-l md:border-border/30 md:pl-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('common.loanCard.monthlyPayment')}</div>
+          <div className="mt-1 text-base font-semibold" aria-label={`${t('common.loanCard.monthlyPayment')} ${formatCurrency(monthlyPayment)}`}>
             {formatCurrency(monthlyPayment)}
           </div>
         </div>
       </div>
 
       {/* Totals */}
-      <div className="flex items-center justify-between pt-3 border-t">
-        <div>
-          <span className="text-xs text-muted-foreground">Valor total a pagar: </span>
-          <span className="font-bold" aria-label={`Total de ${formatCurrency(total)}`}>
+      <div className="relative mt-4 flex flex-wrap items-center justify-between gap-4 text-sm">
+        <div className="flex flex-col">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('common.loanCard.totalToPay')}</span>
+          <span className="text-base font-bold" aria-label={`${t('common.loanCard.totalToPay')} ${formatCurrency(total)}`}>
             {formatCurrency(total)}
           </span>
         </div>
-        <div>
-          <span className="text-xs text-muted-foreground">Valor {status ? 'solicitado' : 'ofertado'}: </span>
-          <span className="font-bold" aria-label={`Valor ${status ? 'solicitado' : 'ofertado'} de ${formatCurrency(amount)}`}>
+        <div className="flex flex-col text-right">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t('common.loanCard.amountOffered', {
+              type: t(`common.loanCard.${status ? 'requested' : 'offered'}`),
+            })}
+          </span>
+          <span className="text-base font-bold" aria-label={`${t('common.loanCard.amountOffered', {
+            type: t(`common.loanCard.${status ? 'requested' : 'offered'}`),
+          })} ${formatCurrency(amount)}`}>
             {formatCurrency(amount)}
           </span>
         </div>

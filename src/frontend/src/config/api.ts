@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   // Scores de crédito (consulta individual e recálculo)
   scoreByUserId: (userId: number) => `/scores_credito/usuario/${userId}`,
   recalcularScore: (userId: number) => `/score/${userId}`,
+  recalcularTodosScores: '/score/recalcular',
 
   // Negociações
   negociacoes: '/negociacoes',
@@ -35,7 +36,17 @@ export const API_ENDPOINTS = {
   // Recomendações
   recomendacaoTaxa: '/recomendacao/taxa',
   recomendacoesInternas: (userId: number) => `/internal/recommendations/solicitacoes/${userId}`,
+
+
+    // Blockchain / Hardhat local testing
+  blockchainStatus: '/blockchain/status',
+  blockchainDeploy: '/blockchain/deploy',
+  blockchainCompile: '/blockchain/compile',
+  blockchainRegistrar: '/blockchain/registrar',
+  
 } as const;
+
+
 
 // Headers padrão
 export const getHeaders = () => ({

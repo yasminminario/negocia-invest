@@ -76,8 +76,8 @@ class NegociacaoService:
             )
 
             # Gera o hash SHA256 e converte para bytes32
-            hash_bytes = hashlib.sha256(dados_contrato.encode("utf-8")).hexdigest()
-            negociacao.contrato_tx_hash = hash_bytes
+            hash_hex = "0x" + hashlib.sha256(dados_contrato.encode("utf-8")).hexdigest()
+            negociacao.contrato_tx_hash = hash_hex
 
         status_atual = negociacao.status
 

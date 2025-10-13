@@ -1,0 +1,694 @@
+{
+    "app": {
+        "name": "negoci.ai"
+    },
+    "language": {
+        "label": "Language",
+        "pt": "Portuguese (Brazil)",
+        "en": "English",
+        "es": "Spanish"
+    },
+    "profiles": {
+        "borrower": "Borrower",
+        "investor": "Investor"
+    },
+    "header": {
+        "goHomeAria": "Go back to home - negoci.ai",
+        "helpAria": "Open help center",
+        "help": "Help Center",
+        "profileAria": "Go to my profile",
+        "profile": "My Profile",
+        "notifications": "Notifications",
+        "accessibility": "Accessibility",
+        "back": "Back"
+    },
+    "mobileMenu": {
+        "title": "Navigation Menu",
+        "profile": "My Profile",
+        "profileAria": "Go to My Profile",
+        "switchProfile": "Switch to {{profile}}",
+        "switchProfileAria": "Switch to {{profile}} profile",
+        "notifications": "Notifications",
+        "accessibility": "Accessibility Settings",
+        "help": "Help Center"
+    },
+    "common": {
+        "loadingProfile": "Loading your profile data...",
+        "quickAccessBadge": "Quick access",
+        "emptyState": "No records found",
+        "seeDetails": "View details",
+        "userFallback": "User",
+        "userWithId": "User #{{id}}",
+        "loanCard": {
+            "interestRate": "Interest rate",
+            "period": "Term",
+            "monthlyPayment": "Monthly payment",
+            "totalToPay": "Total to repay",
+            "amountOffered": "{{type}} amount",
+            "offered": "offered",
+            "requested": "requested",
+            "ariaLabel": "Loan offer from {{name}}. Amount: {{amount}}. Rate: {{rate}}. {{installments}} installments of {{payment}}. Score: {{score}}"
+        },
+        "monthly": "{{value}} monthly",
+        "perMonth": "per month",
+        "days": "{{count}} days",
+        "today": "Today",
+        "months": "{{count}} months"
+    },
+    "investorDashboard": {
+        "greeting": "Hi, {{name}}! 👋",
+        "subtitle": "Track your investments",
+        "balanceCard": "Account balance",
+        "metrics": {
+            "returnPercentage": "Performance",
+            "totalProfit": "Total profit",
+            "totalInvested": "Invested",
+            "activeLoans": "Loans"
+        },
+        "createOffer": "Create loan offer",
+        "createOfferTooltip": "Create a new loan offer",
+        "createOfferAria": "Create a new loan offer",
+        "quickAccess": {
+            "title": "Quick access",
+            "description": "Manage open offers, active loans, and ongoing negotiations in one place."
+        },
+        "actions": {
+            "findRequests": {
+                "title": "Find requests",
+                "description": "Explore credit requests",
+                "countLabel": "Available"
+            },
+            "loans": {
+                "title": "Loans",
+                "description": "Open offers and active loans",
+                "countLabel": "Combined total"
+            },
+            "negotiations": {
+                "title": "Negotiations",
+                "description": "Follow ongoing negotiations",
+                "countLabel": "In progress"
+            }
+        },
+        "portfolio": "Portfolio diversification",
+        "chart": {
+            "goodScore": "Good score",
+            "excellentScore": "Excellent score"
+        },
+        "switchProfile": {
+            "label": "Switch to Borrower",
+            "tooltip": "Switch to borrower mode"
+        }
+    },
+    "investorNegotiations": {
+        "title": "Negotiations",
+        "searchPlaceholder": "Search",
+        "loading": "Loading...",
+        "empty": "No active negotiations",
+        "endOfList": "😊 That's it",
+        "negotiatingWith": "Negotiating with",
+        "awaitingBorrower": "Awaiting borrower",
+        "filterButtonAria": "Open filters",
+        "badges": {
+            "you": "{{name}} (you)",
+            "awaitingBorrower": "Awaiting borrower",
+            "awaitingNegotiation": "Awaiting negotiation"
+        },
+        "fields": {
+            "currentRate": "Current rate",
+            "term": "Term",
+            "installment": "Installment",
+            "contractValue": "Contract value",
+            "negotiationNumber": "Negotiation number"
+        },
+        "countdown": {
+            "expired": "Deadline ended",
+            "expiresIn": "Expires in {{time}}"
+        }
+    },
+    "borrowerDashboard": {
+        "greeting": "Hi, {{name}}! 👋",
+        "subtitle": "Welcome back to your dashboard",
+        "balanceCard": "Account balance",
+        "createRequest": "Request a loan",
+        "createRequestTooltip": "Create a new loan request",
+        "createRequestAria": "Create a new loan request",
+        "quickAccess": {
+            "title": "Quick access",
+            "description": "See opportunities, contract tracking, and active negotiations."
+        },
+        "actions": {
+            "findOffers": {
+                "title": "Find offers",
+                "description": "Explore credit options tailored to your profile",
+                "countLabel": "Available"
+            },
+            "activeLoans": {
+                "title": "Active loans",
+                "description": "Track contracts and current installments",
+                "countLabel": "In progress"
+            },
+            "negotiations": {
+                "title": "Negotiations",
+                "description": "Manage counteroffers and stay in touch",
+                "countLabel": "In progress"
+            }
+        },
+        "score": {
+            "title": "Excellent payer",
+            "subtitle": "Your score looks great!"
+        },
+        "switchProfile": {
+            "label": "Switch to Investor",
+            "tooltip": "Switch to investor mode"
+        }
+    },
+    "activeLoans": {
+        "investor": {
+            "title": "Loans",
+            "openOffers": "Open offers",
+            "loadingOffers": "Loading offers...",
+            "noOpenOffers": "You have no open offers right now.",
+            "availableLoans": "Active loans",
+            "loadingLoans": "Loading...",
+            "empty": "No loans found",
+            "offer": {
+                "label": "Offer #{{id}}",
+                "rate": "Suggested rate",
+                "installments": "Installments",
+                "monthlyPayment": "Estimated payment",
+                "createdAt": "Created on"
+            },
+            "advance": "Advance installments"
+        },
+        "borrower": {
+            "title": "Loans",
+            "openRequests": "Open requests",
+            "loadingRequests": "Loading requests...",
+            "noOpenRequests": "You have no open requests right now.",
+            "availableLoans": "Loans",
+            "loadingLoans": "Loading...",
+            "empty": "No loans found",
+            "request": {
+                "label": "Request #{{id}}",
+                "rate": "Suggested rate",
+                "installments": "Installments",
+                "monthlyPayment": "Estimated payment",
+                "createdAt": "Created on"
+            }
+        }
+    },
+    "notifications": {
+        "bell": {
+            "ariaDefault": "Notifications",
+            "ariaWithCount_one": "Notifications - 1 new notification",
+            "ariaWithCount_other": "Notifications - {{count}} new notifications",
+            "badgeLabel_one": "1 unread notification",
+            "badgeLabel_other": "{{count}} unread notifications",
+            "srNew_one": "1 new notification",
+            "srNew_other": "{{count}} new notifications",
+            "srEmpty": "No new notifications"
+        },
+        "list": {
+            "title": "Notifications",
+            "markAll": "Mark all as read",
+            "empty": "No notifications",
+            "profile": {
+                "generic": "Profile",
+                "borrower": "Borrower profile",
+                "investor": "Investor profile",
+                "switchHint": "Switch to this profile"
+            },
+            "date": {
+                "now": "Now",
+                "hoursAgo_one": "1h ago",
+                "hoursAgo_other": "{{count}}h ago",
+                "daysAgo_one": "1d ago",
+                "daysAgo_other": "{{count}}d ago",
+                "older": "{{date}}"
+            }
+        }
+    },
+    "advanceInstallments": {
+        "title": "Advance installments",
+        "instructions": "Select the installments you want to advance. Amounts below are estimates and may change after the final review.",
+        "loading": "Loading available installments...",
+        "error": "Loan not found",
+        "overview": {
+            "loan": "Loan #{{id}}",
+            "rate": "Agreed rate",
+            "summary": "{{count}} total installments · {{amount}} per installment",
+            "borrowerFallback": "Borrower #{{id}}"
+        },
+        "installments": {
+            "title": "Available installments",
+            "none": "This loan has no future installments to advance.",
+            "emptyCta": "Back to my loans",
+            "label": "Installment {{number}}/{{total}}",
+            "due": "Due date: {{date}}",
+            "inDays": "in {{days}} days"
+        },
+        "summary": {
+            "title": "Advance summary",
+            "original": "Original amount to receive",
+            "fee": "Advance fee",
+            "net": "Net amount now"
+        },
+        "success": {
+            "title": "Advance requested!",
+            "description": "Funds will be available in up to 2 business days. You'll receive a notification once the transfer is complete.",
+            "back": "Back to my loans"
+        },
+        "buttons": {
+            "select": "Select installments",
+            "advanceCount_one": "Advance 1 installment",
+            "advanceCount_other": "Advance {{count}} installments",
+            "confirm": "Confirm and advance",
+            "processing": "Processing...",
+            "backToLoan": "View loan details"
+        },
+        "confirm": {
+            "title": "Confirm advance?",
+            "description": "You're about to receive {{amount}} now. This action cannot be undone."
+        }
+    },
+    "auth": {
+        "login": {
+            "subtitle": "Peer-to-peer loans with fair negotiation",
+            "emailLabel": "Email",
+            "emailPlaceholder": "you@email.com",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••",
+            "submit": "Sign in",
+            "loading": "Signing in...",
+            "noAccount": "Don't have an account?",
+            "signUpLink": "Create one",
+            "toast": {
+                "successTitle": "Login successful!",
+                "successDescription": "Welcome to negoci.ai",
+                "errorTitle": "Unable to sign in",
+                "errorDescription": "Please try again"
+            }
+        },
+        "signUp": {
+            "subtitle": "Create your account",
+            "nameLabel": "Full name",
+            "namePlaceholder": "Your name",
+            "emailLabel": "Email",
+            "emailPlaceholder": "you@email.com",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••",
+            "confirmPasswordLabel": "Confirm password",
+            "submit": "Create account",
+            "loading": "Creating account...",
+            "haveAccount": "Already have an account?",
+            "loginLink": "Sign in",
+            "toast": {
+                "mismatchTitle": "Error",
+                "mismatchDescription": "Passwords don't match",
+                "shortPassword": "Password must be at least 6 characters",
+                "successTitle": "Account created!",
+                "successDescription": "You can now access the prototype",
+                "errorTitle": "Failed to create account",
+                "errorDescription": "Something went wrong while creating your account"
+            }
+        },
+        "selectProfile": {
+            "title": "Choose your profile",
+            "subtitle": "How would you like to access the platform today?",
+            "borrower": {
+                "description": "Request loans with fair rates and negotiate directly with investors",
+                "cta": "Continue as borrower"
+            },
+            "investor": {
+                "description": "Offer credit with attractive returns and negotiate the best terms",
+                "cta": "Continue as investor"
+            }
+        }
+    },
+    "onboarding": {
+        "dialog": {
+            "tipsTitle": "💡 Helpful tips:",
+            "stepProgress": "Step {{current}} of {{total}}",
+            "skip": "Skip intro",
+            "skipAria": "Skip tutorial",
+            "previous": "Back",
+            "previousAria": "Go back to the previous step",
+            "next": "Next",
+            "nextAria": "Go to the next step",
+            "finish": "Let's start!",
+            "finishAria": "Finish tutorial"
+        },
+        "shared": {
+            "steps": {
+                "switchProfile": {
+                    "title": "Switch profiles",
+                    "description": "You can switch between profiles at any time. Explore both perspectives!",
+                    "tips": [
+                        "Try both personas",
+                        "Understand how the other side works"
+                    ]
+                },
+                "helpCenter": {
+                    "title": "Help center",
+                    "description": "Access guides and tips in the help center available in the top menu."
+                },
+                "accessibility": {
+                    "title": "Accessibility",
+                    "description": "Personalize your experience—tune text size, contrast, and motion for comfortable navigation.",
+                    "tips": [
+                        "Adjust settings to your needs",
+                        "Use Tab to navigate",
+                        "Enable voice captions if needed"
+                    ]
+                }
+            }
+        },
+        "borrower": {
+            "steps": {
+                "welcome": {
+                    "title": "Welcome to negoci.ai! 🎉",
+                    "description": "Take a quick tour to discover every feature available to you."
+                },
+                "createRequest": {
+                    "title": "Request a loan",
+                    "description": "Create loan requests in minutes. Set the amount, term, and conditions you need.",
+                    "tips": [
+                        "Be specific about what you need",
+                        "More details lead to better offers"
+                    ]
+                },
+                "findOffers": {
+                    "title": "Find offers",
+                    "description": "Browse investor offers and filter to find the conditions that fit you best.",
+                    "tips": [
+                        "Compare interest rates",
+                        "Check repayment timelines",
+                        "Review the investor score"
+                    ]
+                },
+                "negotiate": {
+                    "title": "Negotiate",
+                    "description": "Negotiate rates and terms directly with investors. Send counteroffers until you reach the best deal.",
+                    "tips": [
+                        "Use chat to clarify questions",
+                        "Stay flexible during negotiations",
+                        "Track all active negotiations"
+                    ]
+                },
+                "notifications": {
+                    "title": "Notifications",
+                    "description": "Stay on top of new offers, messages, and updates via the notification bell."
+                }
+            }
+        },
+        "investor": {
+            "steps": {
+                "welcome": {
+                    "title": "Welcome to negoci.ai! 🎉",
+                    "description": "Take a quick tour to discover every feature available to you."
+                },
+                "createOffer": {
+                    "title": "Create loan offers",
+                    "description": "Draft loan offers and set the amount, rate, term, and minimum score you expect.",
+                    "tips": [
+                        "Offer competitive conditions",
+                        "Match offers to your risk profile",
+                        "Diversify your portfolio"
+                    ]
+                },
+                "findRequests": {
+                    "title": "Find requests",
+                    "description": "Explore borrower requests and surface the best opportunities with smart filters.",
+                    "tips": [
+                        "Review borrower scores",
+                        "Check borrower history",
+                        "Compare multiple requests"
+                    ]
+                },
+                "negotiate": {
+                    "title": "Negotiate",
+                    "description": "Negotiate directly with borrowers. Adjust terms, send counteroffers, and close better deals.",
+                    "tips": [
+                        "Be clear about your conditions",
+                        "Respond quickly to proposals",
+                        "Keep communication professional"
+                    ]
+                },
+                "dashboard": {
+                    "title": "Track investments",
+                    "description": "Monitor active loans, repayments, and returns in real time.",
+                    "tips": [
+                        "Review your returns regularly",
+                        "Keep a diversified portfolio",
+                        "Monitor payment history"
+                    ]
+                },
+                "advanceInstallments": {
+                    "title": "Advance receivables",
+                    "description": "Advance upcoming installments from active contracts and receive funds instantly.",
+                    "tips": [
+                        "Select future installments to advance",
+                        "Check the net amount before confirming",
+                        "Use it whenever you need quick liquidity"
+                    ]
+                },
+                "notifications": {
+                    "title": "Notifications",
+                    "description": "Get alerts about new requests, borrower messages, and important updates."
+                }
+            }
+        }
+    },
+    "helpDialog": {
+        "borrower": {
+            "title": "Borrower guide",
+            "description": "Learn how to secure the ideal loan",
+            "sections": {
+                "whatIs": {
+                    "title": "What is negoci.ai?",
+                    "description": "negoci.ai connects you directly with investors offering loans. No banks, no bureaucracy—just direct, transparent negotiations.",
+                    "tip": "💡 You're in control: negotiate rates, choose terms, and accept only offers that make sense for you!"
+                },
+                "howToStart": {
+                    "title": "How to get started",
+                    "steps": [
+                        {
+                            "title": "Create a request",
+                            "description": "Set how much you need, the desired term, and the maximum rate you can afford."
+                        },
+                        {
+                            "title": "Or browse offers",
+                            "description": "Review available offers and pick the ones that best fit your needs."
+                        },
+                        {
+                            "title": "Negotiate",
+                            "description": "Use our negotiation tools to adjust values and terms in real time."
+                        }
+                    ]
+                },
+                "negotiation": {
+                    "title": "How negotiations work",
+                    "description": "Our smart sliders show how each change affects your deal:",
+                    "items": [
+                        "Tweak values and instantly see payment impact",
+                        "Compare your proposal with the original side by side",
+                        "Review the full history of every exchanged proposal"
+                    ],
+                    "notification": "You'll receive a notification for each counteroffer!"
+                },
+                "score": {
+                    "title": "Understanding the score",
+                    "description": "Your score is your credibility on the platform—the higher it is, the better the conditions you'll get:",
+                    "footer": "Pay on time, close negotiations successfully, and your score will grow automatically!"
+                },
+                "tips": {
+                    "title": "Key tips",
+                    "items": [
+                        {
+                            "text": "✅ Always compare multiple offers before deciding",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Use the simulator to understand the total cost",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Negotiate—investors want to close deals as much as you do",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "⚠️ Accept only terms you are confident you can meet",
+                            "variant": "warning"
+                        }
+                    ]
+                }
+            }
+        },
+        "investor": {
+            "title": "Investor guide",
+            "description": "Learn how to invest and earn returns",
+            "sections": {
+                "whatIs": {
+                    "title": "What is negoci.ai?",
+                    "description": "negoci.ai is a peer-to-peer loan marketplace. You lend directly to people and earn interest for the agreed period.",
+                    "tip": "💰 Profitability: returns are often higher than traditional investments!"
+                },
+                "howToStart": {
+                    "title": "How to start investing",
+                    "steps": [
+                        {
+                            "title": "Create an offer",
+                            "description": "Choose how much to lend, the term, rate, and minimum acceptable score."
+                        },
+                        {
+                            "title": "Or browse requests",
+                            "description": "Explore borrower requests and pick the best opportunities."
+                        },
+                        {
+                            "title": "Negotiate and invest",
+                            "description": "Adjust terms, negotiate with the borrower, and finalize the loan."
+                        }
+                    ]
+                },
+                "risk": {
+                    "title": "Assessing risk",
+                    "description": "Use the borrower score as your primary risk indicator:",
+                    "labels": {
+                        "low": "Low risk — excellent history",
+                        "medium": "Moderate risk — solid history",
+                        "high": "Medium-high risk — proceed with care",
+                        "veryHigh": "High risk — strong caution"
+                    },
+                    "warning": "⚠️ Diversify! Never invest all your capital in a single loan."
+                },
+                "portfolio": {
+                    "title": "Managing your portfolio",
+                    "description": "Your dashboard highlights real-time metrics:",
+                    "items": [
+                        {
+                            "title": "Total invested:",
+                            "description": "how much you currently have deployed"
+                        },
+                        {
+                            "title": "Total return:",
+                            "description": "interest accrued across every loan"
+                        },
+                        {
+                            "title": "Diversification:",
+                            "description": "distribution by borrower score"
+                        },
+                        {
+                            "title": "Average rate:",
+                            "description": "average yield of your portfolio"
+                        }
+                    ]
+                },
+                "advance": {
+                    "title": "Receivables advance",
+                    "description": "Advance installments from active contracts to receive funds before they mature.",
+                    "items": [
+                        "Choose the loan and select available installments",
+                        "See the net amount credited in real time",
+                        "Confirm to release funds within 2 business days"
+                    ]
+                },
+                "tips": {
+                    "title": "Winning strategies",
+                    "items": [
+                        {
+                            "text": "✅ Diversify across different scores and amounts",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Favor shorter terms to reduce risk",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Negotiate actively—better rates mean better returns",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "💡 Reinvest returns to compound earnings",
+                            "variant": "info"
+                        }
+                    ]
+                }
+            }
+        },
+        "shared": {
+            "scoreLabels": {
+                "poor": "Poor",
+                "fair": "Fair",
+                "good": "Good",
+                "excellent": "Excellent"
+            },
+            "moreHelp": {
+                "title": "Need more help?",
+                "description": "Explore the platform and rely on notifications to keep up with every update. Revisit this guide whenever you need!"
+            }
+        }
+    },
+    "accessibility": {
+        "triggerAria": "Open accessibility settings",
+        "triggerLabel": "Accessibility",
+        "title": "Accessibility settings",
+        "description": "Tailor the interface to match your navigation needs",
+        "fontSize": {
+            "title": "Font size",
+            "description": "Adjust text size across the entire platform",
+            "aria": "Select a font size",
+            "normal": "Normal – default reading size",
+            "large": "Large – bigger text for easier reading",
+            "xLarge": "Extra large – maximum legibility"
+        },
+        "fontWeight": {
+            "title": "Font weight",
+            "description": "Make text thicker for better visual contrast",
+            "aria": "Select a font weight",
+            "normal": "Normal – default weight",
+            "bold": "Bold – thicker text for visibility"
+        },
+        "colorBlind": {
+            "title": "Color-blind modes",
+            "description": "Adjust colors for different types of color blindness",
+            "aria": "Select a color-blind mode",
+            "none": "None – default colors",
+            "protanopia": "Protanopia – red deficiency",
+            "deuteranopia": "Deuteranopia – green deficiency",
+            "tritanopia": "Tritanopia – blue deficiency"
+        },
+        "highContrast": {
+            "title": "High contrast",
+            "description": "Increase contrast between text and background",
+            "aria": "Toggle high contrast"
+        },
+        "reducedMotion": {
+            "title": "Reduce motion",
+            "description": "Limit animations and motion effects",
+            "aria": "Toggle reduced motion"
+        },
+        "reset": {
+            "title": "Settings restored",
+            "description": "Accessibility settings were reset to default.",
+            "button": "Restore default settings",
+            "aria": "Reset all accessibility settings to default"
+        }
+    },
+    "findRequests": {
+        "loading": "Loading requests...",
+        "empty": "No requests found",
+        "clearFilters": "Clear filters",
+        "hide": "Hide request",
+        "end": "😊 That's it"
+    },
+    "findOffers": {
+        "loading": "Loading offers...",
+        "empty": "No offers found",
+        "clearFilters": "Clear filters",
+        "hide": "Hide offer",
+        "end": "😊 That's it"
+    },
+    "buttons": {
+        "back": "Back"
+    }
+}

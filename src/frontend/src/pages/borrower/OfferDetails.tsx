@@ -17,7 +17,8 @@ import { Check } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { LoanOffer, PropostaResponsePayload } from '@/types';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { negociacoesApi, propostasApi, scoresCreditoApi, usuariosApi } from '@/services/api.service';
+import { propostasApi, scoresCreditoApi, usuariosApi } from '@/services/api.service';
+import { useProfile } from '@/contexts/ProfileContext';
 
 const parseRate = (taxa: string): { min: number; max: number; average: number } => {
   const cleaned = taxa.replace('%', '').trim();
@@ -46,6 +47,7 @@ export const OfferDetails: React.FC = () => {
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addNotification } = useNotifications();
+  const { user } = useProfile();
 
   useEffect(() => {
     const fetchOffer = async () => {
@@ -117,24 +119,30 @@ export const OfferDetails: React.FC = () => {
   }, [id, navigate]);
 
   const handleAcceptOffer = async () => {
-    if (!offer) return;
+    if (accepting) return;
+    if (!offer || !proposal) return;
+    if (!user?.id) {
+      toast({
+        title: 'Ops!',
+        description: 'Não foi possível identificar o usuário autenticado.',
+        variant: 'destructive',
+      });
+      return;
+    }
     setAccepting(true);
 
     try {
-      if (proposal?.id_negociacoes) {
-        await negociacoesApi.atualizar(Number(proposal.id_negociacoes), {
-          status: 'finalizada',
-          valor: proposal?.valor ?? offer.amount,
-          prazo: proposal?.prazo_meses ?? offer.installments,
-          parcela: proposal?.parcela ?? Number(monthlyPayment.toFixed(2)),
-        });
-      }
+      await propostasApi.aceitar(Number(proposal.id), {
+        usuarioId: Number(user.id),
+        perfil: 'tomador',
+      });
 
       addNotification({
         type: 'payment',
         title: 'Oferta aceita',
         message: `O empréstimo de ${formatCurrency(offer.amount)} foi ativado e o valor estará disponível em sua conta.`,
         actionUrl: '/borrower/loans',
+        profileType: 'borrower',
       });
 
       toast({
@@ -145,7 +153,9 @@ export const OfferDetails: React.FC = () => {
       navigate('/borrower/loans');
     } catch (error) {
       console.error('Error accepting offer:', error);
-      const message = error instanceof Error ? error.message : "Ocorreu um erro ao processar sua solicitação.";
+      const message =
+        (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
+        (error instanceof Error ? error.message : 'Ocorreu um erro ao processar sua solicitação.');
       toast({
         title: "Erro ao aceitar oferta",
         description: message,

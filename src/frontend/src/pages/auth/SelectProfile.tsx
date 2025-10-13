@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { useProfile } from '@/contexts/ProfileContext';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useEffect } from 'react';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const SelectProfile = () => {
   const { setActiveProfile, isAuthenticated } = useProfile();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -25,12 +27,15 @@ const SelectProfile = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
+    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
+      <div className="absolute right-4 top-4">
+        <LanguageSwitcher className="w-44" />
+      </div>
       <div className="w-full max-w-2xl space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Escolha seu perfil</h1>
-          <p className="text-muted-foreground">Como você quer acessar a plataforma hoje?</p>
+          <h1 className="text-3xl font-bold">{t('auth.selectProfile.title')}</h1>
+          <p className="text-muted-foreground">{t('auth.selectProfile.subtitle')}</p>
         </div>
 
         {/* Cards */}
@@ -45,14 +50,14 @@ const SelectProfile = () => {
                 <TrendingDown className="w-8 h-8 text-borrower" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-borrower mb-2">Tomador</h2>
+                <h2 className="text-2xl font-bold text-borrower mb-2">{t('profiles.borrower')}</h2>
                 <p className="text-sm text-foreground/80">
-                  Solicite empréstimos com taxas justas e negocie diretamente com investidores
+                  {t('auth.selectProfile.borrower.description')}
                 </p>
               </div>
               <div className="pt-4">
                 <div className="inline-flex items-center gap-2 text-borrower font-medium">
-                  <span>Acessar como Tomador</span>
+                  <span>{t('auth.selectProfile.borrower.cta')}</span>
                   <span>→</span>
                 </div>
               </div>
@@ -69,14 +74,14 @@ const SelectProfile = () => {
                 <TrendingUp className="w-8 h-8 text-investor" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-investor mb-2">Investidor</h2>
+                <h2 className="text-2xl font-bold text-investor mb-2">{t('profiles.investor')}</h2>
                 <p className="text-sm text-foreground/80">
-                  Oferte crédito com retornos atrativos e negocie as melhores condições
+                  {t('auth.selectProfile.investor.description')}
                 </p>
               </div>
               <div className="pt-4">
                 <div className="inline-flex items-center gap-2 text-investor font-medium">
-                  <span>Acessar como Investidor</span>
+                  <span>{t('auth.selectProfile.investor.cta')}</span>
                   <span>→</span>
                 </div>
               </div>

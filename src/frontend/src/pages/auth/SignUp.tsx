@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const SignUp = () => {
   const [nome, setNome] = useState('');
@@ -12,14 +14,15 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
       toast({
-        title: "Erro",
-        description: "As senhas não coincidem",
+        title: t('auth.signUp.toast.mismatchTitle'),
+        description: t('auth.signUp.toast.mismatchDescription'),
         variant: "destructive",
       });
       return;
@@ -27,8 +30,8 @@ const SignUp = () => {
 
     if (password.length < 6) {
       toast({
-        title: "Erro",
-        description: "A senha deve ter no mínimo 6 caracteres",
+        title: t('auth.signUp.toast.mismatchTitle'),
+        description: t('auth.signUp.toast.shortPassword'),
         variant: "destructive",
       });
       return;
@@ -39,14 +42,14 @@ const SignUp = () => {
     try {
       // Fluxo mockado apenas para protótipo.
       toast({
-        title: "Conta criada com sucesso!",
-        description: "Você já pode acessar o protótipo",
+        title: t('auth.signUp.toast.successTitle'),
+        description: t('auth.signUp.toast.successDescription'),
       });
       navigate('/auth/login');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Ocorreu um erro ao criar sua conta';
+      const message = error instanceof Error ? error.message : t('auth.signUp.toast.errorDescription');
       toast({
-        title: "Erro ao criar conta",
+        title: t('auth.signUp.toast.errorTitle'),
         description: message,
         variant: "destructive",
       });
@@ -58,6 +61,9 @@ const SignUp = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <div className="w-full max-w-md space-y-8">
+        <div className="flex justify-center">
+          <LanguageSwitcher className="w-48 border-primary/70 bg-primary/15 text-primary font-medium shadow-lg" />
+        </div>
         {/* Logo */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
@@ -69,52 +75,57 @@ const SignUp = () => {
             </div>
           </div>
           <h1 className="text-3xl font-bold">
-            negoci<span className="text-primary">.ai</span>
+            {t('app.name').replace('.ai', '')}
+            <span className="text-primary">.ai</span>
           </h1>
-          <p className="text-muted-foreground">Crie sua conta</p>
+          <p className="text-muted-foreground">{t('auth.signUp.subtitle')}</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSignUp} className="bg-card p-8 rounded-2xl border-2 space-y-6">
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Nome completo</label>
+              <label className="text-sm font-medium" htmlFor="signup-name">{t('auth.signUp.nameLabel')}</label>
               <Input
+                id="signup-name"
                 type="text"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
-                placeholder="Seu nome"
+                placeholder={t('auth.signUp.namePlaceholder')}
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Email</label>
+              <label className="text-sm font-medium" htmlFor="signup-email">{t('auth.signUp.emailLabel')}</label>
               <Input
+                id="signup-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                placeholder={t('auth.signUp.emailPlaceholder')}
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Senha</label>
+              <label className="text-sm font-medium" htmlFor="signup-password">{t('auth.signUp.passwordLabel')}</label>
               <Input
+                id="signup-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t('auth.signUp.passwordPlaceholder')}
                 required
                 minLength={6}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Confirmar senha</label>
+              <label className="text-sm font-medium" htmlFor="signup-password-confirm">{t('auth.signUp.confirmPasswordLabel')}</label>
               <Input
+                id="signup-password-confirm"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t('auth.signUp.passwordPlaceholder')}
                 required
                 minLength={6}
               />
@@ -122,17 +133,17 @@ const SignUp = () => {
           </div>
 
           <Button type="submit" className="w-full rounded-full py-6" disabled={loading}>
-            {loading ? 'Criando conta...' : 'Criar conta'}
+            {loading ? t('auth.signUp.loading') : t('auth.signUp.submit')}
           </Button>
 
-          <div className="text-center text-sm text-muted-foreground">
-            <span>Já tem conta? </span>
+          <div className="text-center text-sm text-muted-foreground flex flex-wrap items-center justify-center gap-1">
+            <span>{t('auth.signUp.haveAccount')}</span>
             <button
               type="button"
               onClick={() => navigate('/auth/login')}
               className="text-primary font-medium hover:underline"
             >
-              Fazer login
+              {t('auth.signUp.loginLink')}
             </button>
           </div>
         </form>

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,14 +21,14 @@ const Login = () => {
     try {
       // Fluxo mockado apenas para protótipo.
       toast({
-        title: "Login realizado!",
-        description: "Bem-vindo ao negocia.ai",
+        title: t('auth.login.toast.successTitle'),
+        description: t('auth.login.toast.successDescription'),
       });
       navigate('/select-profile');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Tente novamente';
+      const message = error instanceof Error ? error.message : t('auth.login.toast.errorDescription');
       toast({
-        title: "Erro ao fazer login",
+        title: t('auth.login.toast.errorTitle'),
         description: message,
         variant: "destructive",
       });
@@ -37,6 +40,9 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <div className="w-full max-w-md space-y-8">
+        <div className="flex justify-center">
+          <LanguageSwitcher className="w-48 border-primary/70 bg-primary/15 text-primary font-medium shadow-lg" />
+        </div>
         {/* Logo */}
         <div className="text-center space-y-2">
           <div className="flex justify-center">
@@ -48,48 +54,51 @@ const Login = () => {
             </div>
           </div>
           <h1 className="text-3xl font-bold">
-            negoci<span className="text-primary">.ai</span>
+            {t('app.name').replace('.ai', '')}
+            <span className="text-primary">.ai</span>
           </h1>
-          <p className="text-muted-foreground">Empréstimos P2P com negociação justa</p>
+          <p className="text-muted-foreground">{t('auth.login.subtitle')}</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleLogin} className="bg-card p-8 rounded-2xl border-2 space-y-6">
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Email</label>
+              <label className="text-sm font-medium" htmlFor="login-email">{t('auth.login.emailLabel')}</label>
               <Input
+                id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                placeholder={t('auth.login.emailPlaceholder')}
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Senha</label>
+              <label className="text-sm font-medium" htmlFor="login-password">{t('auth.login.passwordLabel')}</label>
               <Input
+                id="login-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t('auth.login.passwordPlaceholder')}
                 required
               />
             </div>
           </div>
 
           <Button type="submit" className="w-full rounded-full py-6" disabled={loading}>
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? t('auth.login.loading') : t('auth.login.submit')}
           </Button>
 
-          <div className="text-center text-sm text-muted-foreground">
-            <span>Não tem conta? </span>
+          <div className="text-center text-sm text-muted-foreground flex flex-wrap items-center justify-center gap-1">
+            <span>{t('auth.login.noAccount')}</span>
             <button
               type="button"
               onClick={() => navigate('/auth/signup')}
               className="text-primary font-medium hover:underline"
             >
-              Cadastre-se
+              {t('auth.login.signUpLink')}
             </button>
           </div>
         </form>

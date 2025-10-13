@@ -68,7 +68,8 @@ const CreateOffer = () => {
           type: 'negotiation',
           title: 'Oferta publicada',
           message: `Sua oferta de ${formatCurrency(amount)} está disponível para tomadores qualificados.`,
-          actionUrl: '/investor/negotiations',
+          actionUrl: '/investor/loans',
+          profileType: 'investor',
         });
 
         toast({
@@ -77,7 +78,7 @@ const CreateOffer = () => {
           className: "bg-positive-light border-positive/20",
         });
 
-        setTimeout(() => navigate('/investor/negotiations'), 800);
+        setTimeout(() => navigate('/investor/loans'), 800);
       } catch (error) {
         console.error('Error creating offer:', error);
         const message = error instanceof Error ? error.message : "Ocorreu um erro ao processar sua solicitação.";

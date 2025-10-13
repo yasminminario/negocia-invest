@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
+import { useMemo } from 'react';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { useProfile } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
@@ -14,49 +15,88 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useActiveLoans } from '@/hooks/useActiveLoans';
+import { useOwnProposals } from '@/hooks/useOwnProposals';
+import { useNegotiations } from '@/hooks/useNegotiations';
+import { useLoanRequests } from '@/hooks/useLoanRequests';
+import { QuickActionCard } from '@/components/dashboard/QuickActionCard';
+import { useTranslation } from 'react-i18next';
 
 const InvestorDashboard = () => {
   const { user, setActiveProfile, isLoading, error } = useProfile();
   const navigate = useNavigate();
   const { metrics, loading: metricsLoading } = useInvestorMetrics();
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
+  const { loans } = useActiveLoans('investor');
+  const { proposals: investorOffers } = useOwnProposals('investidor');
+  const { negotiations } = useNegotiations('investor');
+  const { requests } = useLoanRequests();
+  const { t } = useTranslation();
 
-  const firstName = user?.nome?.split(' ')[0] ?? 'Usuário';
+  const firstName = user?.nome?.split(' ')[0] ?? t('common.userFallback');
   const balance = user?.saldo_cc ?? 0;
 
-  const chartData = [
-    {
-      label: 'Score Bom',
-      value: (metrics.totalInvested * metrics.portfolioDiversification.goodScore) / 100,
-      color: 'hsl(var(--investor))',
-    },
-    {
-      label: 'Score Excelente',
-      value: (metrics.totalInvested * metrics.portfolioDiversification.excellentScore) / 100,
-      color: 'hsl(var(--borrower))',
-    },
-  ];
+  const chartData = useMemo(
+    () => [
+      {
+        label: t('investorDashboard.chart.goodScore'),
+        value: (metrics.totalInvested * metrics.portfolioDiversification.goodScore) / 100,
+        color: 'hsl(var(--investor))',
+      },
+      {
+        label: t('investorDashboard.chart.excellentScore'),
+        value: (metrics.totalInvested * metrics.portfolioDiversification.excellentScore) / 100,
+        color: 'hsl(var(--borrower))',
+      },
+    ],
+    [metrics.portfolioDiversification.excellentScore, metrics.portfolioDiversification.goodScore, metrics.totalInvested, t],
+  );
 
-  const actionCards = [
-    {
-      icon: Search,
-      title: 'Encontrar solicitações',
-      description: 'Explore solicitações de crédito',
-      action: () => navigate('/investor/find-requests'),
-    },
-    {
-      icon: TrendingUp,
-      title: 'Empréstimos ativos',
-      description: 'Acompanhe seus investimentos',
-      action: () => navigate('/investor/loans'),
-    },
-    {
-      icon: Handshake,
-      title: 'Negociações',
-      description: 'Veja suas negociações em andamento',
-      action: () => navigate('/investor/negotiations'),
-    },
-  ];
+  const openOffersCount = useMemo(
+    () => investorOffers.filter(
+      (offer) => offer.raw.status === 'pendente' && !offer.raw.id_negociacoes,
+    ).length,
+    [investorOffers],
+  );
+
+  const totalLoansCount = loans.length + openOffersCount;
+  const negotiationsCount = negotiations.length;
+  const availableRequestsCount = requests.length;
+
+  const actionCards = useMemo(
+    () => [
+      {
+        icon: Search,
+        title: t('investorDashboard.actions.findRequests.title'),
+        description: t('investorDashboard.actions.findRequests.description'),
+        action: () => navigate('/investor/find-requests'),
+        tone: 'investor' as const,
+        count: availableRequestsCount,
+        countLabel: t('investorDashboard.actions.findRequests.countLabel'),
+      },
+      {
+        icon: TrendingUp,
+        title: t('investorDashboard.actions.loans.title'),
+        description: t('investorDashboard.actions.loans.description'),
+        action: () => navigate('/investor/loans'),
+        tone: 'primary' as const,
+        count: totalLoansCount,
+        titleClassName: 'text-investor',
+        countClassName: 'text-investor',
+        countLabel: t('investorDashboard.actions.loans.countLabel'),
+      },
+      {
+        icon: Handshake,
+        title: t('investorDashboard.actions.negotiations.title'),
+        description: t('investorDashboard.actions.negotiations.description'),
+        action: () => navigate('/investor/negotiations'),
+        tone: 'warning' as const,
+        count: negotiationsCount,
+        countLabel: t('investorDashboard.actions.negotiations.countLabel'),
+      },
+    ],
+    [navigate, availableRequestsCount, totalLoansCount, negotiationsCount, t],
+  );
 
   return (
     <TooltipProvider>
@@ -77,14 +117,14 @@ const InvestorDashboard = () => {
               {/* Welcome */}
               <div className="space-y-2">
                 <h1 className="text-2xl md:text-3xl font-bold">
-                  Olá, {firstName}! 👋
+                  {t('investorDashboard.greeting', { name: firstName })}
                 </h1>
-                <p className="text-muted-foreground">Acompanhe seus investimentos</p>
+                <p className="text-muted-foreground">{t('investorDashboard.subtitle')}</p>
               </div>
 
               {isLoading && (
                 <div className="rounded-xl border border-border p-4 text-sm text-muted-foreground">
-                  Carregando dados do seu perfil...
+                  {t('common.loadingProfile')}
                 </div>
               )}
 
@@ -100,7 +140,7 @@ const InvestorDashboard = () => {
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                     <Wallet className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">Saldo em Conta</span>
+                  <span className="text-sm font-medium text-muted-foreground">{t('investorDashboard.balanceCard')}</span>
                 </div>
                 <div className="text-3xl font-bold text-primary">
                   {formatCurrency(balance)}
@@ -110,19 +150,19 @@ const InvestorDashboard = () => {
               {/* Metrics Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-investor/10 to-investor/5 border-2 border-investor/30">
-                  <div className="text-sm text-muted-foreground mb-1">Rentabilidade</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.returnPercentage')}</div>
                   <div className="text-2xl font-bold text-investor">{metrics.returnPercentage}%</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-positive/10 to-positive/5 border-2 border-positive/30">
-                  <div className="text-sm text-muted-foreground mb-1">Lucro Total</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.totalProfit')}</div>
                   <div className="text-xl font-bold text-positive">{formatCurrency(metrics.totalReturn)}</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
-                  <div className="text-sm text-muted-foreground mb-1">Investido</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.totalInvested')}</div>
                   <div className="text-xl font-bold text-primary">{formatCurrency(metrics.totalInvested)}</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 border-2 border-border">
-                  <div className="text-sm text-muted-foreground mb-1">Empréstimos</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.activeLoans')}</div>
                   <div className="text-2xl font-bold">{metrics.activeLoans}</div>
                 </div>
               </div>
@@ -133,39 +173,39 @@ const InvestorDashboard = () => {
                   <Button
                     onClick={() => navigate('/investor/create-offer')}
                     className="w-full rounded-full py-6 text-lg font-semibold hover:scale-[1.02] transition-transform"
-                    aria-label="Criar nova oferta de empréstimo"
+                    aria-label={t('investorDashboard.createOfferAria')}
                   >
-                    + Ofertar empréstimo
+                    + {t('investorDashboard.createOffer')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Criar nova oferta de empréstimo</p>
+                  <p>{t('investorDashboard.createOfferTooltip')}</p>
                 </TooltipContent>
               </Tooltip>
 
               {/* Action Cards */}
               <div className="space-y-4">
-                <h2 className="text-lg font-bold">Acesso rápido</h2>
+                <div className="space-y-1">
+                  <h2 className="text-lg font-bold">{t('investorDashboard.quickAccess.title')}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {t('investorDashboard.quickAccess.description')}
+                  </p>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                   {actionCards.map((card, index) => (
                     <Tooltip key={index}>
                       <TooltipTrigger asChild>
-                        <button
+                        <QuickActionCard
+                          icon={card.icon}
+                          title={card.title}
+                          description={card.description}
                           onClick={card.action}
-                          className="w-full p-4 rounded-2xl border-2 border-border hover:border-primary/50 transition-all bg-card text-left group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          aria-label={card.description}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-                              <card.icon className="w-6 h-6" aria-hidden="true" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-semibold">{card.title}</div>
-                              <div className="text-sm text-muted-foreground">{card.description}</div>
-                            </div>
-                            <span className="text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true">→</span>
-                          </div>
-                        </button>
+                          count={card.count}
+                          countLabel={card.countLabel}
+                          tone={card.tone}
+                          titleClassName={card.titleClassName}
+                          countClassName={card.countClassName}
+                        />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>{card.description}</p>
@@ -180,7 +220,7 @@ const InvestorDashboard = () => {
             <div className="space-y-6">
               {/* Diversification Chart */}
               <div className="p-6 rounded-2xl border-2 bg-card sticky top-6">
-                <h3 className="font-bold mb-4">Diversificação da carteira</h3>
+                <h3 className="font-bold mb-4">{t('investorDashboard.portfolio')}</h3>
                 <DonutChart data={chartData} />
               </div>
 
@@ -194,14 +234,14 @@ const InvestorDashboard = () => {
                     }}
                     variant="outline"
                     className="w-full rounded-full bg-borrower/5 border-borrower text-borrower hover:bg-borrower/20 hover:border-borrower transition-colors"
-                    aria-label="Mudar para perfil de tomador"
+                    aria-label={t('investorDashboard.switchProfile.tooltip')}
                   >
                     <TrendingDown className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Trocar para Tomador
+                    {t('investorDashboard.switchProfile.label')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Trocar para modo Tomador</p>
+                  <p>{t('investorDashboard.switchProfile.tooltip')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>

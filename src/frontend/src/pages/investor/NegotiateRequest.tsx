@@ -151,6 +151,7 @@ export const NegotiateRequest: React.FC = () => {
         title: 'Proposta enviada',
         message: `Você fez uma oferta para ${borrowerName}. Acompanhe a negociação pelo painel.`,
         actionUrl: '/investor/negotiations',
+        profileType: 'investor',
       });
 
       toast({

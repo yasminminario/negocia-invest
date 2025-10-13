@@ -8,6 +8,8 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { HelpDialog } from '@/components/help/HelpDialog';
 import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu';
 import { MobileMenu } from '@/components/common/MobileMenu';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +27,8 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
   const { activeProfile } = useProfile();
   const { notifications, markAsRead, markAllAsRead } = useNotifications();
   const [helpOpen, setHelpOpen] = useState(false);
+  const { t } = useTranslation();
+  const [brandName, brandSuffix] = t('app.name').split('.') as [string, string?];
 
   const handleBack = () => {
     if (onBack) {
@@ -34,6 +38,12 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
     }
   };
 
+  const homeRoute = activeProfile === 'borrower'
+    ? '/borrower/dashboard'
+    : activeProfile === 'investor'
+      ? '/investor/dashboard'
+      : '/';
+
   return (
     <TooltipProvider>
       <header className="sticky top-0 z-50 bg-background border-b px-6 py-4 flex items-center justify-between">
@@ -41,14 +51,14 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
           {/* Logo */}
           <button
             className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg p-1 -m-1"
-            onClick={() => navigate(activeProfile === 'borrower' ? '/borrower' : '/investor')}
+            onClick={() => navigate(homeRoute)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                navigate(activeProfile === 'borrower' ? '/borrower' : '/investor');
+                navigate(homeRoute);
               }
             }}
-            aria-label="Voltar para o início - negoci.ai"
+            aria-label={t('header.goHomeAria')}
             tabIndex={0}
           >
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
@@ -63,88 +73,101 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
               </svg>
             </div>
             <span className="text-xl font-bold">
-              negoci<span className="text-primary">.ai</span>
+              {brandName}
+              <span className="text-primary">{brandSuffix ? `.${brandSuffix}` : ''}</span>
             </span>
           </button>
         </div>
 
         <div className="flex items-center gap-2">
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-2">
-            {/* Help Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setHelpOpen(true)}
-                  aria-label="Abrir central de ajuda"
-                  className="gap-2"
-                >
-                  <HelpCircle className="h-5 w-5" />
-                  <span className="sr-only">Ajuda</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Central de Ajuda</p>
-              </TooltipContent>
-            </Tooltip>
+          <div className="hidden md:flex items-end gap-4">
+            <div className="flex flex-col items-center gap-1">
+              <LanguageSwitcher className="w-48" />
+            </div>
 
-            {/* Accessibility Menu */}
-            <AccessibilityMenu />
+            <div className="flex flex-col items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setHelpOpen(true)}
+                    aria-label={t('header.helpAria')}
+                    className="gap-2"
+                  >
+                    <HelpCircle className="h-5 w-5" />
+                    <span className="sr-only">{t('header.help')}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t('header.help')}</p>
+                </TooltipContent>
+              </Tooltip>
+              <span className="text-xs text-muted-foreground">{t('header.help')}</span>
+            </div>
 
-            {/* Notification Bell */}
-            <NotificationBell
-              notifications={notifications}
-              onMarkAsRead={markAsRead}
-              onMarkAllAsRead={markAllAsRead}
-            />
+            <div className="flex flex-col items-center gap-1">
+              <AccessibilityMenu />
+              <span className="text-xs text-muted-foreground">{t('header.accessibility')}</span>
+            </div>
 
-            {/* Profile Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => navigate('/profile')}
-                  aria-label="Acessar meu perfil"
-                  className="gap-2"
-                >
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">Perfil</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Meu Perfil</p>
-              </TooltipContent>
-            </Tooltip>
+            <div className="flex flex-col items-center gap-1">
+              <NotificationBell
+                notifications={notifications}
+                onMarkAsRead={markAsRead}
+                onMarkAllAsRead={markAllAsRead}
+              />
+              <span className="text-xs text-muted-foreground">{t('header.notifications')}</span>
+            </div>
 
-          {/* Back Button */}
+            <div className="flex flex-col items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => navigate('/profile')}
+                    aria-label={t('header.profileAria')}
+                    className="gap-2"
+                  >
+                    <User className="h-5 w-5" />
+                    <span className="sr-only">{t('header.profile')}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t('header.profile')}</p>
+                </TooltipContent>
+              </Tooltip>
+              <span className="text-xs text-muted-foreground">{t('header.profile')}</span>
+            </div>
+
+            {/* Back Button */}
+            {showBackButton && (
+              <Button
+                onClick={handleBack}
+                className="rounded-full px-6 py-2 ml-2"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t('header.back')}
+              </Button>
+            )}
+          </div>
+
+          {/* Mobile Menu */}
+          <MobileMenu />
+
+          {/* Mobile Back Button */}
           {showBackButton && (
             <Button
               onClick={handleBack}
-              className="rounded-full px-6 py-2 ml-2"
+              className="md:hidden rounded-full px-4 py-2"
+              size="sm"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              {t('header.back')}
             </Button>
           )}
-        </div>
-
-        {/* Mobile Menu */}
-        <MobileMenu />
-
-        {/* Mobile Back Button */}
-        {showBackButton && (
-          <Button
-            onClick={handleBack}
-            className="md:hidden rounded-full px-4 py-2"
-            size="sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            Voltar
-          </Button>
-        )}
         </div>
 
         {/* Help Dialog */}

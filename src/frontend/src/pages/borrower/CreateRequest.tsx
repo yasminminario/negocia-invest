@@ -66,7 +66,8 @@ const CreateRequest = () => {
           type: 'loan',
           title: 'Solicitação publicada',
           message: `Seu pedido de ${formatCurrency(amount)} está visível para investidores qualificados.`,
-          actionUrl: '/borrower/negotiations',
+          actionUrl: '/borrower/loans',
+          profileType: 'borrower',
         });
 
         toast({
@@ -75,7 +76,7 @@ const CreateRequest = () => {
           className: "bg-positive-light border-positive/20",
         });
 
-        setTimeout(() => navigate('/borrower/negotiations'), 800);
+        setTimeout(() => navigate('/borrower/loans'), 800);
       } catch (error) {
         console.error('Error creating request:', error);
         const message = error instanceof Error ? error.message : "Ocorreu um erro ao processar sua solicitação.";

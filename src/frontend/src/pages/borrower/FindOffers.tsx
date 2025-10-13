@@ -14,7 +14,15 @@ import { useOffers } from '@/hooks/useOffers';
 const FindOffers = () => {
   const navigate = useNavigate();
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
-  const { offers, loading: isLoading, hideOffer, hiddenOfferIds, restoreHiddenOffers } = useOffers();
+  const {
+    offers,
+    loading: isLoading,
+    hideOffer,
+    hiddenOfferIds,
+    restoreHiddenOffers,
+    error,
+    refetch,
+  } = useOffers();
 
   const {
     filters,
@@ -99,9 +107,19 @@ const FindOffers = () => {
           </div>
         )}
 
-        {/* Results Count */}
-        <div className="text-sm text-muted-foreground">
-          {filteredAndSortedItems.length} oferta{filteredAndSortedItems.length !== 1 ? 's' : ''} encontrada{filteredAndSortedItems.length !== 1 ? 's' : ''}
+        {/* Results Count / Error */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="text-sm text-muted-foreground">
+            {filteredAndSortedItems.length} oferta{filteredAndSortedItems.length !== 1 ? 's' : ''} encontrada{filteredAndSortedItems.length !== 1 ? 's' : ''}
+          </div>
+          {error && (
+            <div className="flex items-center gap-2 text-sm text-destructive">
+              <span>{error}</span>
+              <Button size="sm" variant="outline" className="rounded-full h-8" onClick={refetch}>
+                Tentar novamente
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Offers Grid (Responsive) */}
@@ -139,7 +157,7 @@ const FindOffers = () => {
                     amount={offer.amount}
                     status={offer.status}
                     onClick={() => navigate(`/borrower/offer/${offer.id}`)}
-                    className="transition-all duration-200 hover-scale animate-fade-in"
+                    tone="borrower"
                   />
                   <Button
                     variant="ghost"

@@ -39,8 +39,16 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const root = document.documentElement;
     if (activeProfile === 'borrower') {
       root.style.setProperty('--primary', '198 100% 55%');
+      root.style.setProperty('--chart-principal', '198 100% 55%');
+      root.style.setProperty('--chart-interest', '283 60% 50%');
+      root.style.setProperty('--chart-profit', '142 76% 40%');
+      root.style.setProperty('--chart-fee', '217 91% 60%');
     } else {
       root.style.setProperty('--primary', '283 60% 50%');
+      root.style.setProperty('--chart-principal', '283 60% 50%');
+      root.style.setProperty('--chart-interest', '198 100% 55%');
+      root.style.setProperty('--chart-profit', '142 76% 40%');
+      root.style.setProperty('--chart-fee', '28 92% 45%');
     }
   }, [activeProfile]);
 

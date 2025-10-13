@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
 import { ScoreRing } from '@/components/common/ScoreRing';
@@ -13,39 +14,68 @@ import {
 } from "@/components/ui/tooltip";
 import { OnboardingTutorial } from '@/components/onboarding/OnboardingTutorial';
 import { useOnboarding } from '@/hooks/useOnboarding';
+import { useOffers } from '@/hooks/useOffers';
+import { useActiveLoans } from '@/hooks/useActiveLoans';
+import { useNegotiations } from '@/hooks/useNegotiations';
+import { QuickActionCard } from '@/components/dashboard/QuickActionCard';
+import { useTranslation } from 'react-i18next';
 
 const BorrowerDashboard = () => {
   const { user, score, setActiveProfile, isLoading, error } = useProfile();
   const navigate = useNavigate();
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
+  const { t } = useTranslation();
 
-  const firstName = user?.nome?.split(' ')[0] ?? 'Usuário';
+  const firstName = user?.nome?.split(' ')[0] ?? t('common.userFallback');
   const balance = user?.saldo_cc ?? 0;
   const scoreValue = score?.valor_score ?? 0;
 
-  const actionCards = [
-    {
-      icon: Search,
-      title: 'Encontrar ofertas',
-      description: 'Explore ofertas de crédito disponíveis',
-      action: () => navigate('/borrower/find-offers'),
-      color: 'bg-primary/10 text-primary',
-    },
-    {
-      icon: FileText,
-      title: 'Empréstimos ativos',
-      description: 'Acompanhe seus empréstimos',
-      action: () => navigate('/borrower/loans'),
-      color: 'bg-success/10 text-success',
-    },
-    {
-      icon: Handshake,
-      title: 'Negociações',
-      description: 'Veja suas negociações em andamento',
-      action: () => navigate('/borrower/negotiations'),
-      color: 'bg-warning/10 text-warning',
-    },
-  ];
+  const { offers } = useOffers();
+  const { loans } = useActiveLoans('borrower');
+  const { negotiations } = useNegotiations('borrower');
+
+  const availableOffersCount = offers.length;
+  const activeLoansCount = useMemo(
+    () => loans.filter((loan) => loan.status === 'active').length,
+    [loans],
+  );
+  const ongoingNegotiationsCount = useMemo(
+    () => negotiations.filter((neg) => !['finalizada', 'cancelada'].includes(neg.status)).length,
+    [negotiations],
+  );
+
+  const actionCards = useMemo(
+    () => [
+      {
+        icon: Search,
+        title: t('borrowerDashboard.actions.findOffers.title'),
+        description: t('borrowerDashboard.actions.findOffers.description'),
+        action: () => navigate('/borrower/find-offers'),
+        tone: 'borrower' as const,
+        count: availableOffersCount,
+        countLabel: t('borrowerDashboard.actions.findOffers.countLabel'),
+      },
+      {
+        icon: FileText,
+        title: t('borrowerDashboard.actions.activeLoans.title'),
+        description: t('borrowerDashboard.actions.activeLoans.description'),
+        action: () => navigate('/borrower/loans'),
+        tone: 'success' as const,
+        count: activeLoansCount,
+        countLabel: t('borrowerDashboard.actions.activeLoans.countLabel'),
+      },
+      {
+        icon: Handshake,
+        title: t('borrowerDashboard.actions.negotiations.title'),
+        description: t('borrowerDashboard.actions.negotiations.description'),
+        action: () => navigate('/borrower/negotiations'),
+        tone: 'warning' as const,
+        count: ongoingNegotiationsCount,
+        countLabel: t('borrowerDashboard.actions.negotiations.countLabel'),
+      },
+    ],
+    [navigate, availableOffersCount, activeLoansCount, ongoingNegotiationsCount, t],
+  );
 
   return (
     <TooltipProvider>
@@ -66,14 +96,14 @@ const BorrowerDashboard = () => {
               {/* Welcome Section */}
               <div className="space-y-2">
                 <h1 className="text-2xl md:text-3xl font-bold">
-                  Olá, {firstName}! 👋
+                  {t('borrowerDashboard.greeting', { name: firstName })}
                 </h1>
-                <p className="text-muted-foreground">Bem-vindo de volta ao seu painel</p>
+                <p className="text-muted-foreground">{t('borrowerDashboard.subtitle')}</p>
               </div>
 
               {isLoading && (
                 <div className="rounded-xl border border-border p-4 text-sm text-muted-foreground">
-                  Carregando dados do seu perfil...
+                  {t('common.loadingProfile')}
                 </div>
               )}
 
@@ -89,7 +119,7 @@ const BorrowerDashboard = () => {
                   <div className="w-10 h-10 rounded-full bg-borrower/20 flex items-center justify-center">
                     <Wallet className="w-5 h-5 text-borrower" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">Saldo em Conta</span>
+                  <span className="text-sm font-medium text-muted-foreground">{t('borrowerDashboard.balanceCard')}</span>
                 </div>
                 <div className="text-3xl font-bold text-borrower">
                   {formatCurrency(balance)}
@@ -102,39 +132,37 @@ const BorrowerDashboard = () => {
                   <Button
                     onClick={() => navigate('/borrower/create-request')}
                     className="w-full rounded-full py-6 text-lg font-semibold hover:scale-[1.02] transition-transform"
-                    aria-label="Criar nova solicitação de empréstimo"
+                    aria-label={t('borrowerDashboard.createRequestAria')}
                   >
-                    + Solicitar empréstimo
+                    + {t('borrowerDashboard.createRequest')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Criar nova solicitação de empréstimo</p>
+                  <p>{t('borrowerDashboard.createRequestTooltip')}</p>
                 </TooltipContent>
               </Tooltip>
 
               {/* Action Cards */}
               <div className="space-y-4">
-                <h2 className="text-lg font-bold">Acesso rápido</h2>
+                <div className="space-y-1">
+                  <h2 className="text-lg font-bold">{t('borrowerDashboard.quickAccess.title')}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {t('borrowerDashboard.quickAccess.description')}
+                  </p>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                   {actionCards.map((card, index) => (
                     <Tooltip key={index}>
                       <TooltipTrigger asChild>
-                        <button
+                        <QuickActionCard
+                          icon={card.icon}
+                          title={card.title}
+                          description={card.description}
                           onClick={card.action}
-                          className="w-full p-4 rounded-2xl border-2 border-border hover:border-primary/50 transition-all bg-card text-left group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          aria-label={card.description}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-full ${card.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                              <card.icon className="w-6 h-6" aria-hidden="true" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-semibold">{card.title}</div>
-                              <div className="text-sm text-muted-foreground">{card.description}</div>
-                            </div>
-                            <span className="text-muted-foreground group-hover:text-primary transition-colors" aria-hidden="true">→</span>
-                          </div>
-                        </button>
+                          count={card.count}
+                          countLabel={card.countLabel}
+                          tone={card.tone}
+                        />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>{card.description}</p>
@@ -151,8 +179,8 @@ const BorrowerDashboard = () => {
               <div className="flex flex-col items-center p-8 bg-gradient-to-br from-borrower/10 to-borrower/5 rounded-2xl border-2 border-borrower/30 sticky top-6">
                 <ScoreRing score={scoreValue} size="lg" />
                 <div className="mt-4 text-center">
-                  <div className="text-lg font-bold text-borrower">Excelente Pagador</div>
-                  <div className="text-sm text-muted-foreground">Seu score está ótimo!</div>
+                  <div className="text-lg font-bold text-borrower">{t('borrowerDashboard.score.title')}</div>
+                  <div className="text-sm text-muted-foreground">{t('borrowerDashboard.score.subtitle')}</div>
                 </div>
               </div>
 
@@ -166,14 +194,14 @@ const BorrowerDashboard = () => {
                     }}
                     variant="outline"
                     className="w-full rounded-full bg-investor/5 border-investor text-investor hover:bg-investor/20 hover:border-investor transition-colors"
-                    aria-label="Mudar para perfil de investidor"
+                    aria-label={t('borrowerDashboard.switchProfile.tooltip')}
                   >
                     <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Trocar para Investidor
+                    {t('borrowerDashboard.switchProfile.label')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Trocar para modo Investidor</p>
+                  <p>{t('borrowerDashboard.switchProfile.tooltip')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>

@@ -15,7 +15,7 @@ import {
   formatInterestRate,
 } from '@/utils/calculations';
 import type { LoanStatus, NegociacaoResponse, Usuario } from '@/types';
-import { TrendingUp, Calendar, DollarSign, User, TrendingDown } from 'lucide-react';
+import { TrendingUp, Calendar, DollarSign, User, TrendingDown, Sparkles } from 'lucide-react';
 
 const STATUS_MAP: Record<string, LoanStatus> = {
   em_andamento: 'active',
@@ -168,12 +168,23 @@ const LoanDetails = () => {
 
       <main className="container max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Title */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold text-primary">Detalhes do empréstimo</h1>
           </div>
-          <StatusBadge status={loanData.status} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <StatusBadge status={loanData.status} />
+            {pendingInstallments > 0 && (
+              <Button
+                className="group flex items-center gap-2 rounded-full bg-gradient-to-r from-investor to-investor/80 px-5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-investor/30 transition-all duration-200 hover:translate-y-[-1px] hover:from-investor/90 hover:to-investor/70 focus-visible:ring-2 focus-visible:ring-investor"
+                onClick={() => navigate(`/investor/loan/${loanData.negotiation.id}/advance`)}
+              >
+                <Sparkles className="h-4 w-4 transition-transform group-hover:scale-110" aria-hidden="true" />
+                Antecipar parcelas
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Loan Overview */}

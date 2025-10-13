@@ -22,6 +22,22 @@ services:
       retries: 3
     networks:
       - negociaai-net
+  hardhat:
+    build:
+      context: ./backend/src/app/hardhat
+    container_name: negociaai-hardhat
+    working_dir: /app
+    command: >
+      sh -c "
+        if [ ! -d node_modules ]; then npm install --silent --no-progress; fi &&
+        npx hardhat node --hostname 0.0.0.0
+      "
+    ports:
+      - "8545:8545"
+    expose:
+      - "8545"
+    networks:
+      - negociaai-net
 
   backend:
     env_file:
@@ -35,8 +51,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      hardhat:
+        condition: service_started
     environment:
       DATABASE_URL: postgresql://grupo35:75N6uHRcrigx7qx9tPCyHmAel1Xa1INg@postgres:5432/negociaai
+      POLKADOT_HUB_RPC_URL: http://hardhat:8545
+      POLKADOT_HUB_CHAIN_ID: 31337
     restart: unless-stopped
     networks:
       - negociaai-net

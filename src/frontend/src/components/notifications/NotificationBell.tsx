@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/popover';
 import { NotificationList } from './NotificationList';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface Notification {
   id: string;
@@ -35,6 +36,17 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const { t } = useTranslation();
+
+  const ariaLabel = unreadCount > 0
+    ? t('notifications.bell.ariaWithCount', { count: unreadCount })
+    : t('notifications.bell.ariaDefault');
+
+  const badgeLabel = t('notifications.bell.badgeLabel', { count: unreadCount });
+
+  const srText = unreadCount > 0
+    ? t('notifications.bell.srNew', { count: unreadCount })
+    : t('notifications.bell.srEmpty');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -43,27 +55,18 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
           variant="ghost"
           size="icon"
           className={cn('relative', className)}
-          aria-label={
-            unreadCount > 0 
-              ? `Notificações - ${unreadCount} ${unreadCount === 1 ? 'nova notificação' : 'novas notificações'}`
-              : 'Notificações'
-          }
+          aria-label={ariaLabel}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
-            <span 
+            <span
               className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold"
-              aria-label={`${unreadCount} ${unreadCount === 1 ? 'notificação não lida' : 'notificações não lidas'}`}
+              aria-label={badgeLabel}
             >
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
-          <span className="sr-only">
-            {unreadCount > 0 
-              ? `${unreadCount} ${unreadCount === 1 ? 'nova notificação' : 'novas notificações'}`
-              : 'Sem notificações novas'
-            }
-          </span>
+          <span className="sr-only">{srText}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0 max-h-[500px] overflow-hidden" align="end">

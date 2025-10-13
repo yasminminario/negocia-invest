@@ -10,12 +10,14 @@ import type { NegotiationStatus } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { useProfile } from '@/contexts/ProfileContext';
 import { calculateRemainingTime, formatTimeRemaining } from '@/utils/time';
+import { useTranslation } from 'react-i18next';
 
 const Negotiations = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useProfile();
   const { negotiations, loading } = useNegotiations('investor');
+  const { t } = useTranslation();
 
   const filteredNegotiations = negotiations.filter((negotiation) => {
     const term = searchQuery.trim().toLowerCase();
@@ -42,7 +44,7 @@ const Negotiations = () => {
         {/* Title */}
         <div className="flex items-center gap-2">
           <Handshake className="w-6 h-6 text-primary" />
-          <h1 className="text-2xl font-bold text-primary">Negociações</h1>
+          <h1 className="text-2xl font-bold text-primary">{t('investorNegotiations.title')}</h1>
         </div>
 
         {/* Search & Filter */}
@@ -52,26 +54,29 @@ const Negotiations = () => {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Pesquisar"
+              placeholder={t('investorNegotiations.searchPlaceholder')}
               className="pl-10"
             />
           </div>
-          <button className="px-4 py-2 rounded-lg border-2 border-border hover:border-primary transition-colors">
+          <button
+            className="px-4 py-2 rounded-lg border-2 border-border hover:border-primary transition-colors"
+            aria-label={t('investorNegotiations.filterButtonAria')}
+          >
             <SlidersHorizontal className="w-5 h-5" />
           </button>
         </div>
 
         {/* Negotiations List */}
         {loading ? (
-          <div className="text-center py-8">Carregando...</div>
+          <div className="text-center py-8">{t('investorNegotiations.loading')}</div>
         ) : (
           <div className="space-y-4">
             {filteredNegotiations.map((negotiation) => {
-              const investorName = user?.nome ?? negotiation.investidor?.nome ?? `Usuário #${negotiation.id_investidor}`;
+              const investorBaseName = user?.nome ?? negotiation.investidor?.nome ?? t('common.userWithId', { id: negotiation.id_investidor });
               const borrowerHasResponded = (negotiation.quant_propostas ?? 0) > 1;
               const borrowerName = borrowerHasResponded
-                ? negotiation.tomador?.nome ?? `Usuário #${negotiation.id_tomador}`
-                : 'Aguardando tomador';
+                ? negotiation.tomador?.nome ?? t('common.userWithId', { id: negotiation.id_tomador })
+                : t('investorNegotiations.awaitingBorrower');
               const borrowerInitial = borrowerHasResponded ? borrowerName.charAt(0).toUpperCase() : '?';
               const awaitingNegotiation = !negotiation.quant_propostas || negotiation.quant_propostas <= 1;
               const remainingMs = calculateRemainingTime(negotiation.criado_em);
@@ -83,9 +88,12 @@ const Negotiations = () => {
               const countdownLabel = remainingMs == null
                 ? '--'
                 : expired
-                  ? 'Prazo encerrado'
-                  : `Expira em ${formatTimeRemaining(remainingMs)}`;
+                  ? t('investorNegotiations.countdown.expired')
+                  : t('investorNegotiations.countdown.expiresIn', {
+                    time: formatTimeRemaining(remainingMs),
+                  });
               const showCountdown = activeStatus || expired;
+              const investorDisplayName = t('investorNegotiations.badges.you', { name: investorBaseName });
 
               return (
                 <div
@@ -100,11 +108,11 @@ const Negotiations = () => {
                         {borrowerInitial}
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">Negociando com</p>
+                        <p className="text-xs text-muted-foreground">{t('investorNegotiations.negotiatingWith')}</p>
                         <p className="text-base font-semibold text-foreground leading-tight">{borrowerName}</p>
                         <div className="flex flex-wrap items-center gap-2 mt-2">
                           <Badge variant="outline" className="bg-muted/40 border-dashed">
-                            {investorName} (você)
+                            {investorDisplayName}
                           </Badge>
                           {borrowerHasResponded ? (
                             <Badge variant="secondary" className="text-xs font-semibold">
@@ -112,12 +120,12 @@ const Negotiations = () => {
                             </Badge>
                           ) : (
                             <Badge variant="outline" className="text-xs font-semibold border-dashed">
-                              Aguardando tomador
+                              {t('investorNegotiations.badges.awaitingBorrower')}
                             </Badge>
                           )}
                           {awaitingNegotiation && (
                             <Badge variant="outline" className="text-muted-foreground border-dashed">
-                              Aguardando negociação
+                              {t('investorNegotiations.badges.awaitingNegotiation')}
                             </Badge>
                           )}
                         </div>
@@ -129,19 +137,19 @@ const Negotiations = () => {
                   {/* Info Grid */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Taxa atual</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t('investorNegotiations.fields.currentRate')}</p>
                       <p className="text-sm font-bold text-primary">
                         {negotiation.taxa != null ? formatInterestRate(negotiation.taxa) : '--'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Prazo</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t('investorNegotiations.fields.term')}</p>
                       <p className="text-sm font-bold text-foreground">
-                        {negotiation.prazo != null ? `${negotiation.prazo} meses` : '--'}
+                        {negotiation.prazo != null ? t('common.months', { count: negotiation.prazo }) : '--'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Parcela</p>
+                      <p className="text-xs text-muted-foreground mb-1">{t('investorNegotiations.fields.installment')}</p>
                       <p className="text-sm font-bold text-foreground">
                         {negotiation.parcela != null ? formatCurrency(negotiation.parcela) : '--'}
                       </p>
@@ -151,13 +159,13 @@ const Negotiations = () => {
                   {/* Totals */}
                   <div className="flex items-center justify-between pt-3 border-t border-dashed border-border">
                     <div>
-                      <p className="text-xs text-muted-foreground">Valor do contrato</p>
+                      <p className="text-xs text-muted-foreground">{t('investorNegotiations.fields.contractValue')}</p>
                       <p className="text-lg font-semibold text-foreground">
                         {negotiation.valor != null ? formatCurrency(negotiation.valor) : '--'}
                       </p>
                     </div>
                     <div className="text-right text-xs text-muted-foreground">
-                      Número da negociação<br />
+                      {t('investorNegotiations.fields.negotiationNumber')}<br />
                       <span className="text-sm font-semibold text-foreground">#{negotiation.id}</span>
                       {showCountdown && (
                         <div
@@ -177,14 +185,14 @@ const Negotiations = () => {
             {!loading && filteredNegotiations.length === 0 && (
               <div className="text-center py-12">
                 <Handshake className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <p className="text-muted-foreground">Nenhuma negociação ativa</p>
+                <p className="text-muted-foreground">{t('investorNegotiations.empty')}</p>
               </div>
             )}
 
             {/* End indicator */}
             {filteredNegotiations.length > 0 && (
               <div className="text-center text-sm text-muted-foreground py-4">
-                😊 Acaba aqui
+                {t('investorNegotiations.endOfList')}
               </div>
             )}
           </div>

@@ -1,3 +1,5 @@
+import i18n from '@/lib/i18n';
+
 /**
  * Calcula a parcela mensal de um empréstimo usando a fórmula Price
  * PMT = P * [i(1 + i)^n] / [(1 + i)^n - 1]
@@ -8,15 +10,15 @@ export const calculateMonthlyPayment = (
   installments: number
 ): number => {
   const monthlyRate = monthlyRatePercent / 100;
-  
+
   if (monthlyRate === 0) {
     return principal / installments;
   }
-  
+
   const payment =
     (principal * monthlyRate * Math.pow(1 + monthlyRate, installments)) /
     (Math.pow(1 + monthlyRate, installments) - 1);
-  
+
   return Math.round(payment * 100) / 100;
 };
 
@@ -80,12 +82,20 @@ export const calculateSavings = (
 };
 
 /**
- * Formata valor em reais
+ * Resolve o locale com base no idioma ativo do i18n
  */
-export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('pt-BR', {
+const resolveLocale = (): string => {
+  const language = i18n.resolvedLanguage || i18n.language || 'pt-BR';
+  if (language.startsWith('pt')) return 'pt-BR';
+  if (language.startsWith('es')) return 'es-ES';
+  if (language.startsWith('en')) return 'en-US';
+  return language;
+};
+
+export const formatCurrency = (value: number, currency = 'BRL'): string => {
+  return new Intl.NumberFormat(resolveLocale(), {
     style: 'currency',
-    currency: 'BRL',
+    currency,
   }).format(value);
 };
 
@@ -93,7 +103,13 @@ export const formatCurrency = (value: number): string => {
  * Formata taxa de juros (ex: 1.5% a.m.)
  */
 export const formatInterestRate = (rate: number): string => {
-  return `${rate.toFixed(2).replace('.', ',')}% a.m.`;
+  const formatted = new Intl.NumberFormat(resolveLocale(), {
+    style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(rate / 100);
+
+  return i18n.t('common.monthly', { value: formatted });
 };
 
 /**
@@ -102,11 +118,11 @@ export const formatInterestRate = (rate: number): string => {
 export const calculateTimeRemaining = (expiresAt: Date): string => {
   const now = new Date();
   const diff = expiresAt.getTime() - now.getTime();
-  
+
   if (diff <= 0) return '00:00';
-  
+
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  
+
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
