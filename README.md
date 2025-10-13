@@ -783,7 +783,7 @@ O frontend é desenvolvido em React, garantindo experiência nativa em dispositi
 
 <p align="center">
 <sub>Figura 6 - Feature de Antecipação de Recebíveis</sub><br>
-  <img src="img/tela04.png" alt="Configuração de acessibilidade" width="60%">
+  <img src="img/tela04.png" alt="Antecipação de Recebíveis" width="60%">
 </p>
 
 ### Acessibilidade
@@ -833,7 +833,7 @@ Essas configurações podem ser acessadas facilmente pelo usuário, permitindo p
 
 ## 5.2 Organização de Pastas
 
-src/
+```src/
 ├─ app/              # Inicialização do React (AppProviders, AppRoutes)
 ├─ assets/           # Imagens, ícones e recursos estáticos
 ├─ components/
@@ -851,6 +851,7 @@ src/
 ├─ pages/            # Páginas segmentadas por domínio (auth, dashboard, market, negotiations, profile)
 ├─ routes/           # Proteção e definição de rotas (AppRoutes, ProtectedRoute)
 └─ services/         # Camada de comunicação com backend (auth, negotiations, proposals, rates, score)
+```
 
 
 *Convenções principais:*
