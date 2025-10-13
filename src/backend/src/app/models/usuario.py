@@ -41,3 +41,21 @@ class UsuarioResponse(BaseModel):
 
 	model_config = ConfigDict(from_attributes=True)
 
+
+class UsuarioCreate(BaseModel):
+	"""Esquema para criação de usuário via API.
+
+	Inclui os campos necessários para inserir uma nova linha na tabela `usuarios`.
+	Não inclui `id` nem `criado_em`.
+	"""
+
+	nome: str
+	email: str
+	cpf: str
+	endereco: Optional[str] = None
+	renda_mensal: Optional[float] = None
+	celular: str
+	facial: float = 0.0
+	saldo_cc: Optional[float] = 0.0
+
+	model_config = ConfigDict(from_attributes=True)

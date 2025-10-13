@@ -8,8 +8,11 @@ DATABASE_URL = os.getenv(
     "postgresql://grupo35:75N6uHRcrigx7qx9tPCyHmAel1Xa1INg@postgres:5432/negociaai"
 )
 
-POLYGON_RPC_URL = "https://rpc-amoy.polygon.technology/"
 
-CONTRACT_ADDRESS = [...]
+POLKADOT_HUB_RPC_URL = os.getenv("POLKADOT_HUB_RPC_URL", "http://hardhat:8545")
+POLKADOT_HUB_CHAIN_ID = int(os.getenv("POLKADOT_HUB_CHAIN_ID", 31337))
+SOLIDITY_VERSION = "0.8.28"
 
-WALLET_PRIVATE_KEY="0x50fF233084e8A757169Bc132aC0636c35370e1DE"
+CONTRACT_ADDRESS = None  # será preenchido após o deploy
+WALLET_PRIVATE_KEY = os.getenv("WALLET_PRIVATE_KEY")
+DEPLOYER_PRIVATE_KEY = os.getenv("DEPLOYER_PRIVATE_KEY")

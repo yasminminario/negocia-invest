@@ -36,7 +36,17 @@ export const API_ENDPOINTS = {
   // Recomendações
   recomendacaoTaxa: '/recomendacao/taxa',
   recomendacoesInternas: (userId: number) => `/internal/recommendations/solicitacoes/${userId}`,
+
+
+    // Blockchain / Hardhat local testing
+  blockchainStatus: '/blockchain/status',
+  blockchainDeploy: '/blockchain/deploy',
+  blockchainCompile: '/blockchain/compile',
+  blockchainRegistrar: '/blockchain/registrar',
+  
 } as const;
+
+
 
 // Headers padrão
 export const getHeaders = () => ({
