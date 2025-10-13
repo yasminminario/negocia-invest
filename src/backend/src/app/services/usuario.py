@@ -108,7 +108,7 @@ class UsuarioService:
         UsuarioService.ajustar_saldo(db, tomador_id, valor)
         
 
-@staticmethod
+    @staticmethod
     def criar_usuario(db: Session, usuario_data: UsuarioCreate) -> UsuarioResponse:
         """Cria um novo usuário, gera uma carteira Ethereum e salva apenas o endereço na tabela.
 
