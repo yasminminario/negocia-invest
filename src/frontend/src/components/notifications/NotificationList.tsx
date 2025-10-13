@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Notification } from './NotificationBell';
 import { Handshake, DollarSign, TrendingUp, Info, CheckCheck, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useProfile } from '@/contexts/ProfileContext';
 
 interface NotificationListProps {
   notifications: Notification[];
@@ -20,6 +21,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+  const { activeProfile, setActiveProfile } = useProfile();
 
   const getIcon = (type: Notification['type']) => {
     switch (type) {
@@ -56,10 +58,21 @@ export const NotificationList: React.FC<NotificationListProps> = ({
 
   const handleNotificationClick = (notification: Notification) => {
     onMarkAsRead(notification.id);
-    if (notification.actionUrl) {
-      navigate(notification.actionUrl);
-      onClose();
+
+    const goToNotificationTarget = () => {
+      if (notification.actionUrl) {
+        navigate(notification.actionUrl);
+        onClose();
+      }
+    };
+
+    if (notification.profileType && notification.profileType !== activeProfile) {
+      setActiveProfile(notification.profileType);
+      setTimeout(goToNotificationTarget, 0);
+      return;
     }
+
+    goToNotificationTarget();
   };
 
   return (
@@ -93,6 +106,12 @@ export const NotificationList: React.FC<NotificationListProps> = ({
           <div className="divide-y">
             {notifications.map((notification) => {
               const Icon = getIcon(notification.type);
+              const profileBadgeClass = cn(
+                'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide',
+                notification.profileType === 'borrower' && 'bg-borrower/10 text-borrower border-borrower/40',
+                notification.profileType === 'investor' && 'bg-investor/10 text-investor border-investor/40',
+                !notification.profileType && 'bg-primary/10 text-primary border-primary/40'
+              );
               return (
                 <button
                   key={notification.id}
@@ -152,6 +171,16 @@ export const NotificationList: React.FC<NotificationListProps> = ({
                       <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                         {notification.message}
                       </p>
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className={profileBadgeClass}>
+                          {notification.profileType === 'investor' ? 'Perfil investidor' : notification.profileType === 'borrower' ? 'Perfil tomador' : 'Perfil'}
+                        </span>
+                        {notification.profileType && notification.profileType !== activeProfile && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                            Alterna para esse perfil
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-muted-foreground">
                         {formatDate(notification.createdAt)}
                       </p>

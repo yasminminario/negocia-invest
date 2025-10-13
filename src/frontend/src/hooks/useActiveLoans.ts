@@ -15,6 +15,7 @@ const STATUS_MAP: Record<string, LoanStatus> = {
   cancelada: 'cancelled',
   em_negociacao: 'active',
   pendente: 'active',
+  aceita: 'active',
 };
 
 const mapStatus = (status: string): LoanStatus => {

@@ -83,7 +83,7 @@ INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, tax
 (3, 6, 'tomador', '2.2-2.8', '2.0-2.5', 24, NOW() - INTERVAL '13 days', 'contraproposta', 'rejeitada', 1280.00, 25000.00, 'Consigo pagar um pouco mais', true),
 (3, 5, 'investidor', '2.0-2.1', '2.1-2.2', 24, NOW() - INTERVAL '12 days', 'final', 'aceita', 1290.00, 25000.00, 'Acordo fechado', false),
 
-(4, 7, 'tomador', '1.8-1.9', '1.3-1.4', 15, NOW() - INTERVAL '3 days', 'inicial', 'em_analise', 950.00, 12000.00, 'Reforma residencial', true),
+(4, 7, 'tomador', '1.8-1.9', '1.3-1.4', 15, NOW() - INTERVAL '3 days', 'inicial', 'em_analise', 950.00, 12000.00, 'Reforma residencial', true);
 
 -- Propostas de investidores disponíveis no mercado (sem negociação vinculada)
 INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, taxa_sugerida, prazo_meses, criado_em, tipo, status, parcela, valor, justificativa, negociavel) VALUES
@@ -99,18 +99,13 @@ INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, tax
 (NULL, 9, 'tomador', '1.5-2.3', '1.3-1.9', 30, NOW() - INTERVAL '2 days', 'inicial', 'pendente', 720.00, 22000.00, 'Reformas e modernização do escritório.', true),
 (NULL, 11, 'tomador', '1.9-2.6', '1.8-2.3', 36, NOW() - INTERVAL '3 days', 'inicial', 'pendente', 890.00, 26000.00, 'Investimento em tecnologia e automação.', true);
 
--- Propostas para negociação 5 (cancelada)
+-- Propostas associadas às negociações 5 a 8
+INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, taxa_sugerida, prazo_meses, criado_em, tipo, status, parcela, valor, justificativa, negociavel) VALUES
 (5, 9, 'tomador', '2.2-2.5', '1.8-2.0', 20, NOW() - INTERVAL '8 days', 'inicial', 'cancelada', 1200.00, 20000.00, 'Mudança de planos', true),
 (5, 10, 'investidor', '1.8-2.0', '2.0-2.2', 20, NOW() - INTERVAL '7 days', 'contraproposta', 'cancelada', 1220.00, 20000.00, 'Dentro do perfil', true),
-
--- Propostas para negociação 6 (em andamento)
 (6, 11, 'tomador', '2.5-3.0', '2.0-2.5', 30, NOW() - INTERVAL '2 days', 'inicial', 'pendente', 1100.00, 30000.00, 'Expansão negócio', true),
 (6, 12, 'investidor', '2.0-2.3', '2.3-2.5', 30, NOW() - INTERVAL '1 day', 'contraproposta', 'em_analise', 1150.00, 30000.00, 'Perfil de risco adequado', true),
-
--- Propostas para negociação 7 (pendente)
 (7, 13, 'tomador', '3.0-3.5', '2.5-3.0', 36, NOW() - INTERVAL '1 day', 'inicial', 'pendente', 800.00, 25000.00, 'Necessidade urgente', true),
-
--- Propostas para negociação 8 (em negociação)
 (8, 14, 'tomador', '1.8-1.9', '1.4-1.5', 14, NOW(), 'inicial', 'em_analise', 1050.00, 14000.00, 'Investimento pessoal', true);
 
 -- Comentários informativos
@@ -119,4 +114,4 @@ INSERT INTO propostas (id_negociacoes, id_autor, autor_tipo, taxa_analisada, tax
 -- - 15 scores de crédito (1 para cada usuário)
 -- - 8 métricas de investidor (usuários com perfil investidor)
 -- - 8 negociações (com diferentes status)
--- - 16 propostas (distribuídas entre as negociações)
+-- - 24 propostas (distribuídas entre negociações e mercado)

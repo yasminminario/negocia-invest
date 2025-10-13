@@ -58,13 +58,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, [storageKey]);
 
-  useEffect(() => {
-    // keep profile up to date on each notification without refetch
-    setNotifications((prev) =>
-      prev.map((notif) => ({ ...notif, profileType: activeProfile }))
-    );
-  }, [activeProfile]);
-
   const addNotification = (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => {
     const newNotification: Notification = {
       id: typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -76,7 +69,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       actionUrl: notification.actionUrl,
       read: false,
       createdAt: new Date(),
-      profileType: activeProfile,
+      profileType: notification.profileType ?? activeProfile,
     };
 
     setNotifications((prev) => {

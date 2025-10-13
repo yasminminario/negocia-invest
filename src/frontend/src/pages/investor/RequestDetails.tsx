@@ -17,6 +17,8 @@ import { toast } from '@/hooks/use-toast';
 import { propostasApi, scoresCreditoApi, usuariosApi } from '@/services/api.service';
 import type { PropostaResponsePayload, ScoreCredito, Usuario } from '@/types';
 import { parseRateRange } from '@/utils/dataMappers';
+import { useProfile } from '@/contexts/ProfileContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 export const RequestDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +28,9 @@ export const RequestDetails: React.FC = () => {
   const [borrowerScore, setBorrowerScore] = useState<ScoreCredito | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [accepting, setAccepting] = useState(false);
+  const { user } = useProfile();
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     const loadData = async () => {
@@ -119,13 +124,53 @@ export const RequestDetails: React.FC = () => {
     ];
   }, [loanMetrics, proposal]);
 
-  const handleAccept = () => {
-    toast({
-      title: 'Solicitação aceita!',
-      description: 'O empréstimo foi ativado com sucesso.',
-      variant: 'investor',
-    });
-    navigate('/investor/loans');
+  const handleAccept = async () => {
+    if (accepting) return;
+    if (!proposal) return;
+    if (!user?.id) {
+      toast({
+        title: 'Ops!',
+        description: 'Não foi possível confirmar suas credenciais.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setAccepting(true);
+
+    try {
+      await propostasApi.aceitar(Number(proposal.id), {
+        usuarioId: Number(user.id),
+        perfil: 'investidor',
+      });
+
+      addNotification({
+        type: 'loan',
+        title: 'Solicitação aceita',
+        message: `Você ativou o empréstimo para ${borrowerName}. Acompanhe a operação nos seus empréstimos ativos.`,
+        actionUrl: '/investor/loans',
+        profileType: 'investor',
+      });
+
+      toast({
+        title: 'Solicitação aceita!',
+        description: 'O empréstimo foi ativado com sucesso.',
+        className: 'bg-positive-light border-positive/20',
+      });
+      navigate('/investor/loans');
+    } catch (err) {
+      console.error('Erro ao aceitar solicitação:', err);
+      const message =
+        (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
+        (err instanceof Error ? err.message : 'Não foi possível aceitar a solicitação.');
+      toast({
+        title: 'Erro ao aceitar',
+        description: message,
+        variant: 'destructive',
+      });
+    } finally {
+      setAccepting(false);
+    }
   };
 
   const handleNegotiate = () => {
@@ -289,6 +334,7 @@ export const RequestDetails: React.FC = () => {
           <Button
             className="w-full h-14 text-base rounded-full"
             onClick={handleAccept}
+            disabled={accepting}
           >
             <Check className="mr-2 h-5 w-5" />
             Aceitar esta solicitação

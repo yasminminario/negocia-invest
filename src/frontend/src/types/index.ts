@@ -67,6 +67,14 @@ export interface ScoreCredito {
   risco: number; // 0-1
 }
 
+export interface ScoreCalculoDetalhado {
+  score: ScoreCredito;
+  score_modelo: number;
+  score_serasa: number;
+  prob_default: number;
+  analise: ScoreCredito['analise'];
+}
+
 // Tabela: negociacoes
 export interface Negociacao {
   id: number;

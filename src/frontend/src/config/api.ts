@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   // Scores de crédito (consulta individual e recálculo)
   scoreByUserId: (userId: number) => `/scores_credito/usuario/${userId}`,
   recalcularScore: (userId: number) => `/score/${userId}`,
+  recalcularTodosScores: '/score/recalcular',
 
   // Negociações
   negociacoes: '/negociacoes',

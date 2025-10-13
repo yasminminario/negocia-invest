@@ -29,7 +29,7 @@ const ActiveLoans = () => {
         {/* Title */}
         <div className="flex items-center gap-2">
           <TrendingUp className="w-6 h-6 text-primary" />
-          <h1 className="text-2xl font-bold text-primary">Empréstimos ativos</h1>
+          <h1 className="text-2xl font-bold text-primary">Empréstimos</h1>
         </div>
 
         <section className="space-y-3">
@@ -84,7 +84,7 @@ const ActiveLoans = () => {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-foreground">Empréstimos ativos</h2>
+          <h2 className="text-lg font-semibold text-foreground">Empréstimos</h2>
           {loading ? (
             <div className="text-center py-8">Carregando...</div>
           ) : (

@@ -8,6 +8,7 @@ import { useActiveLoans } from '@/hooks/useActiveLoans';
 import { useOwnProposals } from '@/hooks/useOwnProposals';
 import { formatCurrency, formatInterestRate } from '@/utils/calculations';
 import type { LoanStatus } from '@/types';
+import { Button } from '@/components/ui/button';
 
 const ActiveLoans = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const ActiveLoans = () => {
         {/* Title */}
         <div className="flex items-center gap-2">
           <TrendingUp className="w-6 h-6 text-primary" />
-          <h1 className="text-2xl font-bold text-primary">Empréstimos ativos</h1>
+          <h1 className="text-2xl font-bold text-primary">Empréstimos</h1>
         </div>
 
         <section className="space-y-3">
@@ -101,18 +102,29 @@ const ActiveLoans = () => {
               }))}
               searchKeys={['borrowerName', 'amount', 'interestRate']}
               renderItem={(loan) => (
-                <LoanCard
-                  id={loan.id}
-                  name={loan.borrowerName}
-                  score={0}
-                  interestRate={loan.interestRate}
-                  installments={loan.installments}
-                  monthlyPayment={loan.monthlyPayment}
-                  total={loan.totalAmount}
-                  amount={loan.amount}
-                  status={loan.status as LoanStatus}
-                  onClick={() => navigate(`/investor/loan/${loan.id}`)}
-                />
+                <div className="space-y-3">
+                  <LoanCard
+                    id={loan.id}
+                    name={loan.borrowerName}
+                    score={0}
+                    interestRate={loan.interestRate}
+                    installments={loan.installments}
+                    monthlyPayment={loan.monthlyPayment}
+                    total={loan.totalAmount}
+                    amount={loan.amount}
+                    status={loan.status as LoanStatus}
+                    onClick={() => navigate(`/investor/loan/${loan.id}`)}
+                  />
+                  {loan.status === 'active' && loan.installments > 0 && (
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={() => navigate(`/investor/loan/${loan.id}/advance`)}
+                    >
+                      Antecipar parcelas
+                    </Button>
+                  )}
+                </div>
               )}
               emptyMessage="Nenhum empréstimo encontrado"
             />

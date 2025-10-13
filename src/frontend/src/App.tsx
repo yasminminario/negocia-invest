@@ -29,6 +29,7 @@ import InvestorNegotiationDetails from "./pages/investor/NegotiationDetails";
 import BorrowerLoanDetails from "./pages/borrower/LoanDetails";
 import InvestorLoanDetails from "./pages/investor/LoanDetails";
 import UserProfile from "./pages/UserProfile";
+import AdvanceInstallments from "./pages/investor/AdvanceInstallments";
 
 const queryClient = new QueryClient();
 
@@ -46,43 +47,44 @@ const App = () => (
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/signup" element={<SignUp />} />
               <Route path="/select-profile" element={<SelectProfile />} />
-              
+
               {/* Profile Route */}
               <Route path="/profile" element={<UserProfile />} />
-              
+
               {/* Borrower Routes */}
               <Route path="/borrower/dashboard" element={<BorrowerDashboard />} />
               <Route path="/borrower/find-offers" element={<FindOffers />} />
               <Route path="/borrower/loans" element={<BorrowerLoans />} />
               <Route path="/borrower/negotiations" element={<BorrowerNegotiations />} />
               <Route path="/borrower/create-request" element={<CreateRequest />} />
-              
+
               {/* Investor Routes */}
               <Route path="/investor/dashboard" element={<InvestorDashboard />} />
               <Route path="/investor/find-requests" element={<FindRequests />} />
               <Route path="/investor/loans" element={<InvestorLoans />} />
               <Route path="/investor/negotiations" element={<InvestorNegotiations />} />
               <Route path="/investor/create-offer" element={<CreateOffer />} />
-              
+
               {/* Detail Pages */}
               <Route path="/borrower/offer/:id" element={<OfferDetails />} />
               <Route path="/investor/request/:id" element={<RequestDetails />} />
-              
+
               {/* Negotiation Pages */}
               <Route path="/borrower/negotiate/:id" element={<NegotiateOffer />} />
               <Route path="/investor/negotiate/:id" element={<NegotiateRequest />} />
-              
+
               {/* Detail Pages - Negotiations */}
               <Route path="/borrower/negotiation/:id" element={<BorrowerNegotiationDetails />} />
               <Route path="/investor/negotiation/:id" element={<InvestorNegotiationDetails />} />
-              
+
               {/* Detail Pages - Loans */}
               <Route path="/borrower/loan/:id" element={<BorrowerLoanDetails />} />
               <Route path="/investor/loan/:id" element={<InvestorLoanDetails />} />
-              
+              <Route path="/investor/loan/:id/advance" element={<AdvanceInstallments />} />
+
               {/* Demo Route (negotiation) */}
               <Route path="/demo" element={<Index />} />
-              
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

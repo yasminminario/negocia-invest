@@ -116,6 +116,199 @@ class PropostaService:
         return db_proposta
 
     @staticmethod
+    def iniciar_negociacao_para_proposta(
+        db: Session,
+        proposta_id: int,
+        tomador_id: int,
+    ) -> Negociacao:
+        """Garante que uma proposta tenha uma negociação associada (caso ainda não exista)."""
+
+        proposta = db.query(Proposta).filter(Proposta.id == proposta_id).first()
+        if not proposta:
+            raise ValueError("Proposta não encontrada")
+
+        if proposta.id_negociacoes:
+            negociacao_vinculada = db.query(Negociacao).filter(
+                Negociacao.id == proposta.id_negociacoes
+            ).first()
+            if not negociacao_vinculada:
+                raise ValueError("Negociação vinculada não encontrada")
+            return negociacao_vinculada
+
+        if proposta.autor_tipo != "investidor":
+            raise ValueError("Somente propostas criadas por investidores podem iniciar negociação")
+
+        if proposta.id_autor == tomador_id:
+            raise ValueError("O tomador não pode ser o mesmo usuário que criou a proposta")
+
+        taxa_media = (
+            _parse_taxa_media(proposta.taxa_sugerida)
+            or _parse_taxa_media(proposta.taxa_analisada)
+            or 0.0
+        )
+
+        negociacao_data = NegociacaoCreate(
+            id_tomador=tomador_id,
+            id_investidor=proposta.id_autor,
+            status="em_negociacao",
+            taxa=taxa_media,
+            quant_propostas=1,
+            prazo=proposta.prazo_meses,
+            valor=proposta.valor,
+            parcela=proposta.parcela,
+        )
+
+        db_negociacao = Negociacao(**negociacao_data.model_dump())
+        db.add(db_negociacao)
+        db.flush()
+
+        proposta.id_negociacoes = db_negociacao.id
+        db.commit()
+        db.refresh(proposta)
+        db.refresh(db_negociacao)
+
+        return db_negociacao
+
+    @staticmethod
+    def aceitar_proposta(
+        db: Session,
+        proposta_id: int,
+        usuario_id: int,
+        perfil: str,
+    ) -> Negociacao:
+        """Aceita uma proposta e garante que a negociação correspondente esteja ativa."""
+
+        proposta = db.query(Proposta).filter(Proposta.id == proposta_id).first()
+        if not proposta:
+            raise ValueError("Proposta não encontrada")
+
+        if perfil not in {"investidor", "tomador"}:
+            raise ValueError("Perfil inválido para aceitação")
+
+        if proposta.autor_tipo == "tomador":
+            if perfil != "investidor":
+                raise ValueError("Somente investidores podem aceitar esta solicitação")
+            id_tomador = proposta.id_autor
+            id_investidor = usuario_id
+        elif proposta.autor_tipo == "investidor":
+            if perfil != "tomador":
+                raise ValueError("Somente tomadores podem aceitar esta oferta")
+            id_investidor = proposta.id_autor
+            id_tomador = usuario_id
+        else:
+            raise ValueError("Tipo de proposta inválido")
+
+        taxa_media = (
+            _parse_taxa_media(proposta.taxa_sugerida)
+            or _parse_taxa_media(proposta.taxa_analisada)
+            or 0.0
+        )
+
+        negociacao: Optional[Negociacao] = None
+
+        if proposta.id_negociacoes:
+            negociacao = db.query(Negociacao).filter(Negociacao.id == proposta.id_negociacoes).first()
+            if not negociacao:
+                raise ValueError("Negociação vinculada não encontrada")
+            if perfil == "investidor" and negociacao.id_investidor and negociacao.id_investidor != usuario_id:
+                raise ValueError("Usuário não faz parte desta negociação como investidor")
+            if perfil == "tomador" and negociacao.id_tomador and negociacao.id_tomador != usuario_id:
+                raise ValueError("Usuário não faz parte desta negociação como tomador")
+        else:
+            negociacao_data = NegociacaoCreate(
+                id_tomador=id_tomador,
+                id_investidor=id_investidor,
+                status="aceita",
+                taxa=taxa_media,
+                quant_propostas=1,
+                prazo=proposta.prazo_meses,
+                valor=proposta.valor,
+                parcela=proposta.parcela,
+            )
+            negociacao = Negociacao(**negociacao_data.model_dump())
+            db.add(negociacao)
+            db.flush()
+            proposta.id_negociacoes = negociacao.id
+
+        proposta.status = "aceita"
+        if proposta.negociavel:
+            proposta.negociavel = False
+
+        atualizacoes = {
+            "status": "aceita",
+            "id_tomador": id_tomador,
+            "id_investidor": id_investidor,
+            "valor": proposta.valor,
+            "prazo": proposta.prazo_meses,
+            "parcela": proposta.parcela,
+            "taxa": taxa_media,
+            "quant_propostas": max((negociacao.quant_propostas or 0), 1) if negociacao else 1,
+            "assinado_em": datetime.utcnow(),
+        }
+
+        negociacao_atualizada = NegociacaoService.atualizar_negociacao(
+            db,
+            negociacao.id,
+            atualizacoes,
+        )
+
+        db.refresh(proposta)
+        return negociacao_atualizada
+
+    @staticmethod
+    def recusar_proposta(
+        db: Session,
+        proposta_id: int,
+        usuario_id: int,
+        perfil: str,
+    ) -> Negociacao:
+        """Recusa uma proposta e cancela a negociação associada."""
+
+        proposta = db.query(Proposta).filter(Proposta.id == proposta_id).first()
+        if not proposta:
+            raise ValueError("Proposta não encontrada")
+
+        if perfil not in {"investidor", "tomador"}:
+            raise ValueError("Perfil inválido para recusa")
+
+        if proposta.autor_tipo == "tomador":
+            if perfil != "investidor":
+                raise ValueError("Somente investidores podem recusar esta solicitação")
+        elif proposta.autor_tipo == "investidor":
+            if perfil != "tomador":
+                raise ValueError("Somente tomadores podem recusar esta oferta")
+        else:
+            raise ValueError("Tipo de proposta inválido")
+
+        if proposta.id_negociacoes is None:
+            raise ValueError("Proposta não vinculada a uma negociação")
+
+        negociacao = db.query(Negociacao).filter(Negociacao.id == proposta.id_negociacoes).first()
+        if not negociacao:
+            raise ValueError("Negociação vinculada não encontrada")
+        if perfil == "investidor" and negociacao.id_investidor and negociacao.id_investidor != usuario_id:
+            raise ValueError("Usuário não faz parte desta negociação como investidor")
+        if perfil == "tomador" and negociacao.id_tomador and negociacao.id_tomador != usuario_id:
+            raise ValueError("Usuário não faz parte desta negociação como tomador")
+
+        proposta.status = "rejeitada"
+        proposta.negociavel = False
+
+        atualizacoes = {
+            "status": "cancelada",
+            "atualizado_em": datetime.utcnow(),
+        }
+
+        negociacao_atualizada = NegociacaoService.atualizar_negociacao(
+            db,
+            negociacao.id,
+            atualizacoes,
+        )
+
+        db.refresh(proposta)
+        return negociacao_atualizada
+
+    @staticmethod
     def get_propostas_recomendadas(
         db: Session,
         user_id: int,

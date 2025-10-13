@@ -6,6 +6,7 @@ import type {
   PropostaResponsePayload,
   Usuario,
   ScoreCredito,
+  ScoreCalculoDetalhado,
   MetricasInvestidor,
 } from '@/types';
 
@@ -45,13 +46,44 @@ export const propostasApi = {
     apiClient.post<PropostaResponsePayload>('/propostas', payload),
 
   obterPorId: (id: number) => apiClient.get<PropostaResponsePayload>(`/propostas/${id}`),
+
+  iniciarNegociacao: (propostaId: number, tomadorId: number) =>
+    apiClient.post<NegociacaoResponse>(
+      `/propostas/${propostaId}/iniciar-negociacao`,
+      { tomador_id: tomadorId },
+    ),
+
+  aceitar: (
+    propostaId: number,
+    params: { usuarioId: number; perfil: 'investidor' | 'tomador' },
+  ) =>
+    apiClient.post<NegociacaoResponse>(
+      `/propostas/${propostaId}/aceitar`,
+      {
+        usuario_id: params.usuarioId,
+        perfil: params.perfil,
+      },
+    ),
+
+  recusar: (
+    propostaId: number,
+    params: { usuarioId: number; perfil: 'investidor' | 'tomador' },
+  ) =>
+    apiClient.post<NegociacaoResponse>(
+      `/propostas/${propostaId}/recusar`,
+      {
+        usuario_id: params.usuarioId,
+        perfil: params.perfil,
+      },
+    ),
 };
 
 // ============= SCORE & RECOMENDAÇÕES =============
 
 export const scoreApi = {
   calcularScoreFinal: (userId: number) =>
-    apiClient.post(`/score/${userId}`, {}),
+    apiClient.post<ScoreCalculoDetalhado>(`/score/${userId}`, {}),
+  recalcularTodos: () => apiClient.post<ScoreCalculoDetalhado[]>(`/score/recalcular`, {}),
 };
 
 export const recomendacaoApi = {

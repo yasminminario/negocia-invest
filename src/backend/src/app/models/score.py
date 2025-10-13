@@ -33,3 +33,15 @@ class ScoreCreditoResponse(BaseModel):
 	risco: Optional[float] = None
 
 	model_config = ConfigDict(from_attributes=True)
+
+
+class ScoreDetalhadoResponse(BaseModel):
+	"""Resposta detalhada ao recalcular o score via modelo interno."""
+
+	score: ScoreCreditoResponse
+	score_modelo: float
+	score_serasa: float
+	prob_default: float
+	analise: Dict[str, Any]
+
+	model_config = ConfigDict(from_attributes=True)

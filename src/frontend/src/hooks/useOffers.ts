@@ -105,6 +105,8 @@ export const useOffers = () => {
         const monthlyPayment = installments ? calculateMonthlyPayment(amount, ranges.average, installments) : 0;
         const totalAmount = installments ? calculateTotalAmount(monthlyPayment, installments) : amount;
 
+        const scoreValue = investorData?.score?.valor_score ?? 700;
+
         return {
           id: String(proposal.id),
           investorId: String(proposal.id_autor),
@@ -112,8 +114,8 @@ export const useOffers = () => {
             id: String(proposal.id_autor),
             name: investorData?.usuario.nome ?? `Investidor #${proposal.id_autor}`,
             email: investorData?.usuario.email ?? '',
-            creditScore: deriveCreditScore(investorData?.score?.valor_score ?? 0),
-            scoreValue: investorData?.score?.valor_score ?? 0,
+            creditScore: deriveCreditScore(scoreValue),
+            scoreValue,
             activeProfile: 'investor',
           },
           amount,

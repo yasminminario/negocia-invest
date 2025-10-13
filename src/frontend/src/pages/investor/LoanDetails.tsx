@@ -168,12 +168,23 @@ const LoanDetails = () => {
 
       <main className="container max-w-md mx-auto px-4 py-6 space-y-6">
         {/* Title */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-primary" />
             <h1 className="text-2xl font-bold text-primary">Detalhes do empréstimo</h1>
           </div>
-          <StatusBadge status={loanData.status} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <StatusBadge status={loanData.status} />
+            {pendingInstallments > 0 && (
+              <Button
+                variant="outline"
+                className="sm:w-auto"
+                onClick={() => navigate(`/investor/loan/${loanData.negotiation.id}/advance`)}
+              >
+                Antecipar parcelas
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Loan Overview */}

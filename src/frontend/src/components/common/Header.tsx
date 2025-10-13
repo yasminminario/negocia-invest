@@ -34,6 +34,12 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
     }
   };
 
+  const homeRoute = activeProfile === 'borrower'
+    ? '/borrower/dashboard'
+    : activeProfile === 'investor'
+      ? '/investor/dashboard'
+      : '/';
+
   return (
     <TooltipProvider>
       <header className="sticky top-0 z-50 bg-background border-b px-6 py-4 flex items-center justify-between">
@@ -41,11 +47,11 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
           {/* Logo */}
           <button
             className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary rounded-lg p-1 -m-1"
-            onClick={() => navigate(activeProfile === 'borrower' ? '/borrower' : '/investor')}
+            onClick={() => navigate(homeRoute)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                navigate(activeProfile === 'borrower' ? '/borrower' : '/investor');
+                navigate(homeRoute);
               }
             }}
             aria-label="Voltar para o início - negoci.ai"
@@ -119,32 +125,32 @@ export const Header: React.FC<HeaderProps> = ({ showBackButton = false, onBack }
               </TooltipContent>
             </Tooltip>
 
-          {/* Back Button */}
+            {/* Back Button */}
+            {showBackButton && (
+              <Button
+                onClick={handleBack}
+                className="rounded-full px-6 py-2 ml-2"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar
+              </Button>
+            )}
+          </div>
+
+          {/* Mobile Menu */}
+          <MobileMenu />
+
+          {/* Mobile Back Button */}
           {showBackButton && (
             <Button
               onClick={handleBack}
-              className="rounded-full px-6 py-2 ml-2"
+              className="md:hidden rounded-full px-4 py-2"
+              size="sm"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-4 h-4 mr-1" />
               Voltar
             </Button>
           )}
-        </div>
-
-        {/* Mobile Menu */}
-        <MobileMenu />
-
-        {/* Mobile Back Button */}
-        {showBackButton && (
-          <Button
-            onClick={handleBack}
-            className="md:hidden rounded-full px-4 py-2"
-            size="sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            Voltar
-          </Button>
-        )}
         </div>
 
         {/* Help Dialog */}
