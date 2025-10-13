@@ -1463,6 +1463,114 @@ Totais:
 - **Mensal (5.000 usuários)** ≈ **US$ 250**  
 - **Anual** ≈ **US$ 3.000**
 
+## 🔗 Deploy, testes locais e justificativa técnica (Hardhat)
+
+- A testnet Paseo (Polkadot Asset Hub) apresentou instabilidade no RPC público e rejeição de transações (ex.: "Invalid Transaction" / code 1010). Isso ocorre no nó da testnet antes do deploy (nonce/gas/formato incompatível com o pallet Substrate/EVM). Portanto o problema foi infra.
+- Plano autorizado pelo regulamento do Hackathon: testar e validar localmente em um Hardhat Node (EVM). Hardhat emula o EVM utilizado por redes compatíveis e é o ambiente usado por times para testes de contratos antes do deploy real. O contrato e o backend permanecem compatíveis com Paseo e podem ser deployados na testnet assim que o RPC voltar ao ar.
+
+### Justificativa técnica detalhada
+
+- Erro observado: ValueError: {'code': 1010, 'message': 'Invalid Transaction'} — o node público da Paseo rejeita a transação antes de ela ser incluída. Causas possíveis: nonce discrepante, formato de tx incompatível com o pallet EVM customizado do Substrate, regras de gas/limit diferentes.
+- A rede Paseo tem suporte EVM, mas a implementação testnet estava instável. Reproduzir e validar localmente com Hardhat é uma prática aceita e recomendada quando a infra externa está indisponível. O hackathon aceita isso desde que:
+  - O contrato seja funcional em um ambiente EVM (Hardhat, Remix, Ganache etc.).
+  - O repositório inclua instruções claras de deploy e um UI que demonstre integração on‑chain (/test).
+
+### O que foi implementado
+
+- Smart contract: `src/backend/src/app/hardhat/contracts/ContratoExemplo.sol` — contrato exemplo para registrar hashes e armazenar um campo de `contractData` para demonstração. A função `registrar(bytes32, string)` registra um hash on‑chain e emite evento com `data`.
+ - Contratos da solução:
+   - `src/backend/src/app/hardhat/contracts/Emprestimo.sol` — contrato específico para registrar on‑chain o `contrato_tx_hash` de um empréstimo; expõe `registrar(bytes32,string)` e um getter `consultarHash()`.
+   - `src/backend/src/app/hardhat/contracts/AntecipacaoRecebiveis.sol` — contrato para registrar `contrato_antecipacao_onchain` (antecipação de recebíveis); expõe `registrarAntecipacao(bytes32,string)` e `consultarHashAntecipacao()`.
+- Backend (FastAPI): `src/backend/src/app/services/blockchain.py` — funções para compilar, persistir artefatos ABI (ContratoExemplo_abi.json), deployar (`/blockchain/deploy`), compilar (`/blockchain/compile`), chamar `registrar` no contrato (`/blockchain/registrar`), e checar se um endereço tem código on‑chain (is_contract_onchain). Também inclui um helper `get_contract_data(address)` que tenta ler `contractData()` do contrato quando disponível.
+- API (routers): `src/backend/src/app/api/routers.py` — endpoints expostos ao frontend:
+  - GET /blockchain/status — informa se há ABI local, endereço do contrato, e, quando possível, o valor de `contract_data` lido do contrato em chain.
+  - GET /blockchain/compile — força compilação do contrato e grava o arquivo `ContratoExemplo_abi.json` no backend.
+  - POST /blockchain/deploy — compila & deploya o contrato usando a chave do deployer do servidor (DEPLOYER_PRIVATE_KEY) e persiste ABI + address.
+  - POST /blockchain/registrar — recebe JSON { contrato_hash: string, data?: string } e chama o método `registrar` do contrato (tenta a assinatura com o campo `data`, com fallback para a versão sem `data` se ABI divergir). Retorna receipt serializado.
+  - GET /blockchain/address/{address}/status — retorna balance/nonce/has_code para um endereço.
+- Frontend: `src/frontend/src/pages/Test.tsx` — página `/test` com UI para:
+  - Verificar status da integração (deployer, ABI e endereço salvos localmente, e leitura de contract_data quando disponível).
+  - Compilar o contrato e baixar/ver o ABI JSON.
+  - Deploy (disparado pelo backend usando a chave do servidor).
+  - Registrar um hash on‑chain e enviar um campo `data` adicional; ver o receipt e a prova on‑chain.
+  - Visualizar / copiar a última tx e ver se ela está na chain.
+
+### Arquitetura de execução (Docker)
+
+O repositório já inclui um `src/docker-compose.yml` que levanta tudo para desenvolvimento:
+
+- Serviço `hardhat`: roda `npx hardhat node` e expõe o RPC em `8545` dentro da rede Docker.
+- Serviço `backend`: FastAPI que aponta `POLKADOT_HUB_RPC_URL` para `http://hardhat:8545` (veja `src/docker-compose.yml`).
+- Serviço `postgres`: banco de dados usado localmente.
+
+1) Verificar status (GET)
+
+- URL: http://localhost:8000/blockchain/status
+- O que retorna: se existe ABI local, deployer address (do .env), se o contrato está on‑chain (verificando código no endereço) e, quando possível, o `contract_data` retornado pela chamada ao contrato.
+
+2) Compilar (GET)
+
+- URL: http://localhost:8000/blockchain/compile
+- O que faz: compila o contrato, grava `ContratoExemplo_abi.json` em `src/backend/src/app/ContratoExemplo_abi.json` e retorna o JSON da ABI/bytecode.
+
+3) Deploy (POST)
+
+- URL: http://localhost:8000/blockchain/deploy
+- O que faz: compila (se necessário) e deploya o contrato usando a chave do servidor (DEPLOYER_PRIVATE_KEY). Retorna receipt e grava `CONTRACT_ADDRESS`/ABI localmente.
+
+4) Registrar hash (POST)
+
+- URL: http://localhost:8000/blockchain/registrar
+- Body JSON: { "contrato_hash": "0x...", "data": "texto opcional pra prova" }
+- O que faz: chama `registrar(hash, data)` no contrato (tenta com 2 args e faz fallback se ABI for a versão antiga). Retorna receipt serializado com logs (o `data` deve aparecer no evento quando enviado corretamente).
+
+5) Checar endereço (GET)
+
+- URL: http://localhost:8000/blockchain/address/<address>/status
+- O que faz: retorna balance/nonce/has_code do endereço.
+
+### Como testar passo a passo (end‑to‑end)
+
+Checklist essencial:
+
+1. Clonar repositório e abrir terminal no diretório do projeto.
+2. Ir para `src/` e rodar `docker-compose up --build` (PowerShell: `cd src; docker-compose up --build`).
+3. Verificar variáveis de ambiente (arquivo `.env` usado pelo container `backend`). Veja a seção ".env necessária" abaixo.
+4. Acessar a página de frontend (se o frontend estiver exposto) ou usar as rotas via curl/Postman:
+   - GET http://localhost:8000/blockchain/status
+   - GET http://localhost:8000/blockchain/compile
+   - POST http://localhost:8000/blockchain/deploy
+   - POST http://localhost:8000/blockchain/registrar body { contrato_hash, data }
+5. Abrir a página `/test` no frontend e usar a UI para compilar, deployar e registrar.
+
+### .env necessária (valores mínimos)
+
+Adicione (ou verifique) estas chaves no `.env` que o `backend` usa (o `docker-compose` já referencia `../.env` do `src/`):
+
+- DEPLOYER_PRIVATE_KEY — chave privada do deployer (somente para testes em desenvolvimento/local). Exemplo: uma chave do Hardhat.
+- CONTRACT_ADDRESS — (opcional) endereço do contrato se já foi deployado manualmente.
+- POLKADOT_HUB_RPC_URL — por padrão configurado para `http://hardhat:8545` no docker-compose.
+- POLKADOT_HUB_CHAIN_ID — chain id; default 31337 para o Hardhat Node.
+
+### Arquivos/artifacts gerados e caminhos
+
+- ABI persistida: `src/backend/src/app/ContratoExemplo_abi.json` — o backend grava esse arquivo após compilar ou após deploy.
+- Smart contract: `src/backend/src/app/hardhat/contracts/ContratoExemplo.sol`.
+
+
+### Limitações conhecidas
+
+- Paseo RPC: a testnet Paseo pode rejeitar transações publicamente (erro 1010). Por isso usamos Hardhat local. Assim que o endpoint Paseo voltar a funcionar, o código está pronto para deploy.
+- Decodificação de logs: dependendo do node, `receipt.logs[].data` pode vir em formatos diferentes (hex). O backend tenta serializar logs e extrair `data`/eventos onde for possível, mas em alguns casos pode ser necessário decodificar manualmente com a ABI.
+- Chaves privadas: o backend mantém a chave do deployer via variáveis de ambiente (não armazene chaves de usuários). Na arquitetura final, essa chave deve ficar em um secret manager.
+
+### Boas práticas e justificativas de arquitetura
+
+- Hardhat local é uma prática padrão para testes E2E de contratos — não é um "atalho". Ele reproduz o EVM e permite que o time valide comportamento antes do deploy em redes públicas.
+- Persistência do ABI local facilita a integração com o frontend sem depender de respositórios externos.
+- O backend é o único responsável por deploys (deploy por servidor) para evitar armazenar chaves de usuário.
+
+
 ---
 
 ## 📈 Planos Futuros e Evolução da Plataforma
