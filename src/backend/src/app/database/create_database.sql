@@ -107,6 +107,7 @@ CREATE TABLE propostas (
 CREATE INDEX ix_prop_neg_data ON propostas (id_negociacoes, criado_em);
 CREATE INDEX ix_prop_autor ON propostas (id_autor);
 
+
 CREATE TABLE emprestimos (
     id SERIAL PRIMARY KEY,
     id_negociacoes INT NOT NULL,
@@ -145,4 +146,3 @@ CREATE TABLE emprestimos (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
-
