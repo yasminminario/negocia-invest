@@ -1,15 +1,10 @@
-# 📄 Proposta de projeto: negocia.ai
-## G35 | João Victor de Souza Campos | Nataly de Souza Cunha | Yasmin Ingrid Silva Minário
+# Protótipo de projeto: negocia.ai
+## João Victor de Souza Campos | Nataly de Souza Cunha | Yasmin Ingrid Silva Minário
+## 🇧🇷 Brasil
 
 ## 1. Introdução
 
-<p align="center">
-  <img src="./img/bannerQI.png" alt="negocia.ai - capa do projeto" width="100%">
-</p>
-
-A QI Tech é referência no mercado de infraestrutura para soluções financeiras digitais, com foco em criar tecnologias seguras, escaláveis e inovadoras. Dentro desse ecossistema, o **Inovacamp QI Tech 2025** propõe o desenvolvimento de soluções criativas no setor financeiro, aproximando participantes da realidade prática de produtos digitais e dos desafios regulatórios.
-
-O mercado de **empréstimos peer-to-peer (P2P)** tem ganhado força globalmente ao oferecer crédito de forma direta entre pessoas, sem intermediários tradicionais como bancos. Essa modalidade promete mais agilidade, taxas potencialmente melhores e inclusão financeira de públicos que ficam à margem do sistema bancário. No entanto, ainda enfrenta problemas de confiança, rigidez nas regras e dificuldade de avaliar riscos de crédito com transparência.
+O mercado de **empréstimos peer-to-peer (P2P)** tem ganhado força globalmente ao oferecer crédito de forma direta entre pessoas, sem intermediários tradicionais como bancos. Essa modalidade promete mais agilidade, taxas potencialmente melhores e inclusão financeira de públicos que ficam à margem do sistema bancário. No entanto, ainda enfrenta problemas de confiança, rigidez nas regras e dificuldade de avaliar riscos de crédito com transparência. Além disso, os usuários que oferecem empréstimos ficam expostos a riscos adicionais: em casos de imprevistos do tomador, podem ser obrigados a assumir perdas ou enfrentar atrasos na recuperação do capital, o que aumenta o custo, a incerteza e reduz a atratividade de emprestar na plataforma.
 
 É nesse contexto que surge o **negocia.ai**, um aplicativo de crédito P2P que busca resolver as falhas atuais do setor e criar um ambiente mais justo, flexível e confiável para tomadores e investidores.
 
@@ -30,6 +25,13 @@ O acesso a crédito no modelo P2P tradicional — e em muitos protocolos descent
 4. **Execução frágil de contratos**  
    Sem garantias automáticas de cumprimento das condições acordadas, negociações podem perder credibilidade e se tornar pouco confiáveis.
 
+4. **Vulnerabilidade dos Investidores**  
+   Os investidores que disponibilizam capital em plataformas P2P ficam expostos a diversos imprevistos relacionados ao comportamento ou à capacidade de pagamento dos tomadores:
+    - Inadimplência total ou parcial: atraso ou falta de pagamento do principal e/ou juros.
+    - Risco de recuperação: custos, tempo e eficiência reduzida na cobrança e recuperação de crédito.
+    - Risco de liquidez: dificuldade em liquidar posições antes do vencimento, especialmente em contratos personalizados.
+    - Risco de concentração: exposição excessiva a um mesmo tomador, setor ou perfil de risco.
+
 **Impactos:**
 - Exclusão de usuários com baixo acesso a colateral.
 - Baixa adesão de investidores por medo de inadimplência.
@@ -37,11 +39,6 @@ O acesso a crédito no modelo P2P tradicional — e em muitos protocolos descent
 - Perda de eficiência em relação ao potencial do crédito P2P.
 
 ---
-<br>
-
-<p align="center">
-  <img src="./img/bannerSolucao.png" alt="negocia.ai - capa do projeto" width="100%">
-</p>
 
 ## 3. Solução Proposta
 O **negocia.ai** é uma plataforma P2P de crédito que conecta tomadores e investidores em um ambiente seguro, transparente e com espaço para negociação direta. A solução se apoia em três pilares principais:
@@ -49,6 +46,10 @@ O **negocia.ai** é uma plataforma P2P de crédito que conecta tomadores e inves
 - **Negociação flexível**: tomadores e investidores podem fazer contrapropostas em taxa e prazo, recriando a dinâmica de negociação do mundo real, mas com garantias digitais.  
 - **Análise de crédito transparente**: cada usuário recebe um score de crédito consolidado a partir de fontes externas (ex.: Serasa) e histórico interno da plataforma, reduzindo assimetria de informação e apoiando decisões mais seguras.  
 - **Execução confiável**: contratos são formalizados digitalmente, garantindo rastreabilidade, clareza e automação de etapas críticas.  
+- **Antecipação de parcelas por investidores**  
+    Permite que investidores antecipem recebíveis (parcelas futuras) cedendo parte do valor à instituição financeira parceira que integra a plataforma.  
+    - Mecanismo: o investidor transfere o direito de receber parcelas futuras em troca de pagamento imediato com desconto (comissão/ágio) feito pela instituição integradora.  
+    - Efeitos: fornece liquidez imediata ao investidor, reduz risco de descapitalização e diminui exposição a perda futura; a instituição assume parte do risco em troca da margem aplicada.  
 
 **Diferenciais em relação a soluções existentes**:
 - Espaço real de negociação, e não apenas “take it or leave it”.
@@ -73,17 +74,93 @@ Desenvolver uma plataforma de crédito P2P que reduza barreiras de acesso, aumen
 - Oferecer **funcionalidades de solicitação e oferta de crédito** com espaço para contraproposta.
 - Desenvolver dashboards personalizados para **monitorar carteira, risco e histórico**.
 - Garantir **execução automática e rastreável** dos contratos.
+- Desenvolver funcionalidades de **antecipação de recebíveis** para os investidores da plataforma.
  
+---
+
+# 🚀 Como Testar e Rodar o Negocia.ai
+
+## 1️⃣ Pré-requisitos
+
+- [Docker](https://www.docker.com/get-started) instalado
+- [Node.js](https://nodejs.org/) (para rodar o frontend)
+- [Git](https://git-scm.com/) para clonar o projeto
 
 ---
 
-## 5. Personas
+## 2️⃣ Clonando o Projeto
+
+```bash
+git clone https://github.com/yasminminario/negocia-invest
+cd negocia-invest
+```
+
+---
+
+## 3️⃣ Rodando Backend + Banco de Dados (Docker Compose)
+
+No diretório raiz (cd src), execute:
+
+```bash
+docker-compose up --build
+```
+
+Isso irá subir:
+- Backend FastAPI (porta padrão: `8000`)
+- Banco de dados PostgreSQL (porta padrão: `5432`)
+
+> **Dica:** O backend já está configurado para se conectar ao banco via Docker. As credenciais estão no arquivo `.env`. Além disso, os pacotes necessários já estão configurados a serem instalados automaticamente.
+
+---
+
+## 5️⃣ Rodando o Frontend (React)
+
+Entre na pasta do frontend:
+
+```bash
+cd src/frontend/
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Inicie o app:
+
+```bash
+npm run dev
+```
+
+> O frontend irá se conectar ao backend na porta `8000`.
+
+---
+
+## 6️⃣ Testando a Solução
+
+- **Acesse o app web** pelo navegador ou emulador.
+- **Faça o cadastro** como tomador ou investidor.
+- **Simule negociações, propostas e antecipação de recebíveis**.
+- **Verifique registros no banco** e hashes na blockchain (se configurado).
+
+---
+
+## 7️⃣ Parando os Serviços
+
+Para encerrar tudo:
+
+```bash
+docker-compose down
+```
+
+## 🚶‍➡️ Personas
 
 ### 🧑 Persona 1: O Tomador Planejado (Carlos)
 
-**Nome:**	Carlos, 30 anos <br>
-**Profissão:**	Profissional de TI <br>
-**Score:**	Excelente (790)
+**Nome:**	Carlos, 30 anos <Br>
+**Profissão:**	Profissional de TI <br> 
+**Score:**	Excelente (790) <Br>
 
 ### Cenário:
 Carlos é um profissional dedicado e financeiramente responsável. Ele sempre pagou suas contas em dia e construiu um ótimo score de crédito ao longo dos anos. Ele quer fazer um curso de especialização em Inteligência Artificial que custa R$10.000, um investimento que pode alavancar seu salário em até 30% em um ano, mas ele não quer descapitalizar sua reserva de emergência.
@@ -107,7 +184,7 @@ Carlos é um profissional dedicado e financeiramente responsável. Ele sempre pa
 ### 👩 Persona 2: A Investidora Estratégica (Sofia)
 **Nome:**	Sofia, 45 anos <br>
 **Profissão:**	Gerente de Projetos <br>
-**Perfil de Investidora:**	Moderado
+**Perfil de Investidora:**	Moderado <br>
 
 ### Cenário:
 Sofia tem um bom capital guardado e busca diversificar seus investimentos. Ela já investe em opções de renda fixa (CDB, Tesouro), mas está frustrada com a baixa rentabilidade. Ela também tem ações, mas não gosta da volatilidade e da falta de controle.
@@ -129,6 +206,102 @@ Sofia tem um bom capital guardado e busca diversificar seus investimentos. Ela j
 - **Outras Plataformas P2P:** Ela já explorou outras plataformas P2P, mas o modelo era uma "caixa-preta". Ela colocava o dinheiro em um "fundo" de risco moderado, mas não sabia exatamente para quem estava emprestando. Ela não tinha poder de escolha ou negociação.
 
 - **A Oportunidade que Sofia Vê:** *"Eu quero investir em pessoas, não apenas em siglas. Se uma plataforma pudesse me apresentar uma carteira de tomadores já pré-selecionados, com os melhores scores do Brasil, e me desse a chance de negociar um retorno justo diretamente com eles, eu teria o melhor dos dois mundos: risco baixo e rentabilidade atrativa."*
+
+---
+
+## 🔵 Fluxo 1: Jornada do Tomador (Carlos) – O Fluxo Principal
+
+Jornada mais detalhada do protótipo, desde o **cadastro até a negociação** de um empréstimo.
+
+### 1. Cadastro e Onboarding *(Cadastro 1-4 a 4-4)*
+- Criação de conta com e-mail e senha.  
+- Preenchimento de dados pessoais para análise de crédito.  
+- Verificação facial (KYC – *Know Your Customer*).  
+- Tela final de sucesso com direcionamento para login.  
+
+### 2. Login e Seleção de Perfil *(Entrar 1-2, Entrar 2-2)*
+- Após login, usuário escolhe entre **Tomador** ou **Investidor**.  
+- Cards explicativos orientam sobre cada perfil.  
+- Lembrete de como alternar entre perfis posteriormente.  
+
+### 3. Dashboard do Tomador *(Dashboard Tomador)*
+- **Anel de score** em destaque, com feedback visual do crédito.  
+- Cards de **Produtos ativos**: *Empréstimos* e *Negociações*.  
+- Pontos de entrada para:  
+  - Empréstimos Solicitados.  
+  - Negociações de Ofertas (Tomador).  
+
+### 4. O Core da Solução – A Negociação
+- **Passo 4a – Descoberta**: Dashboard → Detalhes da oferta.  
+  - Lista de empréstimos disponíveis.  
+  - Usuário visualiza condições propostas.  
+
+- **Passo 4b – Ação**: Detalhes da oferta.  
+  - Opções: *Aceitar oferta* ou *Iniciar negociação* (CTA principal).  
+
+- **Passo 4c – A Proposta** *(Negociação 1-2)*  
+  - Comparação entre oferta original e proposta do usuário.  
+  - Ajuste de taxa em *slider* com “Zona sugerida”.  
+  - Visualização em tempo real da economia estimada.  
+  - Justificativa escrita para humanizar a negociação.  
+
+- **Passo 4d – Sucesso** *(Negociação 2-2)*  
+  - Confirmação da proposta enviada.  
+  - Orientação para acompanhar via notificações.  
+
+---
+
+## 🟣 Fluxo 2: Jornada da Investidora (Sofia) – O Fluxo Complementar
+
+Prototipado para mostrar momentos críticos de interação, mantendo consistência com o fluxo do Tomador.
+
+### 1. Dashboard da Investidora *(Dashboard Investidor)*
+- Interface muda para **roxo**.  
+- Destaques: Rentabilidade e Lucro.  
+- Cards de **Produtos ofertados ativos** levam para:  
+  - Empréstimos Concedidos.  
+  - Negociações de Ofertas (Investidor).  
+
+### 2. A Análise e a Contraproposta – O Core do Investidor
+- **Passo 2a – Análise (Detalhes da negociação)**  
+  - Visualização da proposta original + contraproposta do tomador.  
+  - Diferença de valores + justificativa escrita.  
+  - Perfil detalhado do tomador (Pontuação, tempo de conta etc.).  
+
+- **Passo 2b – Ação (Contraproposta)**  
+  - Caso não aceite a proposta do tomador.  
+  - Tela espelho da negociação do Tomador.  
+
+### 3. A Antecipação de recebíveis
+
+- **Passo 3a – Acessar Empréstimo em Andamento**  
+    - Lista de empréstimos concedidos com status detalhado.  
+    - Selecionar um empréstimo para abrir a tela de detalhes e ações disponíveis.  
+
+- **Passo 3b – Simulação de Antecipação de Parcelas**  
+    - Opção: "Antecipar parcelas" na tela do empréstimo.  
+    - Escolha: selecionar número X de parcelas a antecipar (controle por slider ou campo numérico) ou opção "Antecipar todas".  
+    - Botão "Simular" gera pré-visualização com:  
+        - Parcelas selecionadas e soma do valor nominal.  
+        - Taxa da antecipação: valor percentual proporcional às parcelas antecipadas que será repassado para a instituição financeira.  
+        - Valor líquido a ser recebido pelo investidor após dedução da taxa.  
+        - Impacto no retorno estimado. 
+    - Exibir explicações rápidas sobre como a taxa é calculada (percentual sobre o valor antecipado).
+
+- **Passo 3c – Confirmação da Antecipação**  
+    - Tela com resumo detalhado (parcelas, valor bruto, taxa da antecipação, valor líquido, impacto no portfólio de empréstimos concedidos).  
+    - Botão "Confirmar Antecipação".  
+    - Confirmação da transação de antecipação na blockchain.
+
+- **Passo 3d – Sucesso e Registro**  
+    - Mensagem de sucesso.
+    - Notificação enviada ao investidor.  
+    - Atualização imediata no dashboard do investidor (saldo disponível, novo fluxo de caixa, histórico da operação).  
+
+### 4. Telas Análogas
+- Fluxo de criação de uma oferta *(Ofertar empréstimo 1-4 etc.)*.  
+- Prototipado para mostrar consistência visual.  
+- Fluxo completo seria análogo ao de *Solicitar Empréstimo* do Tomador.  
 
 ---
 
@@ -159,8 +332,8 @@ src/
             │   ├── bacen.py
             │   ├── proposta.py
             │   └── usuario.py
-            └── model/
-                └── model_analise_credito.py
+            └model/
+              └── model_analise_credito.py
         ├── config.py
         ├── Dockerfile
         ├── requirements.txt
@@ -227,7 +400,7 @@ Contém os modelos (entidades) que representam as tabelas do banco e objetos de 
 ### 📂 app/services
 Serviços e regras de negócio que dão suporte às rotas.  
 - **api_score.py** – Serviço responsável pela consulta/integração com API de score de crédito (integrada ao Serasa).  
-- **blockchain.py** – Serviço para interação com a blockchain Polygon (registro de contratos e leitura de hashes).  
+- **blockchain.py** – Serviço para interação com a blockchain Polkadot (registro de contratos e leitura de hashes).  
 - **calculo_taxas_juros.py** – Funções auxiliares para cálculo de taxas e juros dos empréstimos.
 - **bacen.py** – Serviço para integração com API's oficiais do Banco Central, para comunicações das transações.
 - **dashboard.py** – Serviço para agregação e cálculo de métricas exibidas nas dashboards dos usuários.  
@@ -336,9 +509,9 @@ Funções auxiliares e utilitárias puras.
 | ID    | Descrição                                                                                                                                                                                                                                                | Prioridade |
 |-------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
 | RF001 | **Cadastro e Onboarding de Usuários**<br>O sistema deve permitir que novos usuários (tomadores e investidores) se cadastrem fornecendo dados pessoais e documentos.                                                                                          | Alta       |
-| RF002 | **Validação de Cadastro e Antifraude**<br>O sistema deve integrar-se com as APIs de Risk Solutions da QI Tech para validação de documentos, classificação de perfil e verificação antifraude durante o onboarding do usuário.                                 | Alta       |
+| RF002 | **Validação de Cadastro e Antifraude**<br>O sistema deve realizar o cadastro seguro de usuários através da validação de documentos, classificação de perfil e verificação antifraude.                                 | Alta       |
 | RF003 | **Cálculo/Aquisição de Score de Crédito**<br>O sistema deve calcular um score de crédito interno baseado em modelos de automação com inteligência artificial próprios e, em caso de dados insuficientes de usuários novos, consultar a API do Serasa.         | Alta       |
-| RF004 | **Gerenciamento de Perfil de Risco**<br>O sistema deve manter um perfil de risco atualizado para cada usuário, baseado no score, histórico de empréstimos, dados de smart contracts e Open Finance (mockado inicialmente).                                   | Média      |
+| RF004 | **Gerenciamento de Perfil de Risco**<br>O sistema deve manter um perfil de risco atualizado para cada usuário, baseado no score, histórico de empréstimos, dados de smart contracts e Open Finance (planos futuros).                                   | Média      |
 | RF005 | **Solicitação de Empréstimo**<br>O tomador deve poder solicitar um empréstimo informando o valor desejado, prazo e finalidade.                                                                                                                               | Alta       |
 | RF006 | **Dashboard de Propostas de Empréstimo (Investidor)**<br>O sistema deve exibir para o investidor uma lista de empréstimos solicitados, com as taxas e juros sugeridos pelo tomador, juntamente com recomendações baseadas no perfil de risco do tomador.      | Alta       |
 | RF007 | **Negociação de Taxas e Juros**<br>O investidor deve poder fazer uma proposta de taxa e juros diferente da sugerida pelo tomador. O tomador deve poder aceitar, recusar ou fazer uma contraproposta.                                                         | Alta       |
@@ -349,9 +522,8 @@ Funções auxiliares e utilitárias puras.
 | RF012 | **Integração com Open Finance (Futuro)**<br>O sistema deve ser preparado para uma futura integração com o Open Finance para enriquecer a análise de perfil com dados transacionais reais.                                                                    | Baixa      |
 | RF013 | **Navegação entre Funcionalidades**<br>O sistema deve permitir que o usuário navegue entre funcionalidades como investidor ou tomador de empréstimos.                                                                                                        | Alta       |
 | RF014 | **Cálculo de Margens de Taxas/Juros por Risco**<br>O sistema deve ser capaz de realizar cálculos de margens das taxas/juros por risco comumente aceitas nas negociações da plataforma, auxiliando tomadores e investidores no sucesso das negociações.        | Alta       |
-| RF015 | **Integração com API de consumo QI Tech**<br>O sistema deve se integrar à uma API que consolida todas as negociações realizadas, reunindo valores de requisições pagas e taxas de intermediação acordadas do aplicativo. Essa API serve como base para a QI Tech calcular e emitir a fatura mensal referente ao uso do white label, garantindo transparência e automação no processo de cobrança. | Alta |
-| RF016 | **Comunicação com Banco Central após registro na blockchain**<br>O sistema deve enviar informações das negociações de empréstimos registradas na blockchain para o Banco Central, garantindo transparência, conformidade regulatória e correto balanceamento das operações conforme exigências oficiais. | Alta |
-
+| RF015 | **Antecipação de Recebíveis de Parcelas**<br>O sistema deve possibilitar que o investidor antecipe recebíveis de parcelas, permitindo solicitar o adiantamento dos valores a receber antes do vencimento, mediante desconto e liquidação via instituição financeira parceira integrada à plataforma. | Alta |
+| RF016 | **Registro de ações na Blockchain**<br>O sistema deve garantir que toda operação de registro de empréstimos entre usuários, bem como antecipação de recebíveis realizada pelo investidor, sejam registradas na blockchain Polkadot, gerando um hash público do contrato e do evento de antecipação para garantir transparência, rastreabilidade e segurança jurídica. | Alta |
 ---
 
 ## ✨ **Requisitos Não Funcionais**
@@ -363,9 +535,7 @@ Funções auxiliares e utilitárias puras.
 | RNF004 | Usabilidade  | A interface deve ser intuitiva, seguindo princípios de UX/UI, e responsiva, funcionando adequadamente em dispositivos desktop e móveis.                                                                                                            |
 | RNF005 | Confiabilidade | As transações financeiras e a execução dos smart contracts devem ser atômicas (não podem falhar parcialmente) e garantir a consistência dos dados.                                                                                              |
 | RNF006 | Escalabilidade | A arquitetura do sistema deve incluir sistema de filas para ser capaz de organizar as requisições e escalar horizontalmente, suportando um aumento de 10x no número de usuários sem degradação crítica do desempenho.                           |
-| RNF007 | Integração   | As integrações com APIs externas devem ser resilientes, com mecanismos de retry e fallback para lidar com indisponibilidades temporárias.                                                                                                         |
-| RNF008 | Conformidade | O sistema deve estar em conformidade com a LGPD (Lei Geral de Proteção de Dados), garantindo o tratamento adequado dos dados pessoais dos usuários.                                                         |
-| RNF009 | Conformidade Técnica com o BACEN | O sistema deve garantir que todas as informações de empréstimos enviadas ao Sistema de Informações de Empréstimos (SISBACEN) estejam no formato exigido pelo Banco Central (ex.: XML, JSON padronizado) e sejam transmitidas pelo protocolo de comunicação oficial (API, Webservice ou FTP seguro), conforme especificações regulatórias. |
+| RNF009 | Acessibilidade e Daltonismo | O sistema deve ser acessível a pessoas com deficiência, incluindo suporte a leitores de tela, navegação por teclado e contraste adequado de cores para usuários daltônicos. Todas as interfaces devem seguir as diretrizes WCAG 2.1 e garantir que informações essenciais não dependam exclusivamente de cor. | Alta |                                   |
 
 ### Requisitos como User Stories
 
@@ -383,7 +553,7 @@ Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, 
 #### 2. Validação de cadastro e antifraude
 
 - **Como usuário**, quero que meus documentos sejam verificados automaticamente para que eu tenha mais segurança no processo de cadastro.
-- **Como administrador**, quero que o sistema integre com a QI Tech Risk Solutions para garantir que perfis fraudulentos sejam bloqueados.
+- **Como administrador**, quero garantir que perfis fraudulentos sejam bloqueados.
 
 ---
 
@@ -463,17 +633,17 @@ Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, 
 - **Como usuário tomador ou investidor**, quero poder visualizar recomendações de taxas/juros mais aceitos dentre os usuários da plataforma, para aumentar as minhas chances de sucesso de ofertas e contrapropostas.
 - **Como sistema**, nas visualizações de oferta, proposta ou contraproposta, quero que seja mostrado ao usuário frases de recomendações de taxas e juros, garantindo mecanismos de melhoria de negociações.
 
-#### 15. Integração com API de consumo QI Tech
+#### 15. Antecipação de recebíveis de parcelas
 
-- **Como administrador**, quero que o sistema consolide todas as negociações realizadas e envie os valores de requisições pagas e taxas de intermediação para a API da QI Tech, para que a fatura mensal do uso do white label seja calculada automaticamente.
-- **Como usuário**, quero que as taxas e valores das negociações sejam registrados de forma transparente, garantindo que a cobrança mensal seja clara e automatizada.
+- **Como investidor**, quero antecipar o recebimento de parcelas de empréstimos concedidos, recebendo o valor antes do vencimento mediante desconto, para aumentar minha liquidez.
+- **Como sistema**, quero registrar e liquidar a antecipação via instituição financeira parceira, atualizando o fluxo de caixa do investidor e o histórico da operação.
 
 ---
 
-#### 16. Comunicação com Banco Central após registro na blockchain
+#### 16. Registro de ações na blockchain
 
-- **Como administrador**, quero que o sistema envie informações das negociações registradas na blockchain para o Banco Central, garantindo conformidade regulatória e correto balanceamento das operações financerias.
-- **Como investidor ou tomador**, quero que minhas negociações sejam comunicadas oficialmente ao Banco Central após o registro na blockchain, para garantir transparência e segurança jurídica.
+- **Como usuário**, quero que cada operação relevante (empréstimo, antecipação de recebíveis) seja registrada na blockchain Polkadot, gerando um hash público para garantir transparência e segurança jurídica.
+- **Como administrador**, quero que o sistema registre e audite todos os contratos e eventos críticos na blockchain, facilitando a rastreabilidade e conformidade regulatória.
 
 ---
 
@@ -510,7 +680,6 @@ Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, 
 - **Como administrador**, quero que o sistema consiga suportar 10x mais usuários sem degradação de performance para acompanhar o crescimento.
 
 ---
-
 #### Integração
 
 - **Como sistema**, quero ter mecanismos de retry e fallback em APIs externas para não prejudicar o usuário em caso de indisponibilidade.
@@ -520,6 +689,14 @@ Esta subseção apresenta os requisitos do projeto sob a forma de User Stories, 
 #### Conformidade
 
 - **Como usuário**, quero que o sistema esteja em conformidade com a LGPD para que meus dados pessoais sejam tratados corretamente.
+
+---
+
+#### Acessibilidade e Daltonismo
+
+- **Como usuário com deficiência**, quero que a plataforma seja acessível, incluindo suporte a leitores de tela, navegação por teclado e contraste adequado de cores, para que eu possa utilizar todas as funcionalidades sem barreiras.
+- **Como usuário daltônico**, quero que as informações essenciais não dependam exclusivamente de cor, garantindo que eu compreenda e navegue pela interface sem dificuldades.
+- **Como administrador**, quero que o sistema siga as diretrizes WCAG 2.1 para garantir acessibilidade e inclusão de todos os usuários.
 
 
 ---
@@ -559,12 +736,14 @@ O banco de dados relacional utiliza PostgreSQL, encapsulado em uma imagem Docker
 - **propostas**: termos de empréstimo, taxas, prazos, status e justificativas.
 - **scores de crédito**: resultados da análise de crédito, integrando machine learning e API Serasa.
 - **métricas do investidor**: dados de performance dos investimentos ofertados.
+- **empréstimos**: armazena os registros de empréstimos oficializados, incluindo valor, taxa, prazo, partes envolvidas e status atual (em andamento, quitado, inadimplente, antecipado). Essa tabela é fundamental para rastrear o ciclo de vida dos empréstimos, registrar pagamentos, liquidações antecipadas e garantir a integridade dos dados para relatórios, auditoria e integração com a blockchain e o Banco Central.
 
 Os relacionamentos seguem as seguintes cardinalidades:
 
 - Um usuário possui um score de crédito (1:1).
 - Um usuário pode participar de várias negociações; cada negociação envolve dois usuários (N:N), intermediada pela tabela de propostas.
 - Um usuário possui um registro único de métricas de investidor (1:1).
+- Um usuário possui 0 ou mais empréstimos, enquanto 1 empréstimo é associado a dois usuários (0:N).
 
 O banco é executado localmente via Docker e, em produção, é provisionado em uma instância RDS (AWS), garantindo escalabilidade, segurança e alta disponibilidade.
 
@@ -576,22 +755,70 @@ Principais serviços implementados:
 
 - Gerenciamento de usuários (criação, validação, autenticação).
 - Fluxos de negociações e propostas de empréstimo.
-- Integração com API de consumo QI Tech para consolidação das negociações, envio de valores pagos e taxas de intermediação, automatizando o cálculo da fatura mensal do white label.
-- Comunicação automática com o Banco Central após registro dos contratos na blockchain, garantindo conformidade regulatória e transparência das operações.
 - Visualização de métricas de performance para investidores.
 - Cálculo de score de crédito, integrando machine learning e API Serasa.
 - Filtragem de ofertas e condições de empréstimo por perfil de risco.
-- Registro de contratos de empréstimo na Blockchain Polygon.
+- Registro de contratos de empréstimo na Blockchain Polkadot.
 
 A orquestração dos serviços é feita via containers, com deploy automatizado e escalável.
 
 ### Frontend
 
-O frontend é desenvolvido em React Native, garantindo experiência nativa em dispositivos móveis (Android/iOS) e integração direta com as APIs do backend. A escolha do React Native se dá pela alta produtividade, comunidade ativa e facilidade de manutenção multiplataforma. Por ser um aplicativo mobile nativo, o deploy é realizado diretamente nas lojas de aplicativos, dispensando infraestrutura cloud dedicada para o frontend.
+O frontend é desenvolvido em React, garantindo experiência nativa em dispositivos web e integração direta com as APIs do backend. A escolha do React se dá pela alta produtividade, comunidade ativa e facilidade de manutenção multiplataforma. Como principais funcionalidades, tem-se:
+
+<p align="center">
+<sub>Figura 3 - Feature de Negociação</sub><br>
+  <img src="img/tela01.png" alt="Feature de Negociação" width="60%">
+</p>
+
+<p align="center">
+<sub>Figura 4 - Feature de Dashboards</sub><br>
+  <img src="img/tela02.png" alt="Feature de Dashboards" width="60%">
+</p>
+
+<p align="center">
+<sub>Figura 5 - Feature de Visão Geral de Oferta</sub><br>
+  <img src="img/tela03.png" alt="Recursos de Visão Geral de Oferta" width="60%">
+</p>
+
+<p align="center">
+<sub>Figura 6 - Feature de Antecipação de Recebíveis</sub><br>
+  <img src="img/tela04.png" alt="Configuração de acessibilidade" width="60%">
+</p>
+
+### Acessibilidade
+
+**Acessibilidade:** O sistema foi projetado para ser acessível a pessoas com deficiência visual, incluindo suporte a leitores de tela, navegação por teclado e uso de elementos semânticos. Para usuários daltônicos, todas as interfaces seguem diretrizes WCAG 2.1, garantindo contraste adequado e que informações essenciais não dependam exclusivamente de cor. Isso assegura que todos os usuários possam navegar e utilizar a plataforma com autonomia e segurança.
+
+<p align="center">
+<sub>Figura 7 - Recursos de acessibilidade</sub><br>
+  <img src="img/acessibilidade.png" alt="Configuração de acessibilidade" width="60%">
+</p>
+
+As principais funcionalidades de acessibilidade disponíveis são disponíveis ao se clicar no botão superior direito da tela, no símbolo de um olho:
+
+### 1. Ajuste de Tamanho da Fonte
+- **Normal, Grande e Muito Grande:** O usuário pode escolher entre três tamanhos de fonte para facilitar a leitura, aumentando a legibilidade conforme sua necessidade.
+
+### 2. Ajuste de Peso da Fonte
+- **Normal ou Negrito:** Permite selecionar o peso da fonte, tornando o texto mais grosso para melhorar o contraste visual e facilitar a identificação de informações importantes.
+
+### 3. Modo Daltônico
+- **Perfis de Daltonismo:** A interface oferece modos específicos para diferentes tipos de daltonismo:
+  - **Protanopia:** Deficiência de vermelho.
+  - **Deuteranopia:** Deficiência de verde.
+  - **Tritanopia:** Deficiência de azul.
+- **Cores Adaptadas:** As cores da plataforma são ajustadas para garantir contraste adequado e que informações essenciais não dependam exclusivamente de cor.
+
+### 4. Diretrizes de Acessibilidade
+- **WCAG 2.1:** Todas as telas seguem as recomendações internacionais de acessibilidade, incluindo suporte a leitores de tela, navegação por teclado e contraste mínimo.
+- **Mensagens e Ícones:** Informações importantes são sempre acompanhadas de texto ou ícones, evitando dependência exclusiva de cor para transmitir significado.
+
+Essas configurações podem ser acessadas facilmente pelo usuário, permitindo personalizar a interface conforme suas necessidades e garantindo que todos possam utilizar a plataforma com autonomia e segurança.
 
 ---
 
-## 🧠 Motores de Decisão
+## 🧠 Automações e modelos da solução: Motores de Decisão
 
 ### **1. Motor de Score**
 
@@ -617,7 +844,7 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 ### **Fluxo Geral:**
 
 <p align="center">
-<sub>Figura 3 - Fluxo do motor de decisão</sub><br>
+<sub>Figura 8 - Fluxo do motor de decisão</sub><br>
   <img src="docs/assets/fluxo_score.png" alt="Fluxo de Score" width="75%">
 </p>
 
@@ -629,6 +856,7 @@ O recálculo ocorre **1x ao dia (batch)** e também **sob demanda via listener**
 Tabelas principais já existentes:
 
 * `usuarios`
+* `emprestimos`
 * `negociacoes`
 * `propostas`
 * `scores_credito` (usaremos apenas `analise` e `valor_score` + `atualizado_em`)
@@ -943,7 +1171,7 @@ A lógica não depende de Machine Learning neste estágio, mas de cálculos esta
 ### **Fluxo Geral**
 
 <p align="center">
-<sub>Figura 4 - Fluxo do motor de score</sub><br>
+<sub>Figura 9 - Fluxo do motor de score</sub><br>
   <img src="docs/assets/fluxo_recomendacao.png" alt="Fluxo da Recomendação" width="75%">
 </p>
 
@@ -1066,84 +1294,6 @@ Para reforçar o contexto da navegação, adotamos um sistema de cores consisten
 - 🔵 **Perfil Tomador** – Azul `#57d9ff` como cor de destaque e ação.  
 - 🟣 **Perfil Investidor** – Roxo `#9B59B6` como cor de destaque e ação.  
 
----
-
-## 🔵 Fluxo 1: Jornada do Tomador (Carlos) – O Fluxo Principal
-
-Jornada mais detalhada do protótipo, desde o **cadastro até a negociação** de um empréstimo.
-
-### 1. Cadastro e Onboarding *(Cadastro 1-4 a 4-4)*
-- Criação de conta com e-mail e senha.  
-- Preenchimento de dados pessoais para análise de crédito.  
-- Verificação facial (KYC – *Know Your Customer*).  
-- Tela final de sucesso com direcionamento para login.  
-
-### 2. Login e Seleção de Perfil *(Entrar 1-2, Entrar 2-2)*
-- Após login, usuário escolhe entre **Tomador** ou **Investidor**.  
-- Cards explicativos orientam sobre cada perfil.  
-- Lembrete de como alternar entre perfis posteriormente.  
-
-### 3. Dashboard do Tomador *(Dashboard Tomador)*
-- **Anel de score** em destaque, com feedback visual do crédito.  
-- Cards de **Produtos ativos**: *Empréstimos* e *Negociações*.  
-- Pontos de entrada para:  
-  - **[EM DESENVOLVIMENTO]** Empréstimos Solicitados.  
-  - **[EM DESENVOLVIMENTO]** Negociações de Ofertas (Tomador).  
-
-### 4. O Core da Solução – A Negociação
-- **Passo 4a – Descoberta**: Dashboard → Detalhes da oferta.  
-  - Lista de empréstimos disponíveis.  
-  - Usuário visualiza condições propostas.  
-
-- **Passo 4b – Ação**: Detalhes da oferta.  
-  - Opções: *Aceitar oferta* ou *Iniciar negociação* (CTA principal).  
-
-- **Passo 4c – A Proposta** *(Negociação 1-2)*  
-  - Comparação entre oferta original e proposta do usuário.  
-  - Ajuste de taxa em *slider* com “Zona sugerida”.  
-  - Visualização em tempo real da economia estimada.  
-  - Justificativa escrita para humanizar a negociação.  
-
-- **Passo 4d – Sucesso** *(Negociação 2-2)*  
-  - Confirmação da proposta enviada.  
-  - Orientação para acompanhar via notificações.  
-
----
-
-## 🟣 Fluxo 2: Jornada da Investidora (Sofia) – O Fluxo Complementar
-
-Prototipado para mostrar momentos críticos de interação, mantendo consistência com o fluxo do Tomador.
-
-### 1. Dashboard da Investidora *(Dashboard Investidor)*
-- Interface muda para **roxo**.  
-- Destaques: Rentabilidade e Lucro.  
-- Cards de **Produtos ofertados ativos** levam para:  
-  - **[EM DESENVOLVIMENTO]** Empréstimos Concedidos.  
-  - **[EM DESENVOLVIMENTO]** Negociações de Ofertas (Investidor).  
-
-### 2. A Análise e a Contraproposta – O Core do Investidor
-- **Passo 2a – Análise (Detalhes da negociação)**  
-  - Visualização da proposta original + contraproposta do tomador.  
-  - Diferença de valores + justificativa escrita.  
-  - Perfil detalhado do tomador (Pontuação, tempo de conta etc.).  
-
-- **Passo 2b – Ação (Contraproposta)**  
-  - Caso não aceite a proposta do tomador.  
-  - Tela espelho da negociação do Tomador.  
-  - Foco no **Lucro estimado** para a investidora.  
-
-### 3. Telas Análogas
-- Fluxo de criação de uma oferta *(Ofertar empréstimo 1-4 etc.)*.  
-- Prototipado para mostrar consistência visual.  
-- Fluxo completo seria análogo ao de *Solicitar Empréstimo* do Tomador.  
-
----
-
-## 📌 Observações Gerais sobre o Protótipo
-- O protótipo cobre o **“caminho feliz”** e a jornada principal.  
-- Telas adicionais não desenvolvidas: recuperação de senha, edição de perfil, notificações e configurações.  
-- O trabalho representa a **espinha dorsal funcional** e a visão de UX do **Negoci.ai**.  
-
 # Figma
 
 <div align="center">
@@ -1154,47 +1304,49 @@ Prototipado para mostrar momentos críticos de interação, mantendo consistênc
 # [👉 Clique aqui para acessar o Figma 👈](https://www.figma.com/design/YlRuYlxMbx0ebh2WVgzVZx/QI-Tech---Hackthon?node-id=0-1&t=v1IXBJMadz2ipSfx-1)
 ---
 
-## 💵 Modelo de Negócio/Planejamento Financeiro
+## 💵 Modelo de Negócio e Sustentabilidade Financeira
 
-### Custos
+&emsp;Pela solução se tratar de um Whitelabel, ou seja, uma plataforma que será disponibilizada para que terceiros integrem internamente em suas soluções, de forma a disponibilizar o seu uso para seus clientes, o modelo de negócio é **B2B2C (Business-To-Business-To-Client)**.
+
+&emsp;Essa estratégia diminui riscos como a dificuldade de aplicação de penalidades para inadimplentes, visto que, em um aplicativo isolado da solução, durante algum período de inadimplência o cliente final poderia se ausentar e dificultar os canais de comunicação, o que dificilmente acontece quando a solução é acoplada a outra como um banco digital, o qual já possui seu sistema de segurança, onboarding antifraude, rastreabilidade dos seus usuários e os mecanismos para facilitar transferências e registros de penalidades.
+
+&emsp;Segue tabela de custos e oportunidades com a solução, bem como o detalhamento dos atributos de implementação:
+
+<p align="center">
+  <img src="./img/modeloNegocio.png" alt="Imagem com tabela explicando sustentabilidade financeira do negocia.ai" width="100%">
+</p>
 
 #### Motor de Score (embutido no monólito)
+
+&emsp;Considerando uma estimativa mensal de 10.000 novos usuários na solução arquitetada, tem-se os seguintes cálculos: 
 
 | Item | Descrição | Frequência | Estimativa (R$/mês) |
 |------|-----------|------------|----------------------|
 | **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
-| **Integração Serasa** | Consulta de score externo com cache 24h | Variável (depende nº de usuários) | 2.000 |
-| **Equipe Dev/Data** | Desenvolvimento inicial (2 devs backend + 1 data scientist por 3 meses) | Investimento único | 90.000 (único) |
+| **Integração Serasa** | Consulta de score de crédito na abertura da conta, com consulta periódica a cada 3 meses | Variável (depende nº de usuários) | 150.000 / a cada 3 meses => 150.000 / 3 = R$ 50.000 mensais |
 | **Manutenção Modelo** | Re-treino mensal (data scientist) + monitoramento | Recorrente | 8.000 |
 | **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
 
-**Total Operacional Mensal (score)**: ~11.500  
-**Investimento Inicial (score)**: ~90.000  
+&emsp;A solução, já entregue com parte de seu escopo concluído, tem Roadmap total de implementação de 4 semanas, 
 
+- Semana 1:  Serviços de front, backend (com motores de recomendação e score), e banco de dados
+- Semana 2:  Integração interna e externa (API do Serasa), integração Blockchain
+- Semana 3:  Deploy na nuvem
+- Semana 4: Últimos refinamentos
 
-#### Motor de Recomendação (embutido no monólito)
+&emsp;Como custo total de implementação para o primeiro mês, sem os custos posteriores (e reduzidos) de manutenção anual, estima-se o investimento inicial de **R$ 91.000**.
 
-| Item | Descrição | Frequência | Estimativa (R$/mês) |
-|------|-----------|------------|----------------------|
-| **Infraestrutura** | Uso do mesmo container monolítico + Redis | Contínuo | incluso na infra (~1.800) |
-| **Desenvolvimento** | 2 devs backend por 2 meses (lógica de regras e API) | Investimento único | 60.000 (único) |
-| **Manutenção** | Ajuste das regras de recomendação, melhorias de UX | Recorrente | 2.500 |
-| **Batch diário** | Cálculo das faixas de mercado e estatísticas | Recorrente | incluso na infra |
-| **Analytics/Auditoria** | Armazenamento de taxas sugeridas para análise | Recorrente | 500 |
-
-**Total Operacional Mensal (recomendação)**: ~2.500  
-**Investimento Inicial (recomendação)**: ~60.000  
-
-#### Backend Consolidado (Infraestrutura)
+&emsp;Somando-se apenas os seguintes custos de manutenção posteriores mensais, tem-se:
 
 | Item | Descrição | Frequência | Estimativa (R$/mês) |
 |------|-----------|------------|----------------------|
-| **Container Monolítico** | Execução do backend completo (incluindo os motores) | Contínuo | 1.800 |
-| **Banco de Dados (RDS)** | Postgres relacional | Contínuo | incluso no valor acima |
-| **Redis (ElastiCache)** | Fila/eventos | Contínuo | incluso no valor acima |
+| **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
+| **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
+| **Equipe Dev/Data** | Manutenção (2 estagiários) | Investimento único | R$ 7.000 |
 
-**Total Infra Consolidada**: ~1.800/mês   
+&emsp;Portanto, como custo total de manutenção, tem-se o total mensal de **R$ 11.000**.
 
+&emsp;Com base em pesquisas de mercado, o valor unitário de integração da nossa solução como Whitelabel é de **R$ 20.000** por venda. Considerando um cenário anual, o custo de implementação inicial e as vendas subsequentes permitem atingir o ponto de equilíbrio (break-even) após aproximadamente 4 a 5 integrações. Já a partir da primeira venda, é possível cobrir os custos mensais de manutenção, garantindo sustentabilidade financeira ao negócio.
 
 #### Considerações Importantes
 
@@ -1207,23 +1359,48 @@ Prototipado para mostrar momentos críticos de interação, mantendo consistênc
 - Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
 - Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
 
----
+### 💵 **Fontes de Receita do Negocia.ai**
 
-## 🔗 Uso da Blockchain Polygon e Smart Contracts
+#### 1) Taxa sobre cada empréstimo
+- Através da venda de planos de implementação personalizados da solução Whitelabel, com preço inicial definido a partir de pesquisas de mercado, atualmente estimado em **R$ 20.000** por integração.
 
-### 1. Por que Blockchain (e por que Polygon)
+#### 2) Taxa sobre cada empréstimo
+- **Descrição**: cobrança de uma taxa de intermediação em cada parcela de empréstimo fechado. Futuramente, poderá ser implementada uma API que registra todas as transações de empréstimo do aplicativo e, negociando-se valores de taxas por empréstimo, será emitida uma fatura mensal com os valores e encargos combinados.  
+- **Modelo possível**: percentual sobre o valor do empréstimo (ex.: 1%–3%, conforme acordado entre Negocia.ai x Cliente e conforme formalidades regulatórias).
+
+#### 3) Cobrança por inadimplência
+- **Descrição**: taxa administrativa aplicada em casos de atraso, para cobrir custos de cobrança e eventual registro em bureaus de crédito (ex.: Serasa).  
+- **Objetivo**: compensar o risco operacional e desestimular o atraso.
+
+#### 4) Parcerias com empresas/serviços
+- **Descrição**: acordos com terceiros para geração de receita indireta, como:  
+  - Seguradoras (proteção contra inadimplência).  
+  - Bureaus de crédito (consultas adicionais).  
+  - Instituições financeiras (wallets digitais, custódia).  
+- **Objetivo**: diversificar receitas sem onerar diretamente a operação principal.
+
+#### 5) Retenção de porcentagem de lucro na antecipação de recebíveis
+- **Descrição**: ao oferecer a funcionalidade de antecipação de recebíveis para clientes, a plataforma pode reter uma porcentagem do lucro gerado nessa operação. Essa taxa é aplicada sobre o valor antecipado, funcionando como remuneração pelo serviço de liquidez imediata.
+- **Objetivo**: criar uma fonte adicional de receita, aproveitando o fluxo de operações de antecipação e agregando valor ao cliente ao mesmo tempo em que monetiza o serviço.
+- **Modelo possível**: percentual fixo ou variável sobre o valor antecipado, conforme acordado em contrato (ex.: 1%–2% por operação).
+
+--- 
+
+## 🔗 Uso da Blockchain Polkadot e Smart Contracts
+
+### 1. Por que Blockchain (e por que Polkadot)
 
 Imagine o cenário: Carlos (tomador) e Sofia (investidora) negociam um empréstimo dentro do app.  
 Tudo corre bem até surgiram algumas dúvidas: **"Será que os termos aceitos são exatamente esses? Será que essa transação realmente foi oficializada?"**  
 
-Tradicionalmente, seria preciso um contrato em papel, custas cartoriais ou confiança cega na plataforma. Contudo, aqui entra a vantagem de se utilizar blockchain: cada negociação aceita é registrada como um **carimbo digital imutável** na **Polygon**, uma rede pública, barata e confiável.  
+Tradicionalmente, seria preciso um contrato em papel, custas cartoriais ou confiança cega na plataforma. Contudo, aqui entra a vantagem de se utilizar blockchain: cada negociação aceita é registrada como um **carimbo digital imutável** na **Polkadot**, uma rede pública, barata e confiável.  
 
 Isso garante que:
 - O **tomador** tem certeza de que as condições que aceitou são as que serão cumpridas.  
 - O **investidor** confia que sua decisão está registrada de forma transparente e incontestável.  
 - A **plataforma** se posiciona como um árbitro neutro, sem poder manipular acordos e controlando a custódia de valores conforme os termos combinados.  
 
-Este tipo de utilização garante mais mais confiança, menos burocracia, custo muito menor que cartórios ou sistemas tradicionais. A Blockchain de escolha, considerando o cenário da nossa solução, foi a Polygon, já que ela oferece algumas vantagens:
+Este tipo de utilização garante mais mais confiança, menos burocracia, custo muito menor que cartórios ou sistemas tradicionais. A Blockchain de escolha, considerando o cenário da nossa solução, foi a Polkadot, já que ela oferece algumas vantagens:
 
 - **Custos baixos**: transações custam centavos de dólar.  
 - **Popularidade**: ampla aceitação no ecossistema Web3.  
@@ -1266,7 +1443,7 @@ O custeio do gas será patrocinado pela solução, via **Paymaster**, evitando p
 
 ---
 
-### 1. Custos de Gas – Polygon PoS
+### 1. Custos de Gas – Polkadot
 - **Gas médio por evento**: 50.000 gas  
 - **Gas price médio**: 30 gwei (0,00000003 MATIC)  
 - **Custo por transação** = 50.000 × 30 gwei = **0.0015 MATIC**  
@@ -1286,126 +1463,11 @@ Totais:
 - **Mensal (5.000 usuários)** ≈ **US$ 250**  
 - **Anual** ≈ **US$ 3.000**
 
-## 🏦 Serviço de Integração Backend/Bacen.py — Comunicação com o Banco Central
-O módulo `backend/bacen.py` é responsável por garantir a comunicação oficial entre a plataforma negocia.ai e o Banco Central (BC) após o registro dos contratos de empréstimo na blockchain. Ele atende ao requisito funcional RF016, assegurando transparência, conformidade regulatória e correto balanceamento das operações financeiras.
-
-### Principais Funcionalidades
-
-- **Transformação de Dados:** Converte os registros de negociações e contratos (incluindo dados do tomador, investidor, valores, taxas, prazos e status) para o formato exigido pelo BC, como XML ou JSON padronizado.
-- **Envio Automatizado:** Realiza a transmissão dos dados via protocolo oficial (API, Webservice ou FTP seguro), conforme especificações do SISBACEN ou SCR.
-- **Eventos de Comunicação:** Dispara notificações ao BC em dois momentos principais:
-  - Após assinatura do contrato via smart contract (registro on-chain).
-  - A cada pagamento de parcela, inadimplência ou liquidação antecipada.
-- **Segurança:** Garante criptografia TLS, autenticação robusta e controle de acesso mínimo necessário.
-- **Monitoramento e Auditoria:** Mantém logs detalhados de todas as transmissões, status de envio, tentativas de retry em caso de falha e relatórios internos para auditoria e conformidade.
-  
-### Fluxo Técnico na solução
-
-1. **Registro do Contrato:** Após o acordo entre tomador e investidor e registro do hash na blockchain Polygon, o backend coleta todos os dados relevantes e prepara o payload para o BC.
-2. **Envio ao BC:** O serviço `bacen.py` transforma e transmite os dados, marcando o status de envio no banco de dados.
-3. **Atualizações de Pagamento:** Cada evento relevante (pagamento, atraso, quitação) é reportado automaticamente.
-5. **Resiliência:** Em caso de falha, o sistema realiza retries automáticos e alerta a equipe de conformidade.
-Este serviço é fundamental para garantir que a plataforma opere dentro das normas do mercado financeiro brasileiro, fortalecendo a confiança dos usuários e parceiros institucionais.
-
-## Modelo de Negócio
-
-&emsp;Pela solução se tratar de um Whitelabel, ou seja, uma plataforma que será disponibilizada para que terceiros disponibilizem o seu uso para seus clientes, o modelo de negócio é B2B2C (Business-To-Business-To-Client). O aplicativo funcionará como um whitelabel de feature oferecida pela QI Tech a ser acoplado dentro de soluções financeiras de seus clientes.
-
-&emsp;Essa estratégia diminui riscos como a dificuldade de aplicação de penalidades para inadimplentes, visto que, em um aplicativo isolado da solução, durante algum período de inadimplência o cliente final poderia se ausentar e dificultar os canais de comunicação, o que não dificulmente quando a solução é acoplada a outra como um banco digital, o qual já possui seu sistema de segurança, antifraude, rastreabilidade dos seus usuários e os mecanismos para facilitar transferências e registros de penalidades.
-
-&emsp;Segue tabela de custos e oportunidades com a solução, bem como o detalhamento dos atributos de implementação:
-
-<p align="center">
-  <img src="./img/modeloNegocio.png" alt="Imagem com tabela explicando sustentabilidade financeira do negocia.ai" width="100%">
-</p>
-
-#### Motor de Score (embutido no monólito)
-
-&emsp;Considerando uma estimativa mensal de 10.000 novos usuários na solução arquitetada, tem-se os seguintes cálculos: 
-
-| Item | Descrição | Frequência | Estimativa (R$/mês) |
-|------|-----------|------------|----------------------|
-| **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
-| **Integração Serasa** | Consulta de score de crédito na abertura da conta, com consulta periódica a cada 3 meses | Variável (depende nº de usuários) | 150.000 / a cada 3 meses => 150.000 / 3 = R$ 50.000 mensais |
-| **Equipe Dev/Data** | Desenvolvimento inicial (1 Desenvolvedor Full-Stack Sênior + 2 estagiários QI Tech | Investimento único | R$ 29.000 |
-| **Manutenção Modelo** | Re-treino mensal (data scientist) + monitoramento | Recorrente | 8.000 |
-| **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
-
-&emsp;A solução, já entregue com parte de seu escopo concluído, tem Roadmap total de implementação de 4 semanas, 
-
-- Semana 1:  Serviços de front, backend (com motores de recomendação e score), e banco de dados
-- Semana 2:  Integração interna e externa (serviços QI), integração Blockchain
-- Semana 3:  Deploy na nuvem
-- Semana 4: Últimos refinamentos
-
-&emsp;Como custo total de implementação para o primeiro mês, sem os custos posteriores (e reduzidos) de manutenção anual, estima-se o investimento inicial de **R$ 90.500**.
-
-&emsp;Somando-se apenas os seguintes custos de manutenção posteriores mensais, tem-se:
-
-| Item | Descrição | Frequência | Estimativa (R$/mês) |
-|------|-----------|------------|----------------------|
-| **Segurança & Compliance** | Armazenamento seguro, LGPD, auditoria | Anual | 20.000 (≈1.700/mês) |
-| **Infraestrutura** | Uso do container único (backend monolítico) + Redis + Postgres | Contínuo | incluso na infra (~1.800) |
-| **Equipe Dev/Data** | Manutenção (2 estagiários QI Tech | Investimento único | R$ 7.000 |
-
-&emsp;Portanto, como custo total de manutenção, tem-se o total mensal de **R$ 10.500**.
-
-&emsp;Para se entender a perspectiva anual de custos x receitas no primeiro ano de implementação, segundo a QI Tech, um ticket mínimo acaba por ser um plano básico + configuração de um Whitelabel, totalizando R$ 20.000 em uma venda. Num cenário anual de vendas do *negocia.ai*, teria-se R$ 90.000 no primeiro mês, somados a cerca de R$ 10.000 nos próximos 11 meses. Portanto, totalizaria um custo anual de R$ 200.000 apenas com essa solução. Entretanto, seu Break-even a partir da implementação inicial acontece após 4.5 vendas e, com apenas uma venda, abate-se o custo mensal de manutenções com sobra.
-
-#### Considerações Importantes
-
-- Arquitetura baseada em **monólito containerizado na AWS** → simplifica custos de infra e orquestração.  
-- Infraestrutura compartilhada (container, banco, Redis) → nada de microsserviços isolados neste estágio.  
-- Estimativas baseadas em **MVP com 5k–10k usuários ativos/mês**.  
-- **Score**: recalculado 1x/dia por usuário ativo (batch).  
-- **Recomendação**: usado on-demand ao abrir/criar propostas.  
-- **Consultas Serasa**: assumem cache de 24h, custo médio R$ 1–2 por requisição.  
-- Principais custos vêm de **equipe de desenvolvimento/data science** e **integração externa**.  
-- Modelo pensado para **simplicidade e velocidade no MVP**; no futuro pode evoluir para microsserviços se a escala justificar.
-
-### 💵 **Fontes de Receita do Negocia.ai**
-
-#### 1) Cobrança por implementação:
-- Através da compra por parte de clientes dos planos de negócio da QI Tech, os quais disponibilizam a personalização de um Whitelabel, o negocia.ai, sendo um plano com preço inicial de R$ 20.000. 
-
-#### 2) Taxa sobre cada empréstimo
-- **Descrição**: cobrança de uma taxa de intermediação em cada parcela de empréstimo fechado. Através de requisições na API de Consumo da QI Tech, será emitida uma fatura mensal com os valores e encargos combinados.  
-- **Modelo possível**: percentual sobre o valor do empréstimo (ex.: 1%–3%, conforme acordado entre QI Tech x Cliente e conforme formalidades regulatórias).
-
-#### 3) Cobrança por inadimplência
-- **Descrição**: taxa administrativa aplicada em casos de atraso, para cobrir custos de cobrança e eventual registro em bureaus de crédito (ex.: Serasa).  
-- **Objetivo**: compensar o risco operacional e desestimular o atraso.
-
-#### 4) Parcerias com empresas/serviços
-- **Descrição**: acordos com terceiros para geração de receita indireta, como:  
-  - Seguradoras (proteção contra inadimplência).  
-  - Bureaus de crédito (consultas adicionais).  
-  - Instituições financeiras (wallets digitais, custódia).  
-- **Objetivo**: diversificar receitas sem onerar diretamente a operação principal.
-
---- 
+---
 
 ## 📈 Planos Futuros e Evolução da Plataforma
 
 Para garantir que o *Negoci.ai* continue na vanguarda da inovação em empréstimos P2P, planejamos três grandes evoluções para o futuro da plataforma, focadas em torná-la mais inclusiva, inteligente e precisa.
-
----
-
-### 1️⃣ Acessibilidade e Inclusão Financeira – Integração com VLibras
-
-*📌 O Que é?*  
-A Suíte *VLibras* é um conjunto de ferramentas de código aberto do Governo Federal que traduz conteúdos digitais (textos, áudios e vídeos) para a *Língua Brasileira de Sinais (Libras)*, tornando plataformas digitais acessíveis para a comunidade surda.
-
-**⚙ Como Funciona no Negoci.ai?**  
-- Integração via widget flutuante na interface.  
-- Ao ativá-lo, um avatar 3D traduz em tempo real os textos da tela para Libras.  
-- Disponível em todas as jornadas, do cadastro às negociações.  
-- Termos técnicos como Taxa de Juros, Parcela Mensal e Descrição da Proposta seriam traduzidos.  
-
-*🎯 Impacto e Vantagens*  
-- *Para o Tomador* – Democratiza o acesso ao crédito para milhões de brasileiros surdos.  
-- *Para o Investidor* – Aumenta a confiança na plataforma, que demonstra responsabilidade social.  
-- *Para a Plataforma* – Expande a base de usuários e fortalece a marca como fintech inclusiva e inovadora.  
 
 ---
 

@@ -106,3 +106,43 @@ CREATE TABLE propostas (
 
 CREATE INDEX ix_prop_neg_data ON propostas (id_negociacoes, criado_em);
 CREATE INDEX ix_prop_autor ON propostas (id_autor);
+
+
+CREATE TABLE emprestimos (
+    id SERIAL PRIMARY KEY,
+    id_negociacoes INT NOT NULL,
+    id_tomador INT NOT NULL,
+    id_investidor INT NOT NULL,
+    valor numeric NOT NULL,
+    taxa numeric NOT NULL,
+    prazo int NOT NULL,
+    parcela numeric NOT NULL,
+    contrato_tx_hash varchar NOT NULL,
+    hash_onchain varchar NOT NULL,
+    antecipacao_onchain varchar,
+    contrato_antecipacao_hash varchar,
+    status varchar(20) NOT NULL DEFAULT 'ativo',
+    liquidado boolean NOT NULL DEFAULT false,
+    criado_em timestamp NOT NULL DEFAULT now(),
+    atualizado_em timestamp NOT NULL DEFAULT now(),
+    liquidado_em timestamp,
+
+    CONSTRAINT fk_emprest_negociacao
+        FOREIGN KEY (id_negociacoes)
+        REFERENCES negociacoes(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    -- id_tomador / id_investidor referenciam usuários, não colunas não-únicas em negociacoes
+    CONSTRAINT fk_emprest_tomador
+        FOREIGN KEY (id_tomador)
+        REFERENCES usuarios (id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_emprest_investidor
+        FOREIGN KEY (id_investidor)
+        REFERENCES usuarios (id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
