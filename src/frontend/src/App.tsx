@@ -29,6 +29,7 @@ import InvestorNegotiationDetails from "./pages/investor/NegotiationDetails";
 import BorrowerLoanDetails from "./pages/borrower/LoanDetails";
 import InvestorLoanDetails from "./pages/investor/LoanDetails";
 import UserProfile from "./pages/UserProfile";
+import Test from "./pages/Test";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const App = () => (
               
               {/* Demo Route (negotiation) */}
               <Route path="/demo" element={<Index />} />
+              <Route path="/test" element={<Test />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

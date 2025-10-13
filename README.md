@@ -1209,7 +1209,7 @@ Prototipado para mostrar momentos críticos de interação, mantendo consistênc
 
 ---
 
-## 🔗 Uso da Blockchain Polygon e Smart Contracts
+## 🔗 Uso da Blockchain Polkadot Contracts
 
 ### 1. Por que Blockchain (e por que Polygon)
 

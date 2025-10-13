@@ -4,6 +4,10 @@ from decimal import Decimal
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
+from eth_account import Account
+from app.models.usuario import UsuarioCreate
+from app.models.usuario import Usuario as UsuarioModel
+from sqlalchemy.exc import IntegrityError
 
 from app.models.usuario import Usuario, UsuarioResponse
 
@@ -68,6 +72,7 @@ class UsuarioService:
             nome=usuario.nome,
             email=usuario.email,
             saldo_cc=float(usuario.saldo_cc or 0),
+            wallet_adress=usuario.wallet_adress,
             cpf_mascarado=UsuarioService._mascarar_cpf(usuario.cpf),
             celular_mascarado=UsuarioService._mascarar_celular(usuario.celular),
             iniciais=UsuarioService._iniciais(usuario.nome),
@@ -101,3 +106,38 @@ class UsuarioService:
 
         UsuarioService.ajustar_saldo(db, investidor_id, -valor)
         UsuarioService.ajustar_saldo(db, tomador_id, valor)
+
+    @staticmethod
+    def criar_usuario(db: Session, usuario_data: UsuarioCreate) -> UsuarioResponse:
+        """Cria um novo usuário, gera uma carteira Ethereum e salva apenas o endereço na tabela.
+
+        Observação: por segurança não armazenamos a chave privada aqui. Se for necessário guardar a chave,
+        ela deve ser criptografada com uma chave de aplicação gerenciada com segurança (KMS) — não implementado.
+        """
+
+        # Gera uma nova conta (chave privada não será persistida)
+        account = Account.create()
+        endereco = account.address
+
+        usuario = UsuarioModel(
+            nome=usuario_data.nome,
+            email=usuario_data.email,
+            cpf=usuario_data.cpf,
+            endereco=usuario_data.endereco,
+            renda_mensal=usuario_data.renda_mensal,
+            celular=usuario_data.celular,
+            facial=usuario_data.facial,
+            saldo_cc=usuario_data.saldo_cc if getattr(usuario_data, 'saldo_cc', None) is not None else 0,
+            wallet_adress=endereco,
+        )
+
+        db.add(usuario)
+        try:
+            db.commit()
+            db.refresh(usuario)
+        except IntegrityError as e:
+            db.rollback()
+            # Reraise a ValueError com mensagem mais amigável
+            raise ValueError("Não foi possível criar usuário: email/cpf/wallet já existe.") from e
+
+        return UsuarioService.to_response(usuario)

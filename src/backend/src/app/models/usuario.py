@@ -34,10 +34,30 @@ class UsuarioResponse(BaseModel):
 	nome: str
 	email: str
 	saldo_cc: float
+	wallet_adress: str | None = None
 	cpf_mascarado: Optional[str] = None
 	celular_mascarado: Optional[str] = None
 	iniciais: Optional[str] = None
 	criado_em: datetime
+
+	model_config = ConfigDict(from_attributes=True)
+
+
+class UsuarioCreate(BaseModel):
+	"""Esquema para criação de usuário via API.
+
+	Inclui os campos necessários para inserir uma nova linha na tabela `usuarios`.
+	Não inclui `id` nem `criado_em`.
+	"""
+
+	nome: str
+	email: str
+	cpf: str
+	endereco: Optional[str] = None
+	renda_mensal: Optional[float] = None
+	celular: str
+	facial: float = 0.0
+	saldo_cc: Optional[float] = 0.0
 
 	model_config = ConfigDict(from_attributes=True)
 

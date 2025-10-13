@@ -4,7 +4,7 @@ Este arquivo é responsável pelo roteamento dos endpoints do aplicativo.
 Aqui são definidos os caminhos e associações entre URLs e suas respectivas funções de tratamento. Dentro de app/services estão as lógicas de negócio que processam as requisições recebidas.
 """
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Body
 from sqlalchemy.orm import Session
 from model.model_analise_credito import predict_default_probability, score_from_probability
 from app.services.score import calcular_score_final
@@ -26,6 +26,7 @@ from app.services.usuario import UsuarioService
 from app.services.score_credito import ScoreCreditoService
 from app.services.metricas import MetricasInvestidorService
 from app.models.usuario import UsuarioResponse
+from app.models.usuario import UsuarioCreate
 from app.models.score import ScoreCreditoResponse
 from app.models.metricas_investidor import MetricasInvestidorResponse
 
@@ -34,10 +35,115 @@ from app.services.calculo_taxas_juros import taxa_analisada
 from fastapi import HTTPException
 from app.services.emprestimo import EmprestimoService
 from app.models.emprestimo import EmprestimoResponse
+from fastapi import HTTPException, Body
+import os
+from app.services.blockchain import (
+    compile_contract_only,
+    deploy_contract_to_paseo,
+    registrar_hash_na_blockchain,
+)
+from app.services.blockchain import get_address_status
+from pathlib import Path
+import json
 
 
 # -- ROTEADOR GERAL --
 router = APIRouter()
+
+
+# --- Endpoints para interação com blockchain local/hardhat ---
+
+
+@router.get("/blockchain/status", tags=["Blockchain"])
+def blockchain_status():
+    """Retorna informações básicas do contrato compilado/local salvo (ABI/address se existir)."""
+    abi_file = Path(__file__).resolve().parent.parent / 'ContratoExemplo_abi.json'
+    if not abi_file.exists():
+        # also include whether the deployer key/address is configured
+        from app.services.blockchain import get_deployer_address
+        deployer = get_deployer_address()
+        return {"deployed": False, "message": "ABI/address não encontrado localmente. Rode /blockchain/deploy ou o script de deploy do Hardhat.", "deployer_address": deployer, "deployer_present": bool(deployer)}
+    data = json.loads(abi_file.read_text(encoding='utf-8'))
+    from app.services.blockchain import get_deployer_address, is_contract_onchain
+    deployer = get_deployer_address()
+    address = data.get('address')
+    onchain = False
+    if address:
+        onchain = is_contract_onchain(address)
+    # attempt to read contract metadata if onchain
+    contract_data = {}
+    if onchain and address:
+        try:
+            from app.services.blockchain import get_contract_data
+            contract_data = get_contract_data(address)
+        except Exception:
+            contract_data = {}
+
+    return {"deployed": True, "address": address, "abi_present": 'abi' in data, "onchain": onchain, "deployer_address": deployer, "deployer_present": bool(deployer), "contract_data": contract_data}
+
+
+@router.get("/blockchain/compile", tags=["Blockchain"])
+def blockchain_compile():
+    """Compila apenas o contrato local e retorna ABI e bytecode (sem deploy).
+    Útil para o frontend obter o artifact e realizar o deploy com MetaMask/ethers."""
+    try:
+        compiled = compile_contract_only()
+        return {"contract_name": compiled.get('contract_name'), 'abi': compiled.get('abi'), 'bytecode': compiled.get('bytecode')}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/blockchain/deploy", tags=["Blockchain"])
+def blockchain_deploy():
+    """Compila e faz deploy do contrato local usando a chave do deployer configurada (env/CONFIG).
+    Retorna address e tx_hash quando bem sucedido.
+    """
+    try:
+        out = deploy_contract_to_paseo()
+        return out
+    except Exception as e:
+        # imprimir stack no servidor para debugging (será visível nos logs do container)
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/blockchain/registrar", tags=["Blockchain"])
+def blockchain_registrar(body: dict = Body(...)):
+    """Recebe uma hash hex (0x...) e chama a função registrar do contrato (usa CONTRACT_ADDRESS/ABI configurados ou arquivo salvo)."""
+    try:
+        # carregar ABI e endereço locais se variáveis de ambiente não estiverem setadas
+        abi_file = Path(__file__).resolve().parent.parent / 'ContratoExemplo_abi.json'
+        if abi_file.exists():
+            data = json.loads(abi_file.read_text(encoding='utf-8'))
+            # set env for blockchain service to pick up if needed
+            os.environ.setdefault('CONTRACT_ABI_JSON', json.dumps(data.get('abi', [])))
+            os.environ.setdefault('CONTRACT_ADDRESS', data.get('address'))
+
+        contrato_hash = None
+        extra_data = ''
+        if isinstance(body, dict):
+            contrato_hash = body.get('contrato_hash') or body.get('hash') or body.get('tx')
+            extra_data = body.get('data', '') or ''
+        if not contrato_hash:
+            raise ValueError('Body must include contrato_hash (e.g. {"contrato_hash":"0x...", "data":"optional"})')
+
+        result = registrar_hash_na_blockchain(contrato_hash, extra_data)
+        # result may be a dict with tx_hash and receipt
+        if isinstance(result, dict):
+            return result
+        return {"tx_hash": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get('/blockchain/address/{address}/status', tags=['Blockchain'])
+def blockchain_address_status(address: str):
+    try:
+        data = get_address_status(address)
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/negociacoes/{negociacao_id}", response_model=NegociacaoResponse, tags=["Negociações"])
 def atualizar_negociacao_endpoint(
@@ -193,3 +299,27 @@ def obter_emprestimo_por_id_endpoint(
     if not emprestimo:
         raise HTTPException(status_code=404, detail="Empréstimo não encontrado")
     return emprestimo
+
+
+# --- Endpoints para usuários ---
+@router.post("/usuarios", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED, tags=["Usuários"])
+def criar_usuario_endpoint(data: UsuarioCreate = Body(...), db: Session = Depends(get_db)):
+    """Cria um usuário novo.
+
+    Observação: o backend NÃO gera nem armazena carteiras/keys para o usuário. Se no futuro
+    for necessário gerenciar chaves privadas, implemente armazenamento criptografado ou um KMS.
+    """
+    try:
+        usuario = UsuarioService.criar_usuario(db, data)
+        return usuario
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/usuarios/{usuario_id}", response_model=UsuarioResponse, tags=["Usuários"])
+def obter_usuario_endpoint(usuario_id: int, db: Session = Depends(get_db)):
+    """Retorna usuário por id."""
+    usuario = UsuarioService.obter_por_id(db, usuario_id)
+    if usuario is None:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    return usuario
