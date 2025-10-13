@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '@/components/common/Header';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,9 @@ import {
     formatInterestRate,
 } from '@/utils/calculations';
 import type { NegociacaoResponse, Usuario } from '@/types';
-import { AlertTriangle, ArrowLeft, CalendarDays, CheckCircle2, Clock, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CalendarDays, CheckCircle2, Clock, Sparkles, TrendingUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface InstallmentOption {
     id: string;
@@ -45,6 +47,23 @@ const AdvanceInstallments: React.FC = () => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [processing, setProcessing] = useState(false);
     const [completed, setCompleted] = useState(false);
+    const { t, i18n } = useTranslation();
+
+    const resolveLocale = useCallback(() => {
+        const language = i18n.resolvedLanguage || i18n.language || 'pt-BR';
+        if (language.startsWith('pt')) return 'pt-BR';
+        if (language.startsWith('es')) return 'es-ES';
+        if (language.startsWith('en')) return 'en-US';
+        return language;
+    }, [i18n.language, i18n.resolvedLanguage]);
+
+    const formatDate = useCallback((date: Date) => {
+        return new Intl.DateTimeFormat(resolveLocale(), {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+        }).format(date);
+    }, [resolveLocale]);
 
     useEffect(() => {
         const fetchLoan = async () => {
@@ -156,9 +175,15 @@ const AdvanceInstallments: React.FC = () => {
         return Math.max(0, totalOriginal - anticipationFee);
     }, [totalOriginal, anticipationFee]);
 
-    const buttonLabel = selectedInstallments.length
-        ? `Antecipar ${selectedInstallments.length} ${selectedInstallments.length === 1 ? 'parcela' : 'parcelas'}`
-        : 'Selecionar parcelas';
+    const buttonLabel = useMemo(() => {
+        if (!selectedInstallments.length) {
+            return t('advanceInstallments.buttons.select');
+        }
+
+        return t('advanceInstallments.buttons.advanceCount', {
+            count: selectedInstallments.length,
+        });
+    }, [selectedInstallments.length, t]);
 
     const handleConfirm = async () => {
         if (!selectedInstallments.length) return;
@@ -174,20 +199,12 @@ const AdvanceInstallments: React.FC = () => {
         }
     };
 
-    const formatDate = (date: Date) => {
-        return new Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-        }).format(date);
-    };
-
     if (loading) {
         return (
             <div className="min-h-screen bg-background">
                 <Header showBackButton onBack={() => navigate('/investor/loans')} />
                 <main className="container max-w-md mx-auto px-4 py-6">
-                    <p>Carregando parcelas disponíveis...</p>
+                    <p>{t('advanceInstallments.loading')}</p>
                 </main>
             </div>
         );
@@ -198,8 +215,8 @@ const AdvanceInstallments: React.FC = () => {
             <div className="min-h-screen bg-background">
                 <Header showBackButton onBack={() => navigate('/investor/loans')} />
                 <main className="container max-w-md mx-auto px-4 py-6 space-y-4">
-                    <p className="text-destructive">{error ?? 'Empréstimo não encontrado'}</p>
-                    <Button onClick={() => navigate('/investor/loans')}>Voltar</Button>
+                    <p className="text-destructive">{error ?? t('advanceInstallments.error')}</p>
+                    <Button onClick={() => navigate('/investor/loans')}>{t('buttons.back')}</Button>
                 </main>
             </div>
         );
@@ -210,31 +227,34 @@ const AdvanceInstallments: React.FC = () => {
             <div className="min-h-screen bg-background">
                 <Header showBackButton onBack={() => navigate('/investor/loans')} />
                 <main className="container max-w-md mx-auto px-4 py-10 space-y-8 text-center">
-                    <div className="mx-auto w-20 h-20 rounded-full bg-status-concluded/10 text-status-concluded flex items-center justify-center">
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-investor/20 via-investor/10 to-transparent text-investor shadow-lg">
                         <CheckCircle2 className="w-10 h-10" />
                     </div>
                     <div className="space-y-3">
-                        <h1 className="text-2xl font-bold text-foreground">Antecipação solicitada!</h1>
+                        <h1 className="text-2xl font-bold text-foreground">{t('advanceInstallments.success.title')}</h1>
                         <p className="text-sm text-muted-foreground">
-                            O valor estará disponível na sua conta em até 2 dias úteis. Você receberá uma notificação assim que a transferência for concluída.
+                            {t('advanceInstallments.success.description')}
                         </p>
                     </div>
-                    <div className="rounded-2xl border border-border bg-card p-4 text-left space-y-2">
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <span>Total antecipado</span>
-                            <span className="font-semibold text-foreground">{formatCurrency(totalOriginal)}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <span>Taxa retida</span>
-                            <span className="font-semibold text-status-cancelled">- {formatCurrency(anticipationFee)}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-base font-semibold text-primary">
-                            <span>Valor líquido recebido</span>
-                            <span>{formatCurrency(netAmount)}</span>
+                    <div className="relative overflow-hidden rounded-3xl border border-investor/20 bg-card p-5 text-left shadow-sm">
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-investor/6 to-investor/12" />
+                        <div className="relative space-y-3">
+                            <div className="flex items-center justify-between text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                                <span>{t('advanceInstallments.summary.original')}</span>
+                                <span className="text-foreground">{formatCurrency(totalOriginal)}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                                <span>{t('advanceInstallments.summary.fee')}</span>
+                                <span className="text-status-cancelled">- {formatCurrency(anticipationFee)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 text-base font-bold text-investor shadow-sm backdrop-blur">
+                                <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{t('advanceInstallments.summary.net')}</span>
+                                <span>{formatCurrency(netAmount)}</span>
+                            </div>
                         </div>
                     </div>
                     <Button className="w-full" onClick={() => navigate('/investor/loans')}>
-                        Voltar para meus empréstimos
+                        {t('advanceInstallments.success.back')}
                     </Button>
                 </main>
             </div>
@@ -248,71 +268,95 @@ const AdvanceInstallments: React.FC = () => {
             <main className="container max-w-md mx-auto px-4 py-6 space-y-6">
                 <div className="flex items-center gap-2">
                     <TrendingUp className="w-6 h-6 text-primary" />
-                    <h1 className="text-2xl font-bold text-primary">Antecipar parcelas</h1>
+                    <h1 className="text-2xl font-bold text-primary">{t('advanceInstallments.title')}</h1>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                    Selecione as parcelas que deseja antecipar. Os valores abaixo são estimativas e podem variar após análise final.
+                    {t('advanceInstallments.instructions')}
                 </p>
 
-                <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-                    <div className="flex items-center justify-between">
+                <div className="relative overflow-hidden rounded-3xl border border-investor/20 bg-card p-5 shadow-sm">
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-investor/6 to-investor/12" />
+                    <div className="relative flex items-center justify-between">
                         <div>
-                            <p className="text-xs text-muted-foreground">Empréstimo #{loan.negotiation.id}</p>
-                            <p className="text-base font-semibold text-foreground">{loan.borrower?.nome ?? `Tomador #${loan.negotiation.id_tomador}`}</p>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('advanceInstallments.overview.loan', { id: loan.negotiation.id })}</p>
+                            <p className="text-base font-semibold text-foreground">{loan.borrower?.nome ?? t('advanceInstallments.overview.borrowerFallback', { id: loan.negotiation.id_tomador })}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-muted-foreground">Taxa contratada</p>
-                            <p className="text-base font-semibold text-primary">{formatInterestRate(loan.interestRate)}</p>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t('advanceInstallments.overview.rate')}</p>
+                            <p className="text-base font-semibold text-investor">{formatInterestRate(loan.interestRate)}</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <CalendarDays className="w-4 h-4" />
-                        {loan.installments} parcelas totais · {formatCurrency(loan.monthlyPayment)} por parcela
+                    <div className="relative mt-4 flex items-center gap-3 rounded-2xl bg-white/70 px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground shadow-sm backdrop-blur">
+                        <CalendarDays className="h-4 w-4 text-investor" />
+                        {t('advanceInstallments.overview.summary', {
+                            count: loan.installments,
+                            amount: formatCurrency(loan.monthlyPayment),
+                        })}
                     </div>
                 </div>
 
                 <section className="space-y-4">
                     <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-primary" />
-                        <h2 className="text-lg font-semibold text-foreground">Parcelas disponíveis</h2>
+                        <h2 className="text-lg font-semibold text-foreground">{t('advanceInstallments.installments.title')}</h2>
                     </div>
 
                     {installmentOptions.length === 0 ? (
                         <div className="rounded-2xl border border-border bg-muted/40 p-6 text-center text-sm text-muted-foreground space-y-2">
                             <AlertTriangle className="mx-auto h-8 w-8 text-muted-foreground/60" />
-                            <p>Este empréstimo não possui parcelas futuras para antecipação.</p>
+                            <p>{t('advanceInstallments.installments.none')}</p>
                             <Button variant="outline" onClick={() => navigate('/investor/loans')}>
-                                Voltar para meus empréstimos
+                                {t('advanceInstallments.installments.emptyCta')}
                             </Button>
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {installmentOptions.map((installment) => (
-                                <label
-                                    key={installment.id}
-                                    htmlFor={installment.id}
-                                    className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition hover:border-primary/50"
-                                >
-                                    <Checkbox
-                                        id={installment.id}
-                                        checked={selectedIds.has(installment.id)}
-                                        onCheckedChange={() => toggleInstallment(installment.id)}
-                                        className="mt-1"
-                                    />
-                                    <div className="flex-1">
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="text-sm font-semibold text-foreground">Parcela {installment.number}/{loan.installments}</p>
-                                                <p className="text-xs text-muted-foreground">Vencimento: {formatDate(installment.dueDate)}</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-sm font-semibold text-foreground">{formatCurrency(installment.amount)}</p>
-                                                <p className="text-xs text-muted-foreground">em {installment.daysUntilDue} dias</p>
+                            {installmentOptions.map((installment) => {
+                                const isSelected = selectedIds.has(installment.id);
+                                return (
+                                    <label
+                                        key={installment.id}
+                                        htmlFor={installment.id}
+                                        className={cn(
+                                            'relative flex items-start gap-3 overflow-hidden rounded-3xl border bg-card p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg',
+                                            isSelected ? 'border-investor/70 bg-white/80 backdrop-blur' : 'border-border/60'
+                                        )}
+                                    >
+                                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-investor/6 to-transparent" />
+                                        <Checkbox
+                                            id={installment.id}
+                                            checked={isSelected}
+                                            onCheckedChange={() => toggleInstallment(installment.id)}
+                                            className="relative mt-1"
+                                        />
+                                        <div className="relative flex-1">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="text-sm font-semibold text-foreground">
+                                                        {t('advanceInstallments.installments.label', {
+                                                            number: installment.number,
+                                                            total: loan.installments,
+                                                        })}
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {t('advanceInstallments.installments.due', {
+                                                            date: formatDate(installment.dueDate),
+                                                        })}
+                                                    </p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm font-semibold text-foreground">{formatCurrency(installment.amount)}</p>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {t('advanceInstallments.installments.inDays', {
+                                                            days: installment.daysUntilDue,
+                                                        })}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </label>
-                            ))}
+                                    </label>
+                                );
+                            })}
                         </div>
                     )}
                 </section>
@@ -320,30 +364,32 @@ const AdvanceInstallments: React.FC = () => {
                 <section className="space-y-4">
                     <div className="flex items-center gap-2">
                         <TrendingUp className="w-4 h-4 text-primary" />
-                        <h2 className="text-lg font-semibold text-foreground">Resumo da antecipação</h2>
+                        <h2 className="text-lg font-semibold text-foreground">{t('advanceInstallments.summary.title')}</h2>
                     </div>
 
-                    <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Valor original a receber</span>
+                    <div className="relative overflow-hidden rounded-3xl border border-investor/20 bg-card p-5 shadow-sm">
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-investor/6 to-investor/12" />
+                        <div className="relative flex items-center justify-between">
+                            <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{t('advanceInstallments.summary.original')}</span>
                             <span className="text-base font-semibold text-foreground">{formatCurrency(totalOriginal)}</span>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Taxa de antecipação</span>
+                        <div className="relative mt-4 flex items-center justify-between">
+                            <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{t('advanceInstallments.summary.fee')}</span>
                             <span className="text-base font-semibold text-status-cancelled">- {formatCurrency(anticipationFee)}</span>
                         </div>
-                        <div className="pt-4 border-t border-border flex items-center justify-between">
-                            <span className="text-sm font-semibold text-muted-foreground">Valor líquido agora</span>
-                            <span className="text-2xl font-bold text-primary">{formatCurrency(netAmount)}</span>
+                        <div className="relative mt-6 flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 text-base font-bold text-investor shadow-sm backdrop-blur">
+                            <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{t('advanceInstallments.summary.net')}</span>
+                            <span className="text-2xl font-bold text-investor">{formatCurrency(netAmount)}</span>
                         </div>
                     </div>
                 </section>
 
                 <Button
-                    className="w-full h-14 text-base"
+                    className="group flex h-14 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-investor to-investor/80 text-base font-semibold text-primary-foreground shadow-lg shadow-investor/30 transition-all duration-200 hover:translate-y-[-1px] hover:from-investor/90 hover:to-investor/70 focus-visible:ring-2 focus-visible:ring-investor"
                     disabled={!selectedInstallments.length}
                     onClick={() => setShowConfirm(true)}
                 >
+                    <Sparkles className="h-5 w-5 transition-transform group-hover:scale-110" aria-hidden="true" />
                     {buttonLabel}
                 </Button>
 
@@ -353,16 +399,18 @@ const AdvanceInstallments: React.FC = () => {
                     onClick={() => navigate(`/investor/loan/${loan.negotiation.id}`)}
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Ver detalhes do empréstimo
+                    {t('advanceInstallments.buttons.backToLoan')}
                 </Button>
             </main>
 
             <ConfirmDialog
                 open={showConfirm}
                 onOpenChange={setShowConfirm}
-                title="Confirmar antecipação?"
-                description={`Você está prestes a receber ${formatCurrency(netAmount)} agora. Esta ação é irreversível.`}
-                confirmText={processing ? 'Processando...' : 'Confirmar e antecipar'}
+                title={t('advanceInstallments.confirm.title')}
+                description={t('advanceInstallments.confirm.description', {
+                    amount: formatCurrency(netAmount),
+                })}
+                confirmText={processing ? t('advanceInstallments.buttons.processing') : t('advanceInstallments.buttons.confirm')}
                 confirmDisabled={processing}
                 onConfirm={handleConfirm}
             />

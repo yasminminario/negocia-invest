@@ -16,16 +16,18 @@ import { Separator } from '@/components/ui/separator';
 import { useAccessibility } from '@/contexts/AccessibilityContext';
 import { toast } from '@/hooks/use-toast';
 import type { AccessibilitySettings } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 export const AccessibilityMenu = () => {
   const { settings, updateSettings, resetSettings } = useAccessibility();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleReset = () => {
     resetSettings();
     toast({
-      title: 'Configurações restauradas',
-      description: 'As configurações de acessibilidade foram restauradas para o padrão.',
+      title: t('accessibility.reset.title'),
+      description: t('accessibility.reset.description'),
     });
   };
 
@@ -35,20 +37,20 @@ export const AccessibilityMenu = () => {
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Abrir configurações de acessibilidade"
+          aria-label={t('accessibility.triggerAria')}
         >
           <Eye className="h-5 w-5" />
-          <span className="sr-only">Acessibilidade</span>
+          <span className="sr-only">{t('accessibility.triggerLabel')}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" aria-hidden="true" />
-            Configurações de Acessibilidade
+            {t('accessibility.title')}
           </DialogTitle>
           <DialogDescription>
-            Personalize a interface para melhor atender suas necessidades de navegação
+            {t('accessibility.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -57,27 +59,27 @@ export const AccessibilityMenu = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Type className="h-4 w-4" aria-hidden="true" />
-              <Label className="text-base font-semibold">Tamanho da Fonte</Label>
+              <Label className="text-base font-semibold">{t('accessibility.fontSize.title')}</Label>
             </div>
-            <p className="text-sm text-muted-foreground">Ajuste o tamanho do texto em toda a plataforma</p>
+            <p className="text-sm text-muted-foreground">{t('accessibility.fontSize.description')}</p>
             <RadioGroup
               value={settings.fontSize}
               onValueChange={(value) =>
                 updateSettings({ fontSize: value as AccessibilitySettings['fontSize'] })
               }
-              aria-label="Selecione o tamanho da fonte"
+              aria-label={t('accessibility.fontSize.aria')}
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="normal" id="font-normal" />
-                <Label htmlFor="font-normal" className="cursor-pointer">Normal - Tamanho padrão de leitura</Label>
+                <Label htmlFor="font-normal" className="cursor-pointer">{t('accessibility.fontSize.normal')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="large" id="font-large" />
-                <Label htmlFor="font-large" className="cursor-pointer">Grande - Texto maior para facilitar leitura</Label>
+                <Label htmlFor="font-large" className="cursor-pointer">{t('accessibility.fontSize.large')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="x-large" id="font-xlarge" />
-                <Label htmlFor="font-xlarge" className="cursor-pointer">Muito Grande - Máxima legibilidade</Label>
+                <Label htmlFor="font-xlarge" className="cursor-pointer">{t('accessibility.fontSize.xLarge')}</Label>
               </div>
             </RadioGroup>
           </div>
@@ -88,23 +90,23 @@ export const AccessibilityMenu = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Type className="h-4 w-4" aria-hidden="true" />
-              <Label className="text-base font-semibold">Peso da Fonte</Label>
+              <Label className="text-base font-semibold">{t('accessibility.fontWeight.title')}</Label>
             </div>
-            <p className="text-sm text-muted-foreground">Deixe o texto mais grosso para melhor contraste visual</p>
+            <p className="text-sm text-muted-foreground">{t('accessibility.fontWeight.description')}</p>
             <RadioGroup
               value={settings.fontWeight}
               onValueChange={(value) =>
                 updateSettings({ fontWeight: value as AccessibilitySettings['fontWeight'] })
               }
-              aria-label="Selecione o peso da fonte"
+              aria-label={t('accessibility.fontWeight.aria')}
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="normal" id="weight-normal" />
-                <Label htmlFor="weight-normal" className="cursor-pointer">Normal - Peso padrão</Label>
+                <Label htmlFor="weight-normal" className="cursor-pointer">{t('accessibility.fontWeight.normal')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="bold" id="weight-bold" />
-                <Label htmlFor="weight-bold" className="cursor-pointer font-bold">Negrito - Texto mais grosso e visível</Label>
+                <Label htmlFor="weight-bold" className="cursor-pointer font-bold">{t('accessibility.fontWeight.bold')}</Label>
               </div>
             </RadioGroup>
           </div>
@@ -115,31 +117,31 @@ export const AccessibilityMenu = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Palette className="h-4 w-4" aria-hidden="true" />
-              <Label className="text-base font-semibold">Modo Daltônico</Label>
+              <Label className="text-base font-semibold">{t('accessibility.colorBlind.title')}</Label>
             </div>
-            <p className="text-sm text-muted-foreground">Ajuste as cores para diferentes tipos de daltonismo</p>
+            <p className="text-sm text-muted-foreground">{t('accessibility.colorBlind.description')}</p>
             <RadioGroup
               value={settings.colorBlindMode}
               onValueChange={(value) =>
                 updateSettings({ colorBlindMode: value as AccessibilitySettings['colorBlindMode'] })
               }
-              aria-label="Selecione o modo de daltonismo"
+              aria-label={t('accessibility.colorBlind.aria')}
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="none" id="color-none" />
-                <Label htmlFor="color-none" className="cursor-pointer">Nenhum - Cores padrão</Label>
+                <Label htmlFor="color-none" className="cursor-pointer">{t('accessibility.colorBlind.none')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="protanopia" id="color-protanopia" />
-                <Label htmlFor="color-protanopia" className="cursor-pointer">Protanopia - Deficiência de vermelho</Label>
+                <Label htmlFor="color-protanopia" className="cursor-pointer">{t('accessibility.colorBlind.protanopia')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="deuteranopia" id="color-deuteranopia" />
-                <Label htmlFor="color-deuteranopia" className="cursor-pointer">Deuteranopia - Deficiência de verde</Label>
+                <Label htmlFor="color-deuteranopia" className="cursor-pointer">{t('accessibility.colorBlind.deuteranopia')}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="tritanopia" id="color-tritanopia" />
-                <Label htmlFor="color-tritanopia" className="cursor-pointer">Tritanopia - Deficiência de azul</Label>
+                <Label htmlFor="color-tritanopia" className="cursor-pointer">{t('accessibility.colorBlind.tritanopia')}</Label>
               </div>
             </RadioGroup>
           </div>
@@ -152,16 +154,16 @@ export const AccessibilityMenu = () => {
               <div className="flex items-center gap-2">
                 <Contrast className="h-4 w-4" aria-hidden="true" />
                 <Label htmlFor="high-contrast" className="text-base font-semibold cursor-pointer">
-                  Alto Contraste
+                  {t('accessibility.highContrast.title')}
                 </Label>
               </div>
-              <p className="text-sm text-muted-foreground">Aumenta o contraste entre texto e fundo</p>
+              <p className="text-sm text-muted-foreground">{t('accessibility.highContrast.description')}</p>
             </div>
             <Switch
               id="high-contrast"
               checked={settings.highContrast}
               onCheckedChange={(checked) => updateSettings({ highContrast: checked })}
-              aria-label="Ativar ou desativar alto contraste"
+              aria-label={t('accessibility.highContrast.aria')}
             />
           </div>
 
@@ -173,16 +175,16 @@ export const AccessibilityMenu = () => {
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4" aria-hidden="true" />
                 <Label htmlFor="reduced-motion" className="text-base font-semibold cursor-pointer">
-                  Reduzir Movimento
+                  {t('accessibility.reducedMotion.title')}
                 </Label>
               </div>
-              <p className="text-sm text-muted-foreground">Diminui animações e efeitos de movimento</p>
+              <p className="text-sm text-muted-foreground">{t('accessibility.reducedMotion.description')}</p>
             </div>
             <Switch
               id="reduced-motion"
               checked={settings.reducedMotion}
               onCheckedChange={(checked) => updateSettings({ reducedMotion: checked })}
-              aria-label="Ativar ou desativar redução de movimento"
+              aria-label={t('accessibility.reducedMotion.aria')}
             />
           </div>
 
@@ -193,10 +195,10 @@ export const AccessibilityMenu = () => {
             variant="outline"
             className="w-full"
             onClick={handleReset}
-            aria-label="Restaurar todas as configurações de acessibilidade para o padrão"
+            aria-label={t('accessibility.reset.aria')}
           >
             <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
-            Restaurar Configurações Padrão
+            {t('accessibility.reset.button')}
           </Button>
         </div>
       </DialogContent>

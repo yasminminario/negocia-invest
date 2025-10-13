@@ -6,6 +6,7 @@ import { Notification } from './NotificationBell';
 import { Handshake, DollarSign, TrendingUp, Info, CheckCheck, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useProfile } from '@/contexts/ProfileContext';
+import { useTranslation } from 'react-i18next';
 
 interface NotificationListProps {
   notifications: Notification[];
@@ -22,6 +23,15 @@ export const NotificationList: React.FC<NotificationListProps> = ({
 }) => {
   const navigate = useNavigate();
   const { activeProfile, setActiveProfile } = useProfile();
+  const { t, i18n } = useTranslation();
+
+  const resolveLocale = () => {
+    const language = i18n.resolvedLanguage || i18n.language || 'pt-BR';
+    if (language.startsWith('pt')) return 'pt-BR';
+    if (language.startsWith('es')) return 'es-ES';
+    if (language.startsWith('en')) return 'en-US';
+    return language;
+  };
 
   const getIcon = (type: Notification['type']) => {
     switch (type) {
@@ -43,16 +53,18 @@ export const NotificationList: React.FC<NotificationListProps> = ({
     const days = Math.floor(hours / 24);
 
     if (days > 7) {
-      return new Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-      }).format(date);
+      return t('notifications.list.date.older', {
+        date: new Intl.DateTimeFormat(resolveLocale(), {
+          day: '2-digit',
+          month: '2-digit',
+        }).format(date),
+      });
     } else if (days > 0) {
-      return `${days}d atrás`;
+      return t('notifications.list.date.daysAgo', { count: days });
     } else if (hours > 0) {
-      return `${hours}h atrás`;
+      return t('notifications.list.date.hoursAgo', { count: hours });
     } else {
-      return 'Agora';
+      return t('notifications.list.date.now');
     }
   };
 
@@ -79,7 +91,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
-        <h3 className="font-semibold text-foreground">Notificações</h3>
+        <h3 className="font-semibold text-foreground">{t('notifications.list.title')}</h3>
         {notifications.some((n) => !n.read) && (
           <Button
             variant="ghost"
@@ -88,7 +100,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
             className="text-xs"
           >
             <CheckCheck className="h-4 w-4 mr-1" />
-            Marcar todas como lidas
+            {t('notifications.list.markAll')}
           </Button>
         )}
       </div>
@@ -99,7 +111,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <Bell className="h-12 w-12 text-muted-foreground opacity-50 mb-3" />
             <p className="text-sm text-muted-foreground">
-              Nenhuma notificação
+              {t('notifications.list.empty')}
             </p>
           </div>
         ) : (
@@ -173,11 +185,15 @@ export const NotificationList: React.FC<NotificationListProps> = ({
                       </p>
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span className={profileBadgeClass}>
-                          {notification.profileType === 'investor' ? 'Perfil investidor' : notification.profileType === 'borrower' ? 'Perfil tomador' : 'Perfil'}
+                          {notification.profileType === 'investor'
+                            ? t('notifications.list.profile.investor')
+                            : notification.profileType === 'borrower'
+                              ? t('notifications.list.profile.borrower')
+                              : t('notifications.list.profile.generic')}
                         </span>
                         {notification.profileType && notification.profileType !== activeProfile && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                            Alterna para esse perfil
+                            {t('notifications.list.profile.switchHint')}
                           </span>
                         )}
                       </div>

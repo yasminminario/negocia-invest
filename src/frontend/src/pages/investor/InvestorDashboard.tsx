@@ -19,6 +19,8 @@ import { useActiveLoans } from '@/hooks/useActiveLoans';
 import { useOwnProposals } from '@/hooks/useOwnProposals';
 import { useNegotiations } from '@/hooks/useNegotiations';
 import { useLoanRequests } from '@/hooks/useLoanRequests';
+import { QuickActionCard } from '@/components/dashboard/QuickActionCard';
+import { useTranslation } from 'react-i18next';
 
 const InvestorDashboard = () => {
   const { user, setActiveProfile, isLoading, error } = useProfile();
@@ -29,22 +31,26 @@ const InvestorDashboard = () => {
   const { proposals: investorOffers } = useOwnProposals('investidor');
   const { negotiations } = useNegotiations('investor');
   const { requests } = useLoanRequests();
+  const { t } = useTranslation();
 
-  const firstName = user?.nome?.split(' ')[0] ?? 'Usuário';
+  const firstName = user?.nome?.split(' ')[0] ?? t('common.userFallback');
   const balance = user?.saldo_cc ?? 0;
 
-  const chartData = [
-    {
-      label: 'Score Bom',
-      value: (metrics.totalInvested * metrics.portfolioDiversification.goodScore) / 100,
-      color: 'hsl(var(--investor))',
-    },
-    {
-      label: 'Score Excelente',
-      value: (metrics.totalInvested * metrics.portfolioDiversification.excellentScore) / 100,
-      color: 'hsl(var(--borrower))',
-    },
-  ];
+  const chartData = useMemo(
+    () => [
+      {
+        label: t('investorDashboard.chart.goodScore'),
+        value: (metrics.totalInvested * metrics.portfolioDiversification.goodScore) / 100,
+        color: 'hsl(var(--investor))',
+      },
+      {
+        label: t('investorDashboard.chart.excellentScore'),
+        value: (metrics.totalInvested * metrics.portfolioDiversification.excellentScore) / 100,
+        color: 'hsl(var(--borrower))',
+      },
+    ],
+    [metrics.portfolioDiversification.excellentScore, metrics.portfolioDiversification.goodScore, metrics.totalInvested, t],
+  );
 
   const openOffersCount = useMemo(
     () => investorOffers.filter(
@@ -61,42 +67,35 @@ const InvestorDashboard = () => {
     () => [
       {
         icon: Search,
-        title: 'Encontrar solicitações',
-        description: 'Explore solicitações de crédito',
+        title: t('investorDashboard.actions.findRequests.title'),
+        description: t('investorDashboard.actions.findRequests.description'),
         action: () => navigate('/investor/find-requests'),
-        color: 'bg-investor/10 text-investor',
-        background: 'from-investor/10 via-investor/5 to-transparent',
-        accent: 'text-investor',
+        tone: 'investor' as const,
         count: availableRequestsCount,
-        countColor: 'text-investor',
-        countLabel: 'Disponíveis',
+        countLabel: t('investorDashboard.actions.findRequests.countLabel'),
       },
       {
         icon: TrendingUp,
-        title: 'Empréstimos',
-        description: 'Ofertas em aberto e empréstimos ativos',
+        title: t('investorDashboard.actions.loans.title'),
+        description: t('investorDashboard.actions.loans.description'),
         action: () => navigate('/investor/loans'),
-        color: 'bg-investor/10 text-investor',
-        background: 'from-investor/10 via-investor/5 to-transparent',
-        accent: 'text-investor',
+        tone: 'primary' as const,
         count: totalLoansCount,
-        countColor: 'text-investor',
-        countLabel: 'Total combinado',
+        titleClassName: 'text-investor',
+        countClassName: 'text-investor',
+        countLabel: t('investorDashboard.actions.loans.countLabel'),
       },
       {
         icon: Handshake,
-        title: 'Negociações',
-        description: 'Acompanhe negociações em andamento',
+        title: t('investorDashboard.actions.negotiations.title'),
+        description: t('investorDashboard.actions.negotiations.description'),
         action: () => navigate('/investor/negotiations'),
-        color: 'bg-warning/10 text-warning',
-        background: 'from-warning/10 via-warning/5 to-transparent',
-        accent: 'text-warning',
+        tone: 'warning' as const,
         count: negotiationsCount,
-        countColor: 'text-warning',
-        countLabel: 'Em andamento',
+        countLabel: t('investorDashboard.actions.negotiations.countLabel'),
       },
     ],
-    [navigate, availableRequestsCount, totalLoansCount, negotiationsCount],
+    [navigate, availableRequestsCount, totalLoansCount, negotiationsCount, t],
   );
 
   return (
@@ -118,14 +117,14 @@ const InvestorDashboard = () => {
               {/* Welcome */}
               <div className="space-y-2">
                 <h1 className="text-2xl md:text-3xl font-bold">
-                  Olá, {firstName}! 👋
+                  {t('investorDashboard.greeting', { name: firstName })}
                 </h1>
-                <p className="text-muted-foreground">Acompanhe seus investimentos</p>
+                <p className="text-muted-foreground">{t('investorDashboard.subtitle')}</p>
               </div>
 
               {isLoading && (
                 <div className="rounded-xl border border-border p-4 text-sm text-muted-foreground">
-                  Carregando dados do seu perfil...
+                  {t('common.loadingProfile')}
                 </div>
               )}
 
@@ -141,7 +140,7 @@ const InvestorDashboard = () => {
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                     <Wallet className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">Saldo em Conta</span>
+                  <span className="text-sm font-medium text-muted-foreground">{t('investorDashboard.balanceCard')}</span>
                 </div>
                 <div className="text-3xl font-bold text-primary">
                   {formatCurrency(balance)}
@@ -151,19 +150,19 @@ const InvestorDashboard = () => {
               {/* Metrics Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-investor/10 to-investor/5 border-2 border-investor/30">
-                  <div className="text-sm text-muted-foreground mb-1">Rentabilidade</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.returnPercentage')}</div>
                   <div className="text-2xl font-bold text-investor">{metrics.returnPercentage}%</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-positive/10 to-positive/5 border-2 border-positive/30">
-                  <div className="text-sm text-muted-foreground mb-1">Lucro Total</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.totalProfit')}</div>
                   <div className="text-xl font-bold text-positive">{formatCurrency(metrics.totalReturn)}</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
-                  <div className="text-sm text-muted-foreground mb-1">Investido</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.totalInvested')}</div>
                   <div className="text-xl font-bold text-primary">{formatCurrency(metrics.totalInvested)}</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/30 border-2 border-border">
-                  <div className="text-sm text-muted-foreground mb-1">Empréstimos</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('investorDashboard.metrics.activeLoans')}</div>
                   <div className="text-2xl font-bold">{metrics.activeLoans}</div>
                 </div>
               </div>
@@ -174,63 +173,39 @@ const InvestorDashboard = () => {
                   <Button
                     onClick={() => navigate('/investor/create-offer')}
                     className="w-full rounded-full py-6 text-lg font-semibold hover:scale-[1.02] transition-transform"
-                    aria-label="Criar nova oferta de empréstimo"
+                    aria-label={t('investorDashboard.createOfferAria')}
                   >
-                    + Ofertar empréstimo
+                    + {t('investorDashboard.createOffer')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Criar nova oferta de empréstimo</p>
+                  <p>{t('investorDashboard.createOfferTooltip')}</p>
                 </TooltipContent>
               </Tooltip>
 
               {/* Action Cards */}
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <h2 className="text-lg font-bold">Acesso rápido</h2>
+                  <h2 className="text-lg font-bold">{t('investorDashboard.quickAccess.title')}</h2>
                   <p className="text-sm text-muted-foreground">
-                    Acompanhe em um só lugar suas ofertas em aberto, empréstimos ativos e negociações em andamento.
+                    {t('investorDashboard.quickAccess.description')}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                   {actionCards.map((card, index) => (
                     <Tooltip key={index}>
                       <TooltipTrigger asChild>
-                        <button
+                        <QuickActionCard
+                          icon={card.icon}
+                          title={card.title}
+                          description={card.description}
                           onClick={card.action}
-                          className="group relative w-full overflow-hidden rounded-2xl border border-border bg-card p-4 text-left transition-all duration-200 hover:border-primary/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          aria-label={card.description}
-                        >
-                          <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${card.background ?? 'from-muted/10 via-muted/5 to-transparent'}`} />
-                          <div className="relative flex items-start justify-between gap-4">
-                            <div className="flex items-start gap-4">
-                              <div className={`w-12 h-12 rounded-2xl ${card.color ?? 'bg-primary/10 text-primary'} flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105`}>
-                                <card.icon className="w-6 h-6" aria-hidden="true" />
-                              </div>
-                              <div>
-                                <div className={`font-semibold ${card.accent ?? ''}`}>{card.title}</div>
-                                <div className="text-sm text-muted-foreground">{card.description}</div>
-                                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium uppercase tracking-wide">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                                    Acesso rápido
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                            {typeof card.count === 'number' && (
-                              <div className="flex flex-col items-end justify-center gap-1">
-                                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                                  {card.countLabel ?? 'Total'}
-                                </span>
-                                <span className={`text-3xl font-extrabold leading-none ${card.countColor ?? 'text-primary'}`}>
-                                  {card.count}
-                                </span>
-                              </div>
-                            )}
-                            <span className="mt-1 self-center text-muted-foreground transition-colors group-hover:text-primary" aria-hidden="true">→</span>
-                          </div>
-                        </button>
+                          count={card.count}
+                          countLabel={card.countLabel}
+                          tone={card.tone}
+                          titleClassName={card.titleClassName}
+                          countClassName={card.countClassName}
+                        />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>{card.description}</p>
@@ -245,7 +220,7 @@ const InvestorDashboard = () => {
             <div className="space-y-6">
               {/* Diversification Chart */}
               <div className="p-6 rounded-2xl border-2 bg-card sticky top-6">
-                <h3 className="font-bold mb-4">Diversificação da carteira</h3>
+                <h3 className="font-bold mb-4">{t('investorDashboard.portfolio')}</h3>
                 <DonutChart data={chartData} />
               </div>
 
@@ -259,14 +234,14 @@ const InvestorDashboard = () => {
                     }}
                     variant="outline"
                     className="w-full rounded-full bg-borrower/5 border-borrower text-borrower hover:bg-borrower/20 hover:border-borrower transition-colors"
-                    aria-label="Mudar para perfil de tomador"
+                    aria-label={t('investorDashboard.switchProfile.tooltip')}
                   >
                     <TrendingDown className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Trocar para Tomador
+                    {t('investorDashboard.switchProfile.label')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Trocar para modo Tomador</p>
+                  <p>{t('investorDashboard.switchProfile.tooltip')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>

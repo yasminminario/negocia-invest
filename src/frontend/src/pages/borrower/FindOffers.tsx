@@ -157,7 +157,7 @@ const FindOffers = () => {
                     amount={offer.amount}
                     status={offer.status}
                     onClick={() => navigate(`/borrower/offer/${offer.id}`)}
-                    className="transition-all duration-200 hover-scale animate-fade-in"
+                    tone="borrower"
                   />
                   <Button
                     variant="ghost"

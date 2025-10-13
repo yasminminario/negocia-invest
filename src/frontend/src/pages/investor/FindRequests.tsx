@@ -155,6 +155,7 @@ const FindRequests = () => {
                     amount={request.amount}
                     status={request.acceptsNegotiation ? 'negotiable' : 'fixed'}
                     onClick={() => navigate(`/investor/request/${request.id}`)}
+                    tone="investor"
                   />
                   <Button
                     variant="ghost"

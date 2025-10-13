@@ -17,13 +17,16 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import { useOffers } from '@/hooks/useOffers';
 import { useActiveLoans } from '@/hooks/useActiveLoans';
 import { useNegotiations } from '@/hooks/useNegotiations';
+import { QuickActionCard } from '@/components/dashboard/QuickActionCard';
+import { useTranslation } from 'react-i18next';
 
 const BorrowerDashboard = () => {
   const { user, score, setActiveProfile, isLoading, error } = useProfile();
   const navigate = useNavigate();
   const { showOnboarding, completeOnboarding, skipOnboarding } = useOnboarding();
+  const { t } = useTranslation();
 
-  const firstName = user?.nome?.split(' ')[0] ?? 'Usuário';
+  const firstName = user?.nome?.split(' ')[0] ?? t('common.userFallback');
   const balance = user?.saldo_cc ?? 0;
   const scoreValue = score?.valor_score ?? 0;
 
@@ -45,42 +48,33 @@ const BorrowerDashboard = () => {
     () => [
       {
         icon: Search,
-        title: 'Encontrar ofertas',
-        description: 'Explore opções de crédito alinhadas ao seu perfil',
+        title: t('borrowerDashboard.actions.findOffers.title'),
+        description: t('borrowerDashboard.actions.findOffers.description'),
         action: () => navigate('/borrower/find-offers'),
-        color: 'bg-primary/10 text-primary',
-        background: 'from-primary/10 via-primary/5 to-transparent',
-        accent: 'text-primary',
+        tone: 'borrower' as const,
         count: availableOffersCount,
-        countLabel: 'Disponíveis',
-        countColor: 'text-primary',
+        countLabel: t('borrowerDashboard.actions.findOffers.countLabel'),
       },
       {
         icon: FileText,
-        title: 'Empréstimos ativos',
-        description: 'Acompanhe contratos em andamento e parcelas atuais',
+        title: t('borrowerDashboard.actions.activeLoans.title'),
+        description: t('borrowerDashboard.actions.activeLoans.description'),
         action: () => navigate('/borrower/loans'),
-        color: 'bg-success/10 text-success',
-        background: 'from-success/10 via-success/5 to-transparent',
-        accent: 'text-success',
+        tone: 'success' as const,
         count: activeLoansCount,
-        countLabel: 'Em andamento',
-        countColor: 'text-success',
+        countLabel: t('borrowerDashboard.actions.activeLoans.countLabel'),
       },
       {
         icon: Handshake,
-        title: 'Negociações',
-        description: 'Gerencie contrapropostas e mantenha o diálogo em dia',
+        title: t('borrowerDashboard.actions.negotiations.title'),
+        description: t('borrowerDashboard.actions.negotiations.description'),
         action: () => navigate('/borrower/negotiations'),
-        color: 'bg-warning/10 text-warning',
-        background: 'from-warning/10 via-warning/5 to-transparent',
-        accent: 'text-warning',
+        tone: 'warning' as const,
         count: ongoingNegotiationsCount,
-        countLabel: 'Em andamento',
-        countColor: 'text-warning',
+        countLabel: t('borrowerDashboard.actions.negotiations.countLabel'),
       },
     ],
-    [navigate, availableOffersCount, activeLoansCount, ongoingNegotiationsCount],
+    [navigate, availableOffersCount, activeLoansCount, ongoingNegotiationsCount, t],
   );
 
   return (
@@ -102,14 +96,14 @@ const BorrowerDashboard = () => {
               {/* Welcome Section */}
               <div className="space-y-2">
                 <h1 className="text-2xl md:text-3xl font-bold">
-                  Olá, {firstName}! 👋
+                  {t('borrowerDashboard.greeting', { name: firstName })}
                 </h1>
-                <p className="text-muted-foreground">Bem-vindo de volta ao seu painel</p>
+                <p className="text-muted-foreground">{t('borrowerDashboard.subtitle')}</p>
               </div>
 
               {isLoading && (
                 <div className="rounded-xl border border-border p-4 text-sm text-muted-foreground">
-                  Carregando dados do seu perfil...
+                  {t('common.loadingProfile')}
                 </div>
               )}
 
@@ -125,7 +119,7 @@ const BorrowerDashboard = () => {
                   <div className="w-10 h-10 rounded-full bg-borrower/20 flex items-center justify-center">
                     <Wallet className="w-5 h-5 text-borrower" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">Saldo em Conta</span>
+                  <span className="text-sm font-medium text-muted-foreground">{t('borrowerDashboard.balanceCard')}</span>
                 </div>
                 <div className="text-3xl font-bold text-borrower">
                   {formatCurrency(balance)}
@@ -138,63 +132,37 @@ const BorrowerDashboard = () => {
                   <Button
                     onClick={() => navigate('/borrower/create-request')}
                     className="w-full rounded-full py-6 text-lg font-semibold hover:scale-[1.02] transition-transform"
-                    aria-label="Criar nova solicitação de empréstimo"
+                    aria-label={t('borrowerDashboard.createRequestAria')}
                   >
-                    + Solicitar empréstimo
+                    + {t('borrowerDashboard.createRequest')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Criar nova solicitação de empréstimo</p>
+                  <p>{t('borrowerDashboard.createRequestTooltip')}</p>
                 </TooltipContent>
               </Tooltip>
 
               {/* Action Cards */}
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <h2 className="text-lg font-bold">Acesso rápido</h2>
+                  <h2 className="text-lg font-bold">{t('borrowerDashboard.quickAccess.title')}</h2>
                   <p className="text-sm text-muted-foreground">
-                    Veja oportunidades disponíveis, acompanhamento de contratos e negociações em andamento.
+                    {t('borrowerDashboard.quickAccess.description')}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                   {actionCards.map((card, index) => (
                     <Tooltip key={index}>
                       <TooltipTrigger asChild>
-                        <button
+                        <QuickActionCard
+                          icon={card.icon}
+                          title={card.title}
+                          description={card.description}
                           onClick={card.action}
-                          className="group relative w-full overflow-hidden rounded-2xl border border-border bg-card p-4 text-left transition-all duration-200 hover:border-primary/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                          aria-label={card.description}
-                        >
-                          <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${card.background ?? 'from-muted/10 via-muted/5 to-transparent'}`} />
-                          <div className="relative flex items-start justify-between gap-4">
-                            <div className="flex items-start gap-4">
-                              <div className={`w-12 h-12 rounded-2xl ${card.color ?? 'bg-primary/10 text-primary'} flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105`}>
-                                <card.icon className="w-6 h-6" aria-hidden="true" />
-                              </div>
-                              <div>
-                                <div className={`font-semibold ${card.accent ?? ''}`}>{card.title}</div>
-                                <div className="text-sm text-muted-foreground">{card.description}</div>
-                                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium uppercase tracking-wide">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                                    Acesso rápido
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                            {typeof card.count === 'number' && (
-                              <div className="flex flex-col items-end justify-center gap-1">
-                                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                                  {card.countLabel ?? 'Total'}
-                                </span>
-                                <span className={`text-3xl font-extrabold leading-none ${card.countColor ?? 'text-primary'}`}>
-                                  {card.count}
-                                </span>
-                              </div>
-                            )}
-                            <span className="mt-1 self-center text-muted-foreground transition-colors group-hover:text-primary" aria-hidden="true">→</span>
-                          </div>
-                        </button>
+                          count={card.count}
+                          countLabel={card.countLabel}
+                          tone={card.tone}
+                        />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>{card.description}</p>
@@ -211,8 +179,8 @@ const BorrowerDashboard = () => {
               <div className="flex flex-col items-center p-8 bg-gradient-to-br from-borrower/10 to-borrower/5 rounded-2xl border-2 border-borrower/30 sticky top-6">
                 <ScoreRing score={scoreValue} size="lg" />
                 <div className="mt-4 text-center">
-                  <div className="text-lg font-bold text-borrower">Excelente Pagador</div>
-                  <div className="text-sm text-muted-foreground">Seu score está ótimo!</div>
+                  <div className="text-lg font-bold text-borrower">{t('borrowerDashboard.score.title')}</div>
+                  <div className="text-sm text-muted-foreground">{t('borrowerDashboard.score.subtitle')}</div>
                 </div>
               </div>
 
@@ -226,14 +194,14 @@ const BorrowerDashboard = () => {
                     }}
                     variant="outline"
                     className="w-full rounded-full bg-investor/5 border-investor text-investor hover:bg-investor/20 hover:border-investor transition-colors"
-                    aria-label="Mudar para perfil de investidor"
+                    aria-label={t('borrowerDashboard.switchProfile.tooltip')}
                   >
                     <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Trocar para Investidor
+                    {t('borrowerDashboard.switchProfile.label')}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Trocar para modo Investidor</p>
+                  <p>{t('borrowerDashboard.switchProfile.tooltip')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>

@@ -1,0 +1,694 @@
+{
+    "app": {
+        "name": "negoci.ai"
+    },
+    "language": {
+        "label": "Idioma",
+        "pt": "Portugués (Brasil)",
+        "en": "Inglés",
+        "es": "Español"
+    },
+    "profiles": {
+        "borrower": "Solicitante",
+        "investor": "Inversionista"
+    },
+    "header": {
+        "goHomeAria": "Volver al inicio - negoci.ai",
+        "helpAria": "Abrir centro de ayuda",
+        "help": "Centro de ayuda",
+        "profileAria": "Ir a mi perfil",
+        "profile": "Mi perfil",
+        "notifications": "Notificaciones",
+        "accessibility": "Accesibilidad",
+        "back": "Volver"
+    },
+    "mobileMenu": {
+        "title": "Menú de navegación",
+        "profile": "Mi perfil",
+        "profileAria": "Ir a mi perfil",
+        "switchProfile": "Cambiar a {{profile}}",
+        "switchProfileAria": "Cambiar al perfil de {{profile}}",
+        "notifications": "Notificaciones",
+        "accessibility": "Configuraciones de accesibilidad",
+        "help": "Centro de ayuda"
+    },
+    "common": {
+        "loadingProfile": "Cargando los datos de tu perfil...",
+        "quickAccessBadge": "Acceso rápido",
+        "emptyState": "No se encontraron registros",
+        "seeDetails": "Ver detalles",
+        "userFallback": "Usuario",
+        "userWithId": "Usuario #{{id}}",
+        "loanCard": {
+            "interestRate": "Tasa de interés",
+            "period": "Período",
+            "monthlyPayment": "Cuota mensual",
+            "totalToPay": "Total a pagar",
+            "amountOffered": "Monto {{type}}",
+            "offered": "ofrecido",
+            "requested": "solicitado",
+            "ariaLabel": "Oferta de préstamo de {{name}}. Monto: {{amount}}. Tasa: {{rate}}. {{installments}} cuotas de {{payment}}. Score: {{score}}"
+        },
+        "monthly": "{{value}} mensual",
+        "perMonth": "por mes",
+        "days": "{{count}} días",
+        "today": "Hoy",
+        "months": "{{count}} meses"
+    },
+    "investorDashboard": {
+        "greeting": "Hola, {{name}}! 👋",
+        "subtitle": "Acompaña tus inversiones",
+        "balanceCard": "Saldo en cuenta",
+        "metrics": {
+            "returnPercentage": "Rentabilidad",
+            "totalProfit": "Ganancia total",
+            "totalInvested": "Invertido",
+            "activeLoans": "Préstamos"
+        },
+        "createOffer": "Ofrecer préstamo",
+        "createOfferTooltip": "Crear una nueva oferta de préstamo",
+        "createOfferAria": "Crear una nueva oferta de préstamo",
+        "quickAccess": {
+            "title": "Acceso rápido",
+            "description": "Gestiona ofertas abiertas, préstamos activos y negociaciones en curso en un solo lugar."
+        },
+        "actions": {
+            "findRequests": {
+                "title": "Encontrar solicitudes",
+                "description": "Explora solicitudes de crédito",
+                "countLabel": "Disponibles"
+            },
+            "loans": {
+                "title": "Préstamos",
+                "description": "Ofertas abiertas y préstamos activos",
+                "countLabel": "Total combinado"
+            },
+            "negotiations": {
+                "title": "Negociaciones",
+                "description": "Sigue las negociaciones en curso",
+                "countLabel": "En progreso"
+            }
+        },
+        "portfolio": "Diversificación de cartera",
+        "chart": {
+            "goodScore": "Score bueno",
+            "excellentScore": "Score excelente"
+        },
+        "switchProfile": {
+            "label": "Cambiar a Solicitante",
+            "tooltip": "Cambiar al modo solicitante"
+        }
+    },
+    "investorNegotiations": {
+        "title": "Negociaciones",
+        "searchPlaceholder": "Buscar",
+        "loading": "Cargando...",
+        "empty": "No hay negociaciones activas",
+        "endOfList": "😊 Eso es todo",
+        "negotiatingWith": "Negociando con",
+        "awaitingBorrower": "Esperando al solicitante",
+        "filterButtonAria": "Abrir filtros",
+        "badges": {
+            "you": "{{name}} (tú)",
+            "awaitingBorrower": "Esperando al solicitante",
+            "awaitingNegotiation": "Esperando negociación"
+        },
+        "fields": {
+            "currentRate": "Tasa actual",
+            "term": "Plazo",
+            "installment": "Cuota",
+            "contractValue": "Valor del contrato",
+            "negotiationNumber": "Número de negociación"
+        },
+        "countdown": {
+            "expired": "Plazo finalizado",
+            "expiresIn": "Expira en {{time}}"
+        }
+    },
+    "borrowerDashboard": {
+        "greeting": "Hola, {{name}}! 👋",
+        "subtitle": "Bienvenido nuevamente a tu panel",
+        "balanceCard": "Saldo en cuenta",
+        "createRequest": "Solicitar préstamo",
+        "createRequestTooltip": "Crear una nueva solicitud de préstamo",
+        "createRequestAria": "Crear una nueva solicitud de préstamo",
+        "quickAccess": {
+            "title": "Acceso rápido",
+            "description": "Mira oportunidades, seguimiento de contratos y negociaciones activas."
+        },
+        "actions": {
+            "findOffers": {
+                "title": "Encontrar ofertas",
+                "description": "Explora opciones de crédito alineadas a tu perfil",
+                "countLabel": "Disponibles"
+            },
+            "activeLoans": {
+                "title": "Préstamos activos",
+                "description": "Acompaña contratos y cuotas actuales",
+                "countLabel": "En progreso"
+            },
+            "negotiations": {
+                "title": "Negociaciones",
+                "description": "Gestiona contraofertas y mantén la comunicación",
+                "countLabel": "En progreso"
+            }
+        },
+        "score": {
+            "title": "Pagador excelente",
+            "subtitle": "¡Tu score está genial!"
+        },
+        "switchProfile": {
+            "label": "Cambiar a Inversionista",
+            "tooltip": "Cambiar al modo inversionista"
+        }
+    },
+    "activeLoans": {
+        "investor": {
+            "title": "Préstamos",
+            "openOffers": "Ofertas abiertas",
+            "loadingOffers": "Cargando ofertas...",
+            "noOpenOffers": "No tienes ofertas abiertas en este momento.",
+            "availableLoans": "Préstamos activos",
+            "loadingLoans": "Cargando...",
+            "empty": "No se encontraron préstamos",
+            "offer": {
+                "label": "Oferta #{{id}}",
+                "rate": "Tasa sugerida",
+                "installments": "Cuotas",
+                "monthlyPayment": "Cuota estimada",
+                "createdAt": "Creada el"
+            },
+            "advance": "Anticipar cuotas"
+        },
+        "borrower": {
+            "title": "Préstamos",
+            "openRequests": "Solicitudes abiertas",
+            "loadingRequests": "Cargando solicitudes...",
+            "noOpenRequests": "No tienes solicitudes abiertas en este momento.",
+            "availableLoans": "Préstamos",
+            "loadingLoans": "Cargando...",
+            "empty": "No se encontraron préstamos",
+            "request": {
+                "label": "Solicitud #{{id}}",
+                "rate": "Tasa sugerida",
+                "installments": "Cuotas",
+                "monthlyPayment": "Cuota estimada",
+                "createdAt": "Creado el"
+            }
+        }
+    },
+    "notifications": {
+        "bell": {
+            "ariaDefault": "Notificaciones",
+            "ariaWithCount_one": "Notificaciones - 1 nueva notificación",
+            "ariaWithCount_other": "Notificaciones - {{count}} nuevas notificaciones",
+            "badgeLabel_one": "1 notificación sin leer",
+            "badgeLabel_other": "{{count}} notificaciones sin leer",
+            "srNew_one": "1 nueva notificación",
+            "srNew_other": "{{count}} nuevas notificaciones",
+            "srEmpty": "Sin notificaciones nuevas"
+        },
+        "list": {
+            "title": "Notificaciones",
+            "markAll": "Marcar todas como leídas",
+            "empty": "Sin notificaciones",
+            "profile": {
+                "generic": "Perfil",
+                "borrower": "Perfil tomador",
+                "investor": "Perfil inversionista",
+                "switchHint": "Cambiar a este perfil"
+            },
+            "date": {
+                "now": "Ahora",
+                "hoursAgo_one": "Hace 1h",
+                "hoursAgo_other": "Hace {{count}}h",
+                "daysAgo_one": "Hace 1d",
+                "daysAgo_other": "Hace {{count}}d",
+                "older": "{{date}}"
+            }
+        }
+    },
+    "advanceInstallments": {
+        "title": "Anticipar cuotas",
+        "instructions": "Selecciona las cuotas que deseas anticipar. Los valores son estimaciones y pueden cambiar tras el análisis final.",
+        "loading": "Cargando cuotas disponibles...",
+        "error": "Préstamo no encontrado",
+        "overview": {
+            "loan": "Préstamo #{{id}}",
+            "rate": "Tasa acordada",
+            "summary": "{{count}} cuotas totales · {{amount}} por cuota",
+            "borrowerFallback": "Solicitante #{{id}}"
+        },
+        "installments": {
+            "title": "Cuotas disponibles",
+            "none": "Este préstamo no tiene cuotas futuras para anticipar.",
+            "emptyCta": "Volver a mis préstamos",
+            "label": "Cuota {{number}}/{{total}}",
+            "due": "Vencimiento: {{date}}",
+            "inDays": "en {{days}} días"
+        },
+        "summary": {
+            "title": "Resumen de la anticipación",
+            "original": "Monto original a recibir",
+            "fee": "Tarifa de anticipación",
+            "net": "Monto neto ahora"
+        },
+        "success": {
+            "title": "¡Anticipación solicitada!",
+            "description": "El valor estará disponible en tu cuenta hasta en 2 días hábiles. Recibirás una notificación cuando la transferencia se complete.",
+            "back": "Volver a mis préstamos"
+        },
+        "buttons": {
+            "select": "Seleccionar cuotas",
+            "advanceCount_one": "Anticipar 1 cuota",
+            "advanceCount_other": "Anticipar {{count}} cuotas",
+            "confirm": "Confirmar y anticipar",
+            "processing": "Procesando...",
+            "backToLoan": "Ver detalles del préstamo"
+        },
+        "confirm": {
+            "title": "¿Confirmar anticipación?",
+            "description": "Estás a punto de recibir {{amount}} ahora. Esta acción es irreversible."
+        }
+    },
+    "auth": {
+        "login": {
+            "subtitle": "Préstamos P2P con negociación justa",
+            "emailLabel": "Correo electrónico",
+            "emailPlaceholder": "tu@email.com",
+            "passwordLabel": "Contraseña",
+            "passwordPlaceholder": "••••••••",
+            "submit": "Iniciar sesión",
+            "loading": "Ingresando...",
+            "noAccount": "¿No tienes una cuenta?",
+            "signUpLink": "Regístrate",
+            "toast": {
+                "successTitle": "¡Inicio de sesión exitoso!",
+                "successDescription": "Bienvenido a negoci.ai",
+                "errorTitle": "No fue posible iniciar sesión",
+                "errorDescription": "Inténtalo nuevamente"
+            }
+        },
+        "signUp": {
+            "subtitle": "Crea tu cuenta",
+            "nameLabel": "Nombre completo",
+            "namePlaceholder": "Tu nombre",
+            "emailLabel": "Correo electrónico",
+            "emailPlaceholder": "tu@email.com",
+            "passwordLabel": "Contraseña",
+            "passwordPlaceholder": "••••••••",
+            "confirmPasswordLabel": "Confirmar contraseña",
+            "submit": "Crear cuenta",
+            "loading": "Creando cuenta...",
+            "haveAccount": "¿Ya tienes una cuenta?",
+            "loginLink": "Iniciar sesión",
+            "toast": {
+                "mismatchTitle": "Error",
+                "mismatchDescription": "Las contraseñas no coinciden",
+                "shortPassword": "La contraseña debe tener al menos 6 caracteres",
+                "successTitle": "¡Cuenta creada!",
+                "successDescription": "Ya puedes acceder al prototipo",
+                "errorTitle": "Error al crear la cuenta",
+                "errorDescription": "Ocurrió un problema al crear tu cuenta"
+            }
+        },
+        "selectProfile": {
+            "title": "Elige tu perfil",
+            "subtitle": "¿Cómo quieres acceder a la plataforma hoy?",
+            "borrower": {
+                "description": "Solicita préstamos con tasas justas y negocia directamente con inversionistas",
+                "cta": "Entrar como solicitante"
+            },
+            "investor": {
+                "description": "Ofrece crédito con retornos atractivos y negocia las mejores condiciones",
+                "cta": "Entrar como inversionista"
+            }
+        }
+    },
+    "onboarding": {
+        "dialog": {
+            "tipsTitle": "💡 Consejos útiles:",
+            "stepProgress": "Paso {{current}} de {{total}}",
+            "skip": "Saltar introducción",
+            "skipAria": "Saltar tutorial",
+            "previous": "Anterior",
+            "previousAria": "Volver al paso anterior",
+            "next": "Siguiente",
+            "nextAria": "Ir al siguiente paso",
+            "finish": "¡Comencemos!",
+            "finishAria": "Finalizar tutorial"
+        },
+        "shared": {
+            "steps": {
+                "switchProfile": {
+                    "title": "Cambiar de perfil",
+                    "description": "Puedes alternar entre perfiles en cualquier momento. ¡Explora las dos perspectivas!",
+                    "tips": [
+                        "Prueba ambos perfiles",
+                        "Entiende cómo funciona del otro lado"
+                    ]
+                },
+                "helpCenter": {
+                    "title": "Centro de ayuda",
+                    "description": "Accede a guías y consejos en el centro de ayuda disponible en el menú superior."
+                },
+                "accessibility": {
+                    "title": "Accesibilidad",
+                    "description": "Personaliza tu experiencia ajustando texto, contraste y animaciones para navegar como prefieras.",
+                    "tips": [
+                        "Ajusta según tus necesidades",
+                        "Usa Tab para navegar",
+                        "Activa subtítulos de voz si lo necesitas"
+                    ]
+                }
+            }
+        },
+        "borrower": {
+            "steps": {
+                "welcome": {
+                    "title": "¡Bienvenido a negoci.ai! 🎉",
+                    "description": "Hagamos un recorrido rápido para que conozcas todas las funcionalidades disponibles."
+                },
+                "createRequest": {
+                    "title": "Solicitar préstamo",
+                    "description": "Crea solicitudes de préstamo de forma simple. Define el monto, el plazo y las condiciones ideales.",
+                    "tips": [
+                        "Sé específico con lo que necesitas",
+                        "Cuantos más detalles, mejores ofertas recibirás"
+                    ]
+                },
+                "findOffers": {
+                    "title": "Encontrar ofertas",
+                    "description": "Explora ofertas de inversionistas y usa filtros para hallar las mejores condiciones.",
+                    "tips": [
+                        "Compara tasas de interés",
+                        "Evalúa el plazo de pago",
+                        "Verifica el score del inversionista"
+                    ]
+                },
+                "negotiate": {
+                    "title": "Negociar",
+                    "description": "Negocia tasas y condiciones directamente con inversionistas. Envía contrapropuestas hasta llegar al mejor acuerdo.",
+                    "tips": [
+                        "Usa el chat para aclarar dudas",
+                        "Sé flexible durante la negociación",
+                        "Sigue tus negociaciones activas"
+                    ]
+                },
+                "notifications": {
+                    "title": "Notificaciones",
+                    "description": "Recibe alertas de nuevas ofertas, mensajes y actualizaciones en la campana de notificaciones."
+                }
+            }
+        },
+        "investor": {
+            "steps": {
+                "welcome": {
+                    "title": "¡Bienvenido a negoci.ai! 🎉",
+                    "description": "Hagamos un recorrido rápido para que conozcas todas las funcionalidades disponibles."
+                },
+                "createOffer": {
+                    "title": "Ofrecer préstamo",
+                    "description": "Crea ofertas de préstamo definiendo monto, tasa, plazo y score mínimo deseado.",
+                    "tips": [
+                        "Ofrece condiciones competitivas",
+                        "Considera tu perfil de riesgo",
+                        "Diversifica tu portafolio"
+                    ]
+                },
+                "findRequests": {
+                    "title": "Encontrar solicitudes",
+                    "description": "Explora solicitudes de solicitantes y encuentra oportunidades usando filtros inteligentes.",
+                    "tips": [
+                        "Analiza el score del solicitante",
+                        "Verifica el historial",
+                        "Compara diferentes solicitudes"
+                    ]
+                },
+                "negotiate": {
+                    "title": "Negociar",
+                    "description": "Negocia directamente con solicitantes. Ajusta condiciones, envía contrapropuestas y cierra mejores acuerdos.",
+                    "tips": [
+                        "Sé claro con tus condiciones",
+                        "Responde rápido a las propuestas",
+                        "Mantén una comunicación profesional"
+                    ]
+                },
+                "dashboard": {
+                    "title": "Acompañar inversiones",
+                    "description": "Monitorea préstamos activos, pagos y retorno en tiempo real.",
+                    "tips": [
+                        "Revisa tus retornos con frecuencia",
+                        "Diversifica tus inversiones",
+                        "Acompaña el historial de pagos"
+                    ]
+                },
+                "advanceInstallments": {
+                    "title": "Anticipar recibos",
+                    "description": "Anticipa cuotas futuras de contratos activos y recibe el dinero al instante.",
+                    "tips": [
+                        "Selecciona las cuotas futuras que deseas anticipar",
+                        "Revisa el valor neto antes de confirmar",
+                        "Úsalo cuando necesites liquidez inmediata"
+                    ]
+                },
+                "notifications": {
+                    "title": "Notificaciones",
+                    "description": "Recibe alertas sobre nuevas solicitudes, mensajes y actualizaciones importantes."
+                }
+            }
+        }
+    },
+    "helpDialog": {
+        "borrower": {
+            "title": "Guía del solicitante",
+            "description": "Aprende a conseguir el préstamo ideal",
+            "sections": {
+                "whatIs": {
+                    "title": "¿Qué es negoci.ai?",
+                    "description": "negoci.ai te conecta directamente con inversionistas que ofrecen préstamos. Sin bancos, sin burocracia: solo negociaciones directas y transparentes.",
+                    "tip": "💡 Tú tienes el control: negocia tasas, elige plazos y acepta solo las ofertas que te convienen."
+                },
+                "howToStart": {
+                    "title": "¿Cómo empezar?",
+                    "steps": [
+                        {
+                            "title": "Crea una solicitud",
+                            "description": "Define cuánto necesitas, el plazo deseado y la tasa máxima que puedes pagar."
+                        },
+                        {
+                            "title": "O busca ofertas",
+                            "description": "Revisa las ofertas disponibles y elige la que mejor se ajuste."
+                        },
+                        {
+                            "title": "Negocia",
+                            "description": "Usa nuestras herramientas para ajustar valores y condiciones en tiempo real."
+                        }
+                    ]
+                },
+                "negotiation": {
+                    "title": "¿Cómo funciona la negociación?",
+                    "description": "Nuestros sliders inteligentes muestran el impacto de cada cambio:",
+                    "items": [
+                        "Ajusta valores y ve inmediatamente el impacto en la cuota",
+                        "Compara tu propuesta con la oferta original lado a lado",
+                        "Consulta el historial completo de propuestas intercambiadas"
+                    ],
+                    "notification": "¡Recibirás una notificación por cada contrapropuesta!"
+                },
+                "score": {
+                    "title": "¿Cómo funciona el score?",
+                    "description": "Tu score es tu credibilidad en la plataforma. Cuanto más alto, mejores condiciones obtienes:",
+                    "footer": "¡Paga a tiempo, completa negociaciones con éxito y tu score aumentará automáticamente!"
+                },
+                "tips": {
+                    "title": "Consejos clave",
+                    "items": [
+                        {
+                            "text": "✅ Compara siempre varias ofertas antes de decidir",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Usa el simulador para entender el costo total",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ ¡Negocia! Los inversionistas también quieren cerrar acuerdos",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "⚠️ Acepta solo condiciones que puedas cumplir",
+                            "variant": "warning"
+                        }
+                    ]
+                }
+            }
+        },
+        "investor": {
+            "title": "Guía del inversionista",
+            "description": "Aprende a invertir y generar retornos",
+            "sections": {
+                "whatIs": {
+                    "title": "¿Qué es negoci.ai?",
+                    "description": "negoci.ai es un marketplace de préstamos peer-to-peer (P2P). Prestas dinero directamente a personas y recibes intereses por el período acordado.",
+                    "tip": "💰 Rentabilidad: ¡tasas de retorno generalmente superiores a las inversiones tradicionales!"
+                },
+                "howToStart": {
+                    "title": "¿Cómo comenzar a invertir?",
+                    "steps": [
+                        {
+                            "title": "Crea una oferta",
+                            "description": "Define cuánto prestar, el plazo, la tasa de interés y el score mínimo aceptable."
+                        },
+                        {
+                            "title": "O busca solicitudes",
+                            "description": "Explora solicitudes de solicitantes y elige las mejores oportunidades."
+                        },
+                        {
+                            "title": "Negocia e invierte",
+                            "description": "Ajusta condiciones, negocia con el solicitante y finaliza el préstamo."
+                        }
+                    ]
+                },
+                "risk": {
+                    "title": "¿Cómo evaluar el riesgo?",
+                    "description": "Usa el score del solicitante como principal indicador de riesgo:",
+                    "labels": {
+                        "low": "Bajo riesgo — historial excelente",
+                        "medium": "Riesgo moderado — buen historial",
+                        "high": "Riesgo medio-alto — atención",
+                        "veryHigh": "Alto riesgo — mucha precaución"
+                    },
+                    "warning": "⚠️ ¡Diversifica! Nunca coloques todo tu capital en un solo préstamo."
+                },
+                "portfolio": {
+                    "title": "Gestionar tu portafolio",
+                    "description": "Tu panel muestra métricas clave en tiempo real:",
+                    "items": [
+                        {
+                            "title": "Total invertido:",
+                            "description": "lo que tienes aplicado actualmente"
+                        },
+                        {
+                            "title": "Retorno total:",
+                            "description": "intereses acumulados de todos los préstamos"
+                        },
+                        {
+                            "title": "Diversificación:",
+                            "description": "distribución por score de los solicitantes"
+                        },
+                        {
+                            "title": "Tasa promedio:",
+                            "description": "rentabilidad promedio de tu portafolio"
+                        }
+                    ]
+                },
+                "advance": {
+                    "title": "Anticipación de recibos",
+                    "description": "Anticipa cuotas de contratos activos para recibir el dinero antes del vencimiento.",
+                    "items": [
+                        "Elige el préstamo y selecciona las cuotas disponibles",
+                        "Consulta en tiempo real el valor neto que recibirás",
+                        "Confirma para liberar los fondos en hasta 2 días hábiles"
+                    ]
+                },
+                "tips": {
+                    "title": "Estrategias de éxito",
+                    "items": [
+                        {
+                            "text": "✅ Diversifica entre distintos scores y montos",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Prefiere plazos más cortos para reducir el riesgo",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "✅ Negocia activamente: mejores tasas = más retorno",
+                            "variant": "positive"
+                        },
+                        {
+                            "text": "💡 Reinverte los retornos para generar interés compuesto",
+                            "variant": "info"
+                        }
+                    ]
+                }
+            }
+        },
+        "shared": {
+            "scoreLabels": {
+                "poor": "Malo",
+                "fair": "Regular",
+                "good": "Bueno",
+                "excellent": "Excelente"
+            },
+            "moreHelp": {
+                "title": "¿Necesitas más ayuda?",
+                "description": "Explora la plataforma y usa las notificaciones para seguir todas las novedades. ¡Vuelve a esta guía cuando lo necesites!"
+            }
+        }
+    },
+    "accessibility": {
+        "triggerAria": "Abrir configuraciones de accesibilidad",
+        "triggerLabel": "Accesibilidad",
+        "title": "Configuraciones de accesibilidad",
+        "description": "Personaliza la interfaz para adaptarla a tus necesidades de navegación",
+        "fontSize": {
+            "title": "Tamaño de fuente",
+            "description": "Ajusta el tamaño del texto en toda la plataforma",
+            "aria": "Selecciona el tamaño de la fuente",
+            "normal": "Normal - Tamaño estándar de lectura",
+            "large": "Grande - Texto más grande para facilitar la lectura",
+            "xLarge": "Muy grande - Máxima legibilidad"
+        },
+        "fontWeight": {
+            "title": "Peso de la fuente",
+            "description": "Haz el texto más grueso para mejorar el contraste",
+            "aria": "Selecciona el peso de la fuente",
+            "normal": "Normal - Peso estándar",
+            "bold": "Negrita - Texto más grueso y visible"
+        },
+        "colorBlind": {
+            "title": "Modo daltónico",
+            "description": "Ajusta los colores para distintos tipos de daltonismo",
+            "aria": "Selecciona el modo daltónico",
+            "none": "Ninguno - Colores estándar",
+            "protanopia": "Protanopia - Deficiencia de rojo",
+            "deuteranopia": "Deuteranopia - Deficiencia de verde",
+            "tritanopia": "Tritanopia - Deficiencia de azul"
+        },
+        "highContrast": {
+            "title": "Alto contraste",
+            "description": "Aumenta el contraste entre texto y fondo",
+            "aria": "Activar o desactivar alto contraste"
+        },
+        "reducedMotion": {
+            "title": "Reducir movimiento",
+            "description": "Disminuye animaciones y efectos de movimiento",
+            "aria": "Activar o desactivar reducción de movimiento"
+        },
+        "reset": {
+            "title": "Configuraciones restauradas",
+            "description": "Las configuraciones de accesibilidad se restauraron al valor predeterminado.",
+            "button": "Restablecer configuraciones predeterminadas",
+            "aria": "Restaurar todas las configuraciones de accesibilidad al valor predeterminado"
+        }
+    },
+    "findRequests": {
+        "loading": "Cargando solicitudes...",
+        "empty": "No se encontraron solicitudes",
+        "clearFilters": "Limpiar filtros",
+        "hide": "Ocultar solicitud",
+        "end": "😊 Eso es todo"
+    },
+    "findOffers": {
+        "loading": "Cargando ofertas...",
+        "empty": "No se encontraron ofertas",
+        "clearFilters": "Limpiar filtros",
+        "hide": "Ocultar oferta",
+        "end": "😊 Eso es todo"
+    },
+    "buttons": {
+        "back": "Volver"
+    }
+}

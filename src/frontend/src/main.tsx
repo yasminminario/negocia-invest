@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AccessibilityProvider } from './contexts/AccessibilityContext';
 import App from './App.tsx';
 import './index.css';
+import '@/lib/i18n';
 
 const queryClient = new QueryClient();
 

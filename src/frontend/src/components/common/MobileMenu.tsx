@@ -15,6 +15,8 @@ import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu'
 import { useProfile } from '@/contexts/ProfileContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { Separator } from '@/components/ui/separator';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export const MobileMenu = () => {
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ export const MobileMenu = () => {
   const { notifications, markAsRead, markAllAsRead } = useNotifications();
   const [open, setOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const { t } = useTranslation();
 
   const menuButtonClass =
     'w-full justify-start gap-3 rounded-xl border border-border/60 bg-muted/20 px-4 py-3 text-sm font-semibold text-muted-foreground transition hover:border-primary/60 hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2';
@@ -49,18 +52,22 @@ export const MobileMenu = () => {
             variant="ghost"
             size="icon"
             className="md:hidden"
-            aria-label="Abrir menu de navegação"
+            aria-label={t('mobileMenu.title')}
           >
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Menu</span>
+            <span className="sr-only">{t('mobileMenu.title')}</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="right" className="w-[300px] sm:w-[400px]">
           <SheetHeader>
-            <SheetTitle>Menu de Navegação</SheetTitle>
+            <SheetTitle>{t('mobileMenu.title')}</SheetTitle>
           </SheetHeader>
 
           <div className="flex flex-col gap-4 py-6">
+            <div className="px-3">
+              <LanguageSwitcher className="w-full" />
+            </div>
+
             {/* Perfil */}
             <Button
               variant="ghost"
@@ -76,10 +83,10 @@ export const MobileMenu = () => {
                   setOpen(false);
                 }
               }}
-              aria-label="Ir para Meu Perfil"
+              aria-label={t('mobileMenu.profileAria')}
             >
               <User className="h-5 w-5" aria-hidden="true" />
-              <span>Meu Perfil</span>
+              <span>{t('mobileMenu.profile')}</span>
             </Button>
 
             <Separator />
@@ -95,10 +102,16 @@ export const MobileMenu = () => {
                   handleProfileSwitch();
                 }
               }}
-              aria-label={`Trocar para perfil ${activeProfile === 'investor' ? 'tomador' : 'investidor'}`}
+              aria-label={t('mobileMenu.switchProfileAria', {
+                profile: t(`profiles.${activeProfile === 'investor' ? 'borrower' : 'investor'}`),
+              })}
             >
               <ArrowLeftRight className="h-5 w-5" aria-hidden="true" />
-              <span>Trocar para {activeProfile === 'investor' ? 'Tomador' : 'Investidor'}</span>
+              <span>
+                {t('mobileMenu.switchProfile', {
+                  profile: t(`profiles.${activeProfile === 'investor' ? 'borrower' : 'investor'}`),
+                })}
+              </span>
             </Button>
 
             <Separator />
@@ -106,7 +119,7 @@ export const MobileMenu = () => {
             {/* Notificações */}
             <div className={sectionCardClass}>
               <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-                <span>Notificações</span>
+                <span>{t('mobileMenu.notifications')}</span>
               </div>
               <NotificationBell
                 notifications={notifications}
@@ -121,7 +134,7 @@ export const MobileMenu = () => {
             <div className={sectionCardClass}>
               <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
                 <Eye className="h-5 w-5" aria-hidden="true" />
-                <span>Configurações de Acessibilidade</span>
+                <span>{t('mobileMenu.accessibility')}</span>
               </div>
               <AccessibilityMenu />
             </div>
@@ -143,10 +156,10 @@ export const MobileMenu = () => {
                   setOpen(false);
                 }
               }}
-              aria-label="Abrir central de ajuda"
+              aria-label={t('header.helpAria')}
             >
               <HelpCircle className="h-5 w-5" aria-hidden="true" />
-              <span>Central de Ajuda</span>
+              <span>{t('mobileMenu.help')}</span>
             </Button>
           </div>
         </SheetContent>

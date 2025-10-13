@@ -8,11 +8,13 @@ import {
   FileText,
   Bell,
   User,
+  ArrowLeftRight,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 interface HelpDialogProps {
   open: boolean;
@@ -21,26 +23,25 @@ interface HelpDialogProps {
 }
 
 export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, profile }) => {
+  const { t } = useTranslation();
   const isBorrower = profile === "borrower";
 
   const borrowerContent = {
-    title: "Guia do Tomador",
-    description: "Aprenda a conseguir o empréstimo ideal para você",
+    title: t("helpDialog.borrower.title"),
+    description: t("helpDialog.borrower.description"),
     sections: [
       {
         id: "what-is",
         icon: HelpCircle,
-        title: "O que é a negoci.ai?",
+        title: t("helpDialog.borrower.sections.whatIs.title"),
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              A negoci.ai conecta você diretamente com investidores que oferecem empréstimos. Sem bancos, sem burocracia
-              - apenas negociações diretas e transparentes.
+              {t("helpDialog.borrower.sections.whatIs.description")}
             </p>
             <Card className="p-3 bg-borrower border-borrower/20">
               <p className="text-sm font-medium text-borrower-foreground">
-                💡 Você tem o controle: negocie taxas, escolha prazos e aceite apenas ofertas que fazem sentido para
-                você!
+                {t("helpDialog.borrower.sections.whatIs.tip")}
               </p>
             </Card>
           </div>
@@ -49,72 +50,46 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       {
         id: "how-to-start",
         icon: ArrowRight,
-        title: "Como começar?",
+        title: t("helpDialog.borrower.sections.howToStart.title"),
         content: (
           <div className="space-y-4">
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
-                1
+            {(t("helpDialog.borrower.sections.howToStart.steps", { returnObjects: true }) as Array<{ title: string; description: string }>).map((step, index) => (
+              <div className="flex gap-3" key={step.title}>
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
+                  {index + 1}
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">{step.title}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Crie uma Solicitação</h4>
-                <p className="text-sm text-muted-foreground">
-                  Defina quanto precisa, o prazo desejado e a taxa máxima que pode pagar.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
-                2
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Ou Busque Ofertas</h4>
-                <p className="text-sm text-muted-foreground">
-                  Navegue pelas ofertas disponíveis e escolha a que melhor se encaixa.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-borrower flex items-center justify-center text-borrower-foreground font-bold">
-                3
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Negocie</h4>
-                <p className="text-sm text-muted-foreground">
-                  Use nossa ferramenta de negociação para ajustar valores e condições em tempo real.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         ),
       },
       {
         id: "negotiation",
         icon: Handshake,
-        title: "Como funciona a negociação?",
+        title: t("helpDialog.borrower.sections.negotiation.title"),
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Nossa plataforma possui sliders inteligentes que mostram o impacto de cada mudança:
+              {t("helpDialog.borrower.sections.negotiation.description")}
             </p>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>Ajuste valores e veja instantaneamente o impacto no pagamento mensal</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>Compare sua proposta com a oferta original lado a lado</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>Veja histórico completo de todas as propostas trocadas</span>
-              </li>
+              {(t("helpDialog.borrower.sections.negotiation.items", { returnObjects: true }) as string[]).map((item) => (
+                <li className="flex items-start gap-2" key={item}>
+                  <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
             <Card className="p-3 bg-info-light border-info mt-3">
               <p className="text-sm text-info">
                 <Bell className="h-4 w-4 inline mr-1" />
-                Você recebe notificações a cada nova contraproposta!
+                {t("helpDialog.borrower.sections.negotiation.notification")}
               </p>
             </Card>
           </div>
@@ -123,34 +98,34 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       {
         id: "score",
         icon: TrendingUp,
-        title: "Como funciona o Score?",
+        title: t("helpDialog.borrower.sections.score.title"),
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Seu score é sua credibilidade na plataforma. Quanto maior, melhores as condições que você consegue:
+              {t("helpDialog.borrower.sections.score.description")}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <Card className="p-3 text-center">
                 <div className="text-2xl font-bold text-negative">0-400</div>
                 <Badge variant="destructive" className="mt-1">
-                  Ruim
+                  {t("helpDialog.shared.scoreLabels.poor")}
                 </Badge>
               </Card>
               <Card className="p-3 text-center">
                 <div className="text-2xl font-bold text-warning">401-650</div>
-                <Badge className="mt-1 bg-warning text-warning-foreground">Regular</Badge>
+                <Badge className="mt-1 bg-warning text-warning-foreground">{t("helpDialog.shared.scoreLabels.fair")}</Badge>
               </Card>
               <Card className="p-3 text-center">
                 <div className="text-2xl font-bold text-info">651-850</div>
-                <Badge className="mt-1 bg-info text-info-foreground">Bom</Badge>
+                <Badge className="mt-1 bg-info text-info-foreground">{t("helpDialog.shared.scoreLabels.good")}</Badge>
               </Card>
               <Card className="p-3 text-center">
                 <div className="text-2xl font-bold text-positive">851-1000</div>
-                <Badge className="mt-1 bg-positive text-positive-foreground">Excelente</Badge>
+                <Badge className="mt-1 bg-positive text-positive-foreground">{t("helpDialog.shared.scoreLabels.excellent")}</Badge>
               </Card>
             </div>
             <p className="text-sm text-muted-foreground mt-3">
-              Pague em dia, complete negociações com sucesso e seu score aumenta automaticamente!
+              {t("helpDialog.borrower.sections.score.footer")}
             </p>
           </div>
         ),
@@ -158,21 +133,17 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       {
         id: "tips",
         icon: FileText,
-        title: "Dicas importantes",
+        title: t("helpDialog.borrower.sections.tips.title"),
         content: (
           <div className="space-y-2">
-            <Card className="p-3 border-l-4 border-l-positive">
-              <p className="text-sm font-medium">✅ Compare sempre várias ofertas antes de decidir</p>
-            </Card>
-            <Card className="p-3 border-l-4 border-l-positive">
-              <p className="text-sm font-medium">✅ Use o simulador para entender o impacto total do empréstimo</p>
-            </Card>
-            <Card className="p-3 border-l-4 border-l-positive">
-              <p className="text-sm font-medium">✅ Negocie! Investidores querem fechar negócio tanto quanto você</p>
-            </Card>
-            <Card className="p-3 border-l-4 border-l-warning">
-              <p className="text-sm font-medium">⚠️ Só aceite condições que você tem certeza que pode cumprir</p>
-            </Card>
+            {(t("helpDialog.borrower.sections.tips.items", { returnObjects: true }) as Array<{ text: string; variant: "positive" | "warning" }>).map((item) => (
+              <Card
+                key={item.text}
+                className={`p-3 border-l-4 ${item.variant === "warning" ? "border-l-warning" : "border-l-positive"}`}
+              >
+                <p className="text-sm font-medium">{item.text}</p>
+              </Card>
+            ))}
           </div>
         ),
       },
@@ -180,22 +151,21 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
   };
 
   const investorContent = {
-    title: "Guia do Investidor",
-    description: "Aprenda a investir e gerar retorno com empréstimos",
+    title: t("helpDialog.investor.title"),
+    description: t("helpDialog.investor.description"),
     sections: [
       {
         id: "what-is",
         icon: HelpCircle,
-        title: "O que é a negoci.ai?",
+        title: t("helpDialog.investor.sections.whatIs.title"),
         content: (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              A negoci.ai é um marketplace de empréstimos peer-to-peer (P2P). Você empresta dinheiro diretamente para
-              pessoas e recebe juros pelo período acordado.
+              {t("helpDialog.investor.sections.whatIs.description")}
             </p>
             <Card className="p-3 bg-investor border-investor/20">
               <p className="text-sm font-medium text-investor-foreground">
-                💰 Rentabilidade: Taxas de retorno geralmente superiores a investimentos tradicionais!
+                {t("helpDialog.investor.sections.whatIs.tip")}
               </p>
             </Card>
           </div>
@@ -204,85 +174,65 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       {
         id: "how-to-start",
         icon: ArrowRight,
-        title: "Como começar a investir?",
+        title: t("helpDialog.investor.sections.howToStart.title"),
         content: (
           <div className="space-y-4">
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
-                1
+            {(t("helpDialog.investor.sections.howToStart.steps", { returnObjects: true }) as Array<{ title: string; description: string }>).map((step, index) => (
+              <div className="flex gap-3" key={step.title}>
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
+                  {index + 1}
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">{step.title}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold mb-1">Crie uma Oferta</h4>
-                <p className="text-sm text-muted-foreground">
-                  Defina quanto quer emprestar, prazo, taxa de juros e score mínimo aceitável.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
-                2
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Ou Busque Solicitações</h4>
-                <p className="text-sm text-muted-foreground">
-                  Navegue por solicitações de tomadores e escolha as melhores oportunidades.
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-investor flex items-center justify-center text-investor-foreground font-bold">
-                3
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Negocie e Invista</h4>
-                <p className="text-sm text-muted-foreground">
-                  Ajuste condições, negocie com o tomador e finalize o empréstimo.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         ),
       },
       {
         id: "risk",
         icon: TrendingUp,
-        title: "Como avaliar o risco?",
+        title: t("helpDialog.investor.sections.risk.title"),
         content: (
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">Use o score do tomador como principal indicador de risco:</p>
+            <p className="text-sm text-muted-foreground">{t("helpDialog.investor.sections.risk.description")}</p>
             <div className="grid grid-cols-2 gap-2">
               <Card className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 rounded-full bg-positive" />
                   <span className="text-sm font-semibold">851-1000</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Baixo risco - Histórico excelente</p>
+                <p className="text-xs text-muted-foreground">{t("helpDialog.investor.sections.risk.labels.low")}</p>
               </Card>
               <Card className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 rounded-full bg-info" />
                   <span className="text-sm font-semibold">651-850</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Risco moderado - Bom histórico</p>
+                <p className="text-xs text-muted-foreground">{t("helpDialog.investor.sections.risk.labels.medium")}</p>
               </Card>
               <Card className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 rounded-full bg-warning" />
                   <span className="text-sm font-semibold">401-650</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Risco médio-alto - Atenção</p>
+                <p className="text-xs text-muted-foreground">{t("helpDialog.investor.sections.risk.labels.high")}</p>
               </Card>
               <Card className="p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 rounded-full bg-negative" />
                   <span className="text-sm font-semibold">0-400</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Alto risco - Muito cuidado</p>
+                <p className="text-xs text-muted-foreground">{t("helpDialog.investor.sections.risk.labels.veryHigh")}</p>
               </Card>
             </div>
             <Card className="p-3 bg-warning-light border-warning/20 mt-3">
               <p className="text-sm text-warning-foreground">
-                ⚠️ Diversifique! Nunca coloque todo seu capital em um único empréstimo.
+                {t("helpDialog.investor.sections.risk.warning")}
               </p>
             </Card>
           </div>
@@ -291,35 +241,37 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       {
         id: "portfolio",
         icon: DollarSign,
-        title: "Gerenciando seu portfólio",
+        title: t("helpDialog.investor.sections.portfolio.title"),
         content: (
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">Seu dashboard mostra métricas importantes em tempo real:</p>
+            <p className="text-sm text-muted-foreground">{t("helpDialog.investor.sections.portfolio.description")}</p>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong>Total Investido:</strong> Quanto você tem aplicado atualmente
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong>Retorno Total:</strong> Juros acumulados de todos os empréstimos
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong>Diversificação:</strong> Distribuição por score dos tomadores
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
-                <span>
-                  <strong>Taxa Média:</strong> Rentabilidade média de sua carteira
-                </span>
-              </li>
+              {(t("helpDialog.investor.sections.portfolio.items", { returnObjects: true }) as Array<{ title: string; description: string }>).map((item) => (
+                <li className="flex items-start gap-2" key={item.title}>
+                  <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
+                  <span>
+                    <strong>{item.title}</strong> {item.description}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ),
+      },
+      {
+        id: "advance",
+        icon: ArrowLeftRight,
+        title: t("helpDialog.investor.sections.advance.title"),
+        content: (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">{t("helpDialog.investor.sections.advance.description")}</p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {(t("helpDialog.investor.sections.advance.items", { returnObjects: true }) as string[]).map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 text-positive-foreground mt-0.5 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
         ),
@@ -327,21 +279,17 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
       {
         id: "tips",
         icon: FileText,
-        title: "Estratégias de sucesso",
+        title: t("helpDialog.investor.sections.tips.title"),
         content: (
           <div className="space-y-2">
-            <Card className="p-3 border-l-4 border-l-positive">
-              <p className="text-sm font-medium">✅ Diversifique entre diferentes scores e valores</p>
-            </Card>
-            <Card className="p-3 border-l-4 border-l-positive">
-              <p className="text-sm font-medium">✅ Prefira prazos mais curtos para reduzir risco</p>
-            </Card>
-            <Card className="p-3 border-l-4 border-l-positive">
-              <p className="text-sm font-medium">✅ Negocie ativamente - taxas melhores = mais retorno</p>
-            </Card>
-            <Card className="p-3 border-l-4 border-l-info">
-              <p className="text-sm font-medium">💡 Reinvista os retornos para efeito composto</p>
-            </Card>
+            {(t("helpDialog.investor.sections.tips.items", { returnObjects: true }) as Array<{ text: string; variant: "positive" | "info" }>).map((item) => (
+              <Card
+                key={item.text}
+                className={`p-3 border-l-4 ${item.variant === "info" ? "border-l-info" : "border-l-positive"}`}
+              >
+                <p className="text-sm font-medium">{item.text}</p>
+              </Card>
+            ))}
           </div>
         ),
       },
@@ -356,9 +304,8 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                isBorrower ? "bg-borrower" : "bg-investor"
-              }`}
+              className={`w-10 h-10 rounded-full flex items-center justify-center ${isBorrower ? "bg-borrower" : "bg-investor"
+                }`}
             >
               <HelpCircle
                 className={`h-5 w-5 ${isBorrower ? "text-borrower-foreground" : "text-investor-foreground"}`}
@@ -388,17 +335,15 @@ export const HelpDialog: React.FC<HelpDialogProps> = ({ open, onOpenChange, prof
         </Accordion>
 
         <Card
-          className={`p-4 mt-4 ${
-            isBorrower ? "bg-borrower-ligth border-borrower/20" : "bg-investor-light border-investor/20"
-          }`}
+          className={`p-4 mt-4 ${isBorrower ? "bg-borrower-ligth border-borrower/20" : "bg-investor-light border-investor/20"
+            }`}
         >
           <div className="flex items-start gap-3">
             <User className={`h-5 w-5 mt-0.5 ${isBorrower ? "text-borrower" : "text-investor"}`} />
             <div>
-              <h4 className="font-semibold mb-1">Precisa de mais ajuda?</h4>
+              <h4 className="font-semibold mb-1">{t("helpDialog.shared.moreHelp.title")}</h4>
               <p className="text-sm text-muted-foreground">
-                Explore a plataforma e use as notificações para acompanhar todas as atualizações. Qualquer dúvida,
-                revise este guia a qualquer momento!
+                {t("helpDialog.shared.moreHelp.description")}
               </p>
             </div>
           </div>
