@@ -3,7 +3,7 @@ import { Header } from '@/components/common/Header';
 import { LoanCard } from '@/components/common/LoanCard';
 import { SearchableList } from '@/components/common/SearchableList';
 import { StatusBadge } from '@/components/common/StatusBadge';
-import { TrendingUp } from 'lucide-react';
+import { Sparkles, TrendingUp } from 'lucide-react';
 import { useActiveLoans } from '@/hooks/useActiveLoans';
 import { useOwnProposals } from '@/hooks/useOwnProposals';
 import { formatCurrency, formatInterestRate } from '@/utils/calculations';
@@ -117,10 +117,10 @@ const ActiveLoans = () => {
                   />
                   {loan.status === 'active' && loan.installments > 0 && (
                     <Button
-                      className="w-full"
-                      variant="outline"
                       onClick={() => navigate(`/investor/loan/${loan.id}/advance`)}
+                      className="group flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-investor to-investor/80 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-investor/30 transition-all duration-200 hover:translate-y-[-1px] hover:from-investor/90 hover:to-investor/70 focus-visible:ring-2 focus-visible:ring-investor"
                     >
+                      <Sparkles className="h-4 w-4 transition-transform group-hover:scale-110" aria-hidden="true" />
                       Antecipar parcelas
                     </Button>
                   )}
