@@ -783,7 +783,7 @@ O frontend é desenvolvido em React, garantindo experiência nativa em dispositi
 
 <p align="center">
 <sub>Figura 6 - Feature de Antecipação de Recebíveis</sub><br>
-  <img src="img/tela04.png" alt="Antecipação de Recebíveis" width="60%">
+  <img src="img/tela04.png" alt="Configuração de acessibilidade" width="60%">
 </p>
 
 ### Acessibilidade
@@ -797,24 +797,24 @@ O frontend é desenvolvido em React, garantindo experiência nativa em dispositi
 
 As principais funcionalidades de acessibilidade disponíveis são disponíveis ao se clicar no botão superior direito da tela, no símbolo de um olho:
 
-### 1. Ajuste de Tamanho da Fonte
+#### 1. Ajuste de Tamanho da Fonte
 - **Normal, Grande e Muito Grande:** O usuário pode escolher entre três tamanhos de fonte para facilitar a leitura, aumentando a legibilidade conforme sua necessidade.
 
-### 2. Ajuste de Peso da Fonte
+#### 2. Ajuste de Peso da Fonte
 - **Normal ou Negrito:** Permite selecionar o peso da fonte, tornando o texto mais grosso para melhorar o contraste visual e facilitar a identificação de informações importantes.
 
-### 3. Modo Daltônico
+#### 3. Modo Daltônico
 - **Perfis de Daltonismo:** A interface oferece modos específicos para diferentes tipos de daltonismo:
   - **Protanopia:** Deficiência de vermelho.
   - **Deuteranopia:** Deficiência de verde.
   - **Tritanopia:** Deficiência de azul.
 - **Cores Adaptadas:** As cores da plataforma são ajustadas para garantir contraste adequado e que informações essenciais não dependam exclusivamente de cor.
 
-### 4. Diretrizes de Acessibilidade
+#### 4. Diretrizes de Acessibilidade
 - **WCAG 2.1:** Todas as telas seguem as recomendações internacionais de acessibilidade, incluindo suporte a leitores de tela, navegação por teclado e contraste mínimo.
 - **Mensagens e Ícones:** Informações importantes são sempre acompanhadas de texto ou ícones, evitando dependência exclusiva de cor para transmitir significado.
 
-### 5. Outras funcionalides
+#### 5. Outras funcionalides
 
 - *Teclado:* Botões, diálogos e menus recebem aria-label, role e estados focados (focus:ring, sr-only), garantindo navegação sem mouse.
 - *Conteúdo de apoio:* Ícones do cabeçalho trazem labels textuais em múltiplos idiomas, reforçando compreensão visual e auditiva.
@@ -825,15 +825,16 @@ As principais funcionalidades de acessibilidade disponíveis são disponíveis a
 Essas configurações podem ser acessadas facilmente pelo usuário, permitindo personalizar a interface conforme suas necessidades e garantindo que todos possam utilizar a plataforma com autonomia e segurança.
 
 
-## 5.1 Visão Geral da Stack
+### Visão Geral da Stack
 - *Base tecnológica:* Vite + React 18 com TypeScript, estilização via Tailwind CSS e componentes pré-construídos do shadcn/ui.
 - *Gerenciamento de estado local:* Hooks e Context API (Auth, Profile, Notification), priorizando coesão por domínio.
 - *Apoio visual:* ícones Lucide, tipagem rigorosa em src/types e utilitários em src/lib para consistência de formatação e regras de negócio.
 - *Construção & build:* scripts npm (dev, build, preview) e integração com linting/formatadores definidos em eslint.config.js e Tailwind.
 
-## 5.2 Organização de Pastas
+### Organização de Pastas
 
 ```src/
+src/
 ├─ app/              # Inicialização do React (AppProviders, AppRoutes)
 ├─ assets/           # Imagens, ícones e recursos estáticos
 ├─ components/
@@ -853,25 +854,24 @@ Essas configurações podem ser acessadas facilmente pelo usuário, permitindo p
 └─ services/         # Camada de comunicação com backend (auth, negotiations, proposals, rates, score)
 ```
 
-
 *Convenções principais:*
 - Estrutura orientada a domínio para facilitar evolução independente de fluxos (auth, negotiations etc.).
 - Componentes visuais básicos vivem em components/ui; peças compostas reaproveitáveis migram para components/common.
 - Responsabilidades de API ficam isoladas em services, sempre tipadas e encapsuladas em funções puras.
 
-## 5.3 Componentização
+### Componentização
 - **Átomos (components/ui):** implementam tokens de design (botões, inputs, cards, labels, textarea, toast). Eles recebem classes utilitárias Tailwind e podem ser estendidos via className para manter consistência.
 - *Componentes Compostos:* LanguageSwitcher, MobileMenu, Header, HelpDialog, AccessibilityMenu, NotificationBell interligam múltiplos átomos respeitando acessibilidade (aria labels, tooltips, estados focados).
 - *Layouts:* MainLayout integra cabeçalho, navegação lateral e conteúdo principal, garantindo responsividade e breakpoints definidos pelo Tailwind.
 - *Páginas:* Cada pasta em pages/ orquestra componentes e serviços para entregar fluxos completos (ex.: pages/negotiations/NewNegotiationPage.tsx consome serviços de negociações, contextos de usuário e ui components).
 
-## 5.4 Estado Compartilhado & Hooks
+### Estado Compartilhado & Hooks
 - AuthContext: centraliza sessão, persistência de token e disponibiliza métodos de login/logout.
 - ProfileContext: controla perfil ativo (investidor/tomador), habilitando rotas e dashboards específicos.
 - NotificationContext: armazena notificações em tempo real, permite marcar uma ou todas como lidas e alimenta NotificationBell.
 - Hooks customizados (hooks/useRealtimeNotifications.ts, hooks/useToast) encapsulam assinaturas e side effects, mantendo páginas enxutas.
 
-## 5.5 Comunicação com APIs
+### Comunicação com APIs
 - Arquivo config/api.ts define base URL, instância HTTP (axios/fetch) e interceptadores.
 - services/*.ts exportam funções assíncronas por domínio (auth, proposals, negotiations, rates, score). Cada função:
   - Recebe parâmetros tipados;
@@ -879,13 +879,13 @@ Essas configurações podem ser acessadas facilmente pelo usuário, permitindo p
   - Normaliza a resposta para objetos consumidos pela UI.
 - Tratamento de erros: funções propagam exceções padronizadas, habilitando toasts e feedbacks consistentes no front.
 
-## 5.6 Internacionalização
+### Internacionalização
 - Biblioteca react-i18next configurada em AppProviders.tsx.
 - Traduções agrupadas por língua em locales/{pt,en,es}/common.json, mantendo chaves estruturadas (header.*, auth.*, dashboard.*, negotiations.*, help.*).
 - LanguageSwitcher expõe seletor global desde telas de login/cadastro, atualizando i18n.language e persistindo preferência.
 - Testes de consistência: chave ausente aciona fallback visual e é monitorada durante builds (npm run build).
 
-## 5.8 Fluxos Principais da Interface
+### Fluxos Principais da Interface
 - **Onboarding & Autenticação (pages/auth)**
   - LoginPage, RegisterPage, ProfilePage: suporte a troca de idioma, explicações contextuais e validações inline.
   - ProtectedRoute protege áreas privadas, redirecionando conforme sessão.
@@ -902,13 +902,13 @@ Essas configurações podem ser acessadas facilmente pelo usuário, permitindo p
 - *Tutoriais e Ajuda*
   - OnboardingTutorial destaca funcionalidades chave; HelpDialog organiza FAQs, vídeos e suporte.
 
-## 5.9 Boas Práticas de Desenvolvimento
+### Boas Práticas de Desenvolvimento
 - Componentes mantêm tipagem explícita (React.FC<Props>) e evitam lógica imperativa pesada dentro de JSX.
 - Estilos seguem o padrão className com utilitários Tailwind, reduzindo CSS isolado.
 - Traduções novas exigem sincronização entre pt, en e es para eliminar warnings.
 - Cada fluxo possui feedbacks visuais em caso de erro (toasts) e carregamento (skeletons/spinners conforme necessário).
 
-## 5.10 Próximos Passos Sugeridos
+### Próximos Passos Sugeridos
 1. Adicionar testes de integração (Cypress/Playwright) para validar fluxos críticos (login, negociação, antecipação).
 2. Expandir cobertura de acessibilidade com testes automatizados (axe) nos principais componentes.
 3. Documentar contratos de API em paralelo (OpenAPI) para garantir aderência entre frontend e backend.
@@ -1581,7 +1581,14 @@ Totais:
  - Contratos da solução:
    - `src/backend/src/app/hardhat/contracts/Emprestimo.sol` — contrato específico para registrar on‑chain o `contrato_tx_hash` de um empréstimo; expõe `registrar(bytes32,string)` e um getter `consultarHash()`.
    - `src/backend/src/app/hardhat/contracts/AntecipacaoRecebiveis.sol` — contrato para registrar `contrato_antecipacao_onchain` (antecipação de recebíveis); expõe `registrarAntecipacao(bytes32,string)` e `consultarHashAntecipacao()`.
-- Backend (FastAPI): `src/backend/src/app/services/blockchain.py` — funções para compilar, persistir artefatos ABI (ContratoExemplo_abi.json), deployar (`/blockchain/deploy`), compilar (`/blockchain/compile`), chamar `registrar` no contrato (`/blockchain/registrar`), e checar se um endereço tem código on‑chain (is_contract_onchain). Também inclui um helper `get_contract_data(address)` que tenta ler `contractData()` do contrato quando disponível.
+
+| Arquivo (contrato) | Finalidade | Funções / Eventos principais |
+|---|---|---|
+| `ContratoExemplo.sol` | Exemplo genérico para registrar hashes e armazenar metadados de demonstração (`contractData`). Útil para testar compile/deploy/registro. | registrar(bytes32,string), consultarHash(), event ContratoRegistrado(bytes32,address,string) |
+| `Emprestimo.sol` | Registrar on‑chain o hash de um contrato de empréstimo (`contrato_tx_hash`) como prova pública. | registrar(bytes32,string), consultarHash(), event EmprestimoRegistrado(bytes32,address,string) |
+| `AntecipacaoRecebiveis.sol` | Registrar on‑chain o hash de contratos de antecipação de recebíveis (`contrato_antecipacao_onchain`) para auditoria e prova. | registrarAntecipacao(bytes32,string), consultarHashAntecipacao(), event AntecipacaoRegistrada(bytes32,address,string) |
+
+- Backend (FastAPI): `src/backend/src/app/services/blockchain.py` — funções para compilar e retornar a ABI/bytecode do contrato (`/blockchain/compile`), fazer deploy (`/blockchain/deploy`), chamar `registrar` no contrato (`/blockchain/registrar`) e checar se um endereço tem código on‑chain (`is_contract_onchain`). Também inclui um helper `get_contract_data(address)` que tenta ler `contractData()` do contrato quando disponível. Observação: a ABI é retornada nas respostas da API.
 - API (routers): `src/backend/src/app/api/routers.py` — endpoints expostos ao frontend:
   - GET /blockchain/status — informa se há ABI local, endereço do contrato, e, quando possível, o valor de `contract_data` lido do contrato em chain.
   - GET /blockchain/compile — força compilação do contrato e grava o arquivo `ContratoExemplo_abi.json` no backend.
@@ -1595,6 +1602,16 @@ Totais:
   - Registrar um hash on‑chain e enviar um campo `data` adicional; ver o receipt e a prova on‑chain.
   - Visualizar / copiar a última tx e ver se ela está na chain.
 
+### Informaçõs de Deployment do Smart Contract 
+
+- **Rede-alvo:** Paseo (Polkadot testnet EVM-compatible)
+- **Ambiente de testes:** Hardhat local (chainId 31337) — usado temporariamente devido a falha no RPC público da Paseo.
+- **Endereço do contrato (gerado em cada boot):** ver retorno da rota  
+  `POST http://localhost:8000/blockchain/deploy` → campo `address`
+- **ABI:** disponível via `GET /blockchain/compile` (campo `abi`)
+
+
+
 ### Arquitetura de execução (Docker)
 
 O repositório já inclui um `src/docker-compose.yml` que levanta tudo para desenvolvimento:
@@ -1606,17 +1623,17 @@ O repositório já inclui um `src/docker-compose.yml` que levanta tudo para dese
 1) Verificar status (GET)
 
 - URL: http://localhost:8000/blockchain/status
-- O que retorna: se existe ABI local, deployer address (do .env), se o contrato está on‑chain (verificando código no endereço) e, quando possível, o `contract_data` retornado pela chamada ao contrato.
+- O que retorna: deployer address (do .env), se o contrato está on‑chain (verificando código no endereço) e, quando possível, o `contract_data` retornado pela chamada ao contrato. OBS: a API tenta carregar a ABI a partir de variáveis de ambiente se estiverem definidas.
 
 2) Compilar (GET)
 
 - URL: http://localhost:8000/blockchain/compile
-- O que faz: compila o contrato, grava `ContratoExemplo_abi.json` em `src/backend/src/app/ContratoExemplo_abi.json` e retorna o JSON da ABI/bytecode.
+- O que faz: compila o contrato e retorna o JSON com `abi` e `bytecode` na resposta. Nota: a resposta contém a ABI/bytecode; o backend não garante a criação de um arquivo de artefato no repositório.
 
 3) Deploy (POST)
 
 - URL: http://localhost:8000/blockchain/deploy
-- O que faz: compila (se necessário) e deploya o contrato usando a chave do servidor (DEPLOYER_PRIVATE_KEY). Retorna receipt e grava `CONTRACT_ADDRESS`/ABI localmente.
+- O que faz: compila (se necessário) e deploya o contrato usando a chave do servidor (DEPLOYER_PRIVATE_KEY). Retorna receipt e o endereço do contrato na resposta.  
 
 4) Registrar hash (POST)
 
@@ -1643,6 +1660,12 @@ Checklist essencial:
    - POST http://localhost:8000/blockchain/registrar body { contrato_hash, data }
 5. Abrir a página `/test` no frontend e usar a UI para compilar, deployar e registrar.
 
+
+<p align="center">
+<sub>Figura 10 - Feature de Visão Geral de Oferta</sub><br>
+  <img src="img/teste.png" alt="Rota /test" width="60%">
+</p>
+
 ### .env necessária (valores mínimos)
 
 Adicione (ou verifique) estas chaves no `.env` que o `backend` usa (o `docker-compose` já referencia `../.env` do `src/`):
@@ -1652,10 +1675,12 @@ Adicione (ou verifique) estas chaves no `.env` que o `backend` usa (o `docker-co
 - POLKADOT_HUB_RPC_URL — por padrão configurado para `http://hardhat:8545` no docker-compose.
 - POLKADOT_HUB_CHAIN_ID — chain id; default 31337 para o Hardhat Node.
 
-### Arquivos/artifacts gerados e caminhos
+Nota: o código do backend/frontend e dos contratos já está implementado neste repositório — para rodar contra a rede Polkadot (Paseo), basta configurar a URL do RPC (`POLKADOT_HUB_RPC_URL`) e o `POLKADOT_HUB_CHAIN_ID` corretos no `.env`, além de fornecer `DEPLOYER_PRIVATE_KEY` (ou `WALLET_PRIVATE_KEY`). Não é preciso alterar o código fonte para apontar para a rede, apenas essas variáveis e reiniciar os serviços.
 
-- ABI persistida: `src/backend/src/app/ContratoExemplo_abi.json` — o backend grava esse arquivo após compilar ou após deploy.
-- Smart contract: `src/backend/src/app/hardhat/contracts/ContratoExemplo.sol`.
+### Artefatos e ABI
+
+- ABI/bytecode: quando você chama `GET /blockchain/compile` a resposta inclui o JSON com `abi` e `bytecode`. Da mesma forma, `POST /blockchain/deploy` retorna o endereço do contrato e detalhes do deploy.
+- Smart contract fonte: `src/backend/src/app/hardhat/contracts/ContratoExemplo.sol` (e outros contratos no mesmo diretório).
 
 
 ### Limitações conhecidas
